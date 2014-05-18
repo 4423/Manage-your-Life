@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Diagnostics;
+using System.Windows.Threading;
 
 namespace Manage_your_Life
 {
@@ -22,6 +23,11 @@ namespace Manage_your_Life
     public partial class MainWindow : Window
     {
         #region メンバ
+        /// <summary>
+        /// WPFでタイマーを使う
+        /// </summary>
+        DispatcherTimer timer;
+
         /// <summary>
         /// 前回のProcess
         /// </summary>
@@ -50,8 +56,29 @@ namespace Manage_your_Life
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            //タイマーの作成
+            timer = new DispatcherTimer(DispatcherPriority.Normal, this.Dispatcher);
+            timer.Interval = TimeSpan.FromSeconds(1);
+            timer.Tick += new EventHandler(DispatcherTimer_Tick);
+            
+            //タイマーの実行開始
+            timer.Start();
+            
             DatabaseOperation(pInfo.GetActiveProcess());
         }
+
+
+        /// <summary>
+        /// タイマー間隔が経過すると呼び出される
+        /// </summary>
+        /// <see cref="http://ari-it.doorblog.jp/archives/28684231.html"/>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DispatcherTimer_Tick(object sender, EventArgs e)
+        {
+            
+        }
+
 
 
         internal void DatabaseOperation(Process proc)
