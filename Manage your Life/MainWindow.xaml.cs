@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Diagnostics;
 using System.Windows.Threading;
+using System.IO;
 
 namespace Manage_your_Life
 {
@@ -76,16 +77,50 @@ namespace Manage_your_Life
         /// <param name="e"></param>
         private void DispatcherTimer_Tick(object sender, EventArgs e)
         {
-            
+            //一時的にタイマー停止(処理に時間がかかるかも)
+            timer.Stop();
+
+            //アクティブプロセス取得
+            Process activeProcess = pInfo.GetActiveProcess();
+
+            //初回起動などnullだったら現在のプロセスを代入
+            if (previousProcess == null) previousProcess = activeProcess;
+
+            //前回と同じプロセス名だったら何もしない
+            //TODO ブラウザ等はページ遷移毎に処理されない！！
+            if ((activeProcess.ProcessName == previousProcess.ProcessName) && !preTitleCheck)
+            {
+                timer.Start();
+                return;
+            }
+
+            //TODO 最前面のアプリケーションが変わった時にしたい処理
+            Hoge(activeProcess);
+
+
+            //キャッシュ
+            previousProcess = activeProcess;
+            timer.Start();
+        }
+
+
+        private void Hoge(Process activeProcess)
+        {
+            statusBarItem_label.Content = activeProcess.MainWindowTitle;
+
         }
 
 
 
+
+        /// <summary>
+        /// 新たなプログラム情報をデータベースに追記する
+        /// </summary>
+        /// <param name="proc"></param>
         internal void DatabaseOperation(Process proc)
         {
-            //TODO 接続文字列。環境によって変更可にしよう
-            string baseDir = @"""c:\users\yuhi\documents\visual studio 2013\Projects\2nd\Manage your Life\Manage your Life\ApplicationDatabase.mdf""";
-            string connStr = @"Data Source=(LocalDB)\v11.0;AttachDbFilename=" + baseDir + ";Integrated Security=True";
+            string basePath = Directory.GetCurrentDirectory() + @"\ApplicationDatabase.mdf";
+            string connStr = @"Data Source=(LocalDB)\v11.0;AttachDbFilename=""" + basePath + @""";Integrated Security=True";
 
             using (var db = new ApplicationDataClassesDataContext(connStr))
             {
@@ -121,7 +156,8 @@ namespace Manage_your_Life
                     db.SubmitChanges();
                 }
             }
-
         }
+
+
     }
 }

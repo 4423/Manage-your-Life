@@ -19,7 +19,7 @@
                         </ListView.View>
                     </ListView>
                 </Grid>
-            </TabItem>            
+            </TabItem>
             <TabItem Header="統計">
                 <Grid Background="#FFE5E5E5"/>
             </TabItem>
@@ -33,7 +33,11 @@
             <MenuItem Header="ツール(_T)" />
             <MenuItem Header="ヘルプ(_H)" />
         </Menu>
-        <StatusBar HorizontalAlignment="Left" Height="26" Margin="0,498,0,-4" VerticalAlignment="Top" Width="942"/>
+        <StatusBar HorizontalAlignment="Left" Height="26" Margin="0,498,0,0" VerticalAlignment="Top" Width="942">
+            <StatusBarItem>
+                <Label Name="statusBarItem_label" Height="26" HorizontalAlignment="Left" Width="234"/>
+            </StatusBarItem>
+        </StatusBar>
         <Label Content="メッセージ" HorizontalAlignment="Left" Margin="10,46,0,0" VerticalAlignment="Top"/>
 
     </Grid>
