@@ -14,12 +14,6 @@
         <elementListCompartment Id="526c23e0-a373-4154-a862-63b0a94f329f" absoluteBounds="0.765, 1.21, 1.9700000000000002, 1.1354166666666665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="6206a995-2875-404a-91aa-8790df641f0b" absoluteBounds="0.75, 3.75, 2, 1.9089583333333327">
-      <DataClassMoniker Name="/ApplicationDataClassesDataContext/DatabaseDate" />
-      <nestedChildShapes>
-        <elementListCompartment Id="3dc9482f-e253-49a8-b6ec-8a84816ec289" absoluteBounds="0.765, 4.21, 1.9700000000000002, 1.3489583333333333" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
-      </nestedChildShapes>
-    </classShape>
     <associationConnector edgePoints="[(2.75 : 1.59770833333333); (3.75 : 1.59770833333333)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/ApplicationDataClassesDataContext/DatabaseProcess/DatabaseProcess_DatabaseApplication" />
       <nodes>
@@ -27,10 +21,16 @@
         <classShapeMoniker Id="7824d947-0fbe-4fca-9d19-880f1b695864" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(2.75 : 4.70447916666667); (4.75 : 4.70447916666667); (4.75 : 2.44541666666667)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <classShape Id="f4adb32b-68b9-40fe-a246-f67c46a7f3bf" absoluteBounds="0.75, 2.875, 2, 1.9089583333333331">
+      <DataClassMoniker Name="/ApplicationDataClassesDataContext/DatabaseDate" />
+      <nestedChildShapes>
+        <elementListCompartment Id="548f4cbb-5e12-418c-beb2-8253ee5cdc74" absoluteBounds="0.76500000000000012, 3.335, 1.9700000000000002, 1.3489583333333333" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <associationConnector edgePoints="[(2.75 : 3.82947916666667); (4.75 : 3.82947916666667); (4.75 : 2.44541666666667)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/ApplicationDataClassesDataContext/DatabaseDate/DatabaseDate_DatabaseApplication" />
       <nodes>
-        <classShapeMoniker Id="6206a995-2875-404a-91aa-8790df641f0b" />
+        <classShapeMoniker Id="f4adb32b-68b9-40fe-a246-f67c46a7f3bf" />
         <classShapeMoniker Id="7824d947-0fbe-4fca-9d19-880f1b695864" />
       </nodes>
     </associationConnector>

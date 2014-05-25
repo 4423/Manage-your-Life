@@ -478,7 +478,7 @@ namespace Manage_your_Life
 		
 		private int _Id;
 		
-		private System.Nullable<System.DateTime> _UsageTime;
+		private string _UsageTime;
 		
 		private System.Nullable<System.DateTime> _AddDate;
 		
@@ -494,7 +494,7 @@ namespace Manage_your_Life
     partial void OnCreated();
     partial void OnIdChanging(int value);
     partial void OnIdChanged();
-    partial void OnUsageTimeChanging(System.Nullable<System.DateTime> value);
+    partial void OnUsageTimeChanging(string value);
     partial void OnUsageTimeChanged();
     partial void OnAddDateChanging(System.Nullable<System.DateTime> value);
     partial void OnAddDateChanged();
@@ -530,8 +530,8 @@ namespace Manage_your_Life
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UsageTime", DbType="DateTime")]
-		public System.Nullable<System.DateTime> UsageTime
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UsageTime", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
+		public string UsageTime
 		{
 			get
 			{

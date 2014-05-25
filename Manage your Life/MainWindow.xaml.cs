@@ -40,32 +40,47 @@ namespace Manage_your_Life
         ProcessInformation pInfo;
 
         /// <summary>
+        /// 最初に最前面になった時の日時
+        /// </summary>
+        DateTime firstActiveDate;
+
+        /// <summary>
+        /// データベースを操作
+        /// </summary>
+        DatabaseOperation dbOperator;
+
+        TimeUtility timeUtil;
+
+        /// <summary>
         /// 登録アプリ同士の計測スルーバグ回避用
         /// </summary>
-        bool preTitleCheck = false;
+        bool preTitleCheck = false; //TODO 改名したいけど何やってるのか分からない
+
+        /// <summary>
+        /// アプリケーションが最前面から外れた時の検出
+        /// false: 最前面
+        /// true: 背面(最前面から外れた初回)
+        /// </summary>
+        bool isRearApplication = false;
+
 
         #endregion
-
 
 
         public MainWindow()
         {
             InitializeComponent();
 
-            pInfo = new ProcessInformation();           
-        }
+            pInfo = new ProcessInformation();
+            dbOperator = new DatabaseOperation();
+            timeUtil = new TimeUtility();
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
             //タイマーの作成
             timer = new DispatcherTimer(DispatcherPriority.Normal, this.Dispatcher);
             timer.Interval = TimeSpan.FromSeconds(1);
             timer.Tick += new EventHandler(DispatcherTimer_Tick);
-            
             //タイマーの実行開始
             timer.Start();
-            
-            DatabaseOperation(pInfo.GetActiveProcess());
         }
 
 
@@ -77,7 +92,6 @@ namespace Manage_your_Life
         /// <param name="e"></param>
         private void DispatcherTimer_Tick(object sender, EventArgs e)
         {
-            //一時的にタイマー停止(処理に時間がかかるかも)
             timer.Stop();
 
             //アクティブプロセス取得
@@ -94,70 +108,57 @@ namespace Manage_your_Life
                 return;
             }
 
-            //TODO 最前面のアプリケーションが変わった時にしたい処理
-            Hoge(activeProcess);
-
-
+            //最前面のアプリケーションが変わった時にしたい処理
+            ApplicationChanged(activeProcess);
+            
             //キャッシュ
             previousProcess = activeProcess;
             timer.Start();
         }
 
 
-        private void Hoge(Process activeProcess)
-        {
-            statusBarItem_label.Content = activeProcess.MainWindowTitle;
-
-        }
-
-
-
 
         /// <summary>
-        /// 新たなプログラム情報をデータベースに追記する
+        /// 最前面のアプリケーションが変わった時にする処理
         /// </summary>
-        /// <param name="proc"></param>
-        internal void DatabaseOperation(Process proc)
+        /// <param name="activeProcess">新たな最前面のProcess</param>
+        private void ApplicationChanged(Process activeProcess)
         {
-            string basePath = Directory.GetCurrentDirectory() + @"\ApplicationDatabase.mdf";
-            string connStr = @"Data Source=(LocalDB)\v11.0;AttachDbFilename=""" + basePath + @""";Integrated Security=True";
-
-            using (var db = new ApplicationDataClassesDataContext(connStr))
+            //最初に最前面になった時
+            if (!isRearApplication)
             {
-                //既に存在しているか？
-                //TODO ここでは実行ファイルのパスで判別しているが…要検討
-                //see: http://bit.ly/1jAFEn3
-                bool exist = db.DatabaseProcess.Any(p => p.Path.Contains(proc.MainModule.FileName));
-                
-				//存在していなければ新規にデータを挿入
-                if (!exist)
+                //DBに存在していなければ新規にデータ挿入
+                if (!dbOperator.IsExist(activeProcess))
                 {
-                    DatabaseApplication app = new DatabaseApplication();
-                    app.Title = proc.MainWindowTitle;
-                    db.DatabaseApplication.InsertOnSubmit(app);
-                    db.SubmitChanges();
-
-                    //SubmitChanges()すると挿入したIDが取得できるようになる
-                    //see: http://bluestick.jp/tech/index.php/archives/50
-                    var id = app.Id;
-
-                    DatabaseProcess pro = new DatabaseProcess();
-                    pro.AppId = id;
-                    pro.Name = proc.ProcessName;
-                    pro.Path = proc.MainModule.FileName;
-                    db.DatabaseProcess.InsertOnSubmit(pro);
-
-                    DatabaseDate date = new DatabaseDate();
-                    date.AppId = id;
-                    date.AddDate = date.LastDate = DateTime.Now;
-                    //date.UsageTime = DateTime.Parse("0:00:00:00");
-                    db.DatabaseDate.InsertOnSubmit(date);                    
-
-                    db.SubmitChanges();
+                    dbOperator.Register(activeProcess);
                 }
-            }
-        }
 
+                //最初にアクティブになった時間を取得
+                firstActiveDate = DateTime.Now;
+
+                isRearApplication = true;
+                preTitleCheck = false;
+            }
+            else //最前面解除
+            {
+                //計測時間追記の為にDBから該当Idを取得
+                int appId = dbOperator.GetCorrespondingAppId(activeProcess);
+
+                //DBから使用時間を取得
+                TimeSpan usageTime = dbOperator.GetUsageTime(appId);
+                //DBのデータへ今回の使用時間を加算
+                usageTime += timeUtil.GetInterval(firstActiveDate);
+
+                //TODO DBに追記
+
+                isRearApplication = false;
+                preTitleCheck = true;
+            }
+
+
+
+            statusBarItem_label.Content = activeProcess.MainWindowTitle;
+        }
 
     }
 }
