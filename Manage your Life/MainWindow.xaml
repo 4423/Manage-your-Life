@@ -9,9 +9,22 @@
             </TabItem>
             <TabItem Header="アプリケーション">
                 <Grid Background="#FFFFFF">
-                    <DataGrid HorizontalAlignment="Left" VerticalAlignment="Top" Height="301" Width="613"/>
+                    <DataGrid Name="dataGrid1" HorizontalAlignment="Left" VerticalAlignment="Top" Height="301" Width="613" 
+                              SelectionChanged="dataGrid1_SelectionChanged" AutoGenerateColumns="False">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="ID" Binding="{Binding Id}"/>
+                            <DataGridTextColumn Header="タイトル" Binding="{Binding Title}" Width="100"/>
+                            <DataGridTextColumn Header="プロセス名" Binding="{Binding ProcName}"/>
+                            <DataGridTextColumn Header="場所" Binding="{Binding ProcPath}"/>
+                            <DataGridTextColumn Header="使用時間" Binding="{Binding UsageTime}"/>
+                            <DataGridTextColumn Header="登録日時" Binding="{Binding AddDate}"/>
+                            <DataGridTextColumn Header="最終計測日時" Binding="{Binding LastDate}"/>
+                            <DataGridTextColumn Header="メモ" Binding="{Binding Memo}"/>                            
+                        </DataGrid.Columns>                            
+                    </DataGrid>
+
                     <Image HorizontalAlignment="Left" Height="32" Width="32" Margin="627,10,0,0" VerticalAlignment="Top" />
-                    <ListView HorizontalAlignment="Left" Height="301" Margin="664,0,0,0" VerticalAlignment="Top" Width="248">
+                    <ListView Name="listView1" HorizontalAlignment="Left" Height="301" Margin="664,0,0,0" VerticalAlignment="Top" Width="248">
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn/>

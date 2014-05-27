@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+//using System.Data.Objects;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -80,7 +81,7 @@ namespace Manage_your_Life
             timer.Interval = TimeSpan.FromSeconds(1);
             timer.Tick += new EventHandler(DispatcherTimer_Tick);
             //タイマーの実行開始
-            timer.Start();
+            timer.Start();            
         }
 
 
@@ -131,6 +132,7 @@ namespace Manage_your_Life
                 if (!dbOperator.IsExist(activeProcess))
                 {
                     dbOperator.Register(activeProcess);
+                    SetDataGrid();
                 }
 
                 //最初にアクティブになった時間を取得
@@ -144,21 +146,51 @@ namespace Manage_your_Life
                 //計測時間追記の為にDBから該当Idを取得
                 int appId = dbOperator.GetCorrespondingAppId(activeProcess);
 
-                //DBから使用時間を取得
+                //DBから使用時間を取得し、今回の使用時間を加算
                 TimeSpan usageTime = dbOperator.GetUsageTime(appId);
-                //DBのデータへ今回の使用時間を加算
                 usageTime += timeUtil.GetInterval(firstActiveDate);
 
                 //TODO DBに追記
+
 
                 isRearApplication = false;
                 preTitleCheck = true;
             }
 
-
-
             statusBarItem_label.Content = activeProcess.MainWindowTitle;
         }
+
+
+        private void SetDataGrid()
+        {
+            dataGrid1.ItemsSource = null;
+
+          
+            dataGrid1.ItemsSource = dbOperator.GetAllData();
+            //TODO DGVへの登録はDB登録毎に1つずつ行って、プレ版同様使用中Appを選択→使用後にそこのみ値を変更の方が良いかも
+
+        }
+
+
+
+//-----------------------------------------------------------------イベントハンドラ
+
+        //DataGridの選択行が変更された時
+        private void dataGrid1_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            listView1.Items.Clear();
+
+            int selectedIndex = dataGrid1.SelectedIndex;
+
+
+        }
+
+
+        //Datagridの列非表示
+        //see: http://ameblo.jp/shirokoma55/entry-11561024241.html
+        //dataGrid1.ColumnFromDisplayIndex(0).Visibility = Visibility.Collapsed;
+
+
 
     }
 }

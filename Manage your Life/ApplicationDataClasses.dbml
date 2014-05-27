@@ -1,32 +1,32 @@
 ﻿<?xml version="1.0" encoding="utf-8"?><Database Name="ApplicationDatabase" Class="ApplicationDataClassesDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
   <Connection Mode="AppSettings" ConnectionString="Data Source=(LocalDB)\v11.0;AttachDbFilename=|DataDirectory|\ApplicationDatabase.mdf;Integrated Security=True" SettingsObjectName="Manage_your_Life.Properties.Settings" SettingsPropertyName="ApplicationDatabaseConnectionString" Provider="System.Data.SqlClient" />
-  <Table Name="dbo.DatabaseApplication" Member="DatabaseApplication">
-    <Type Name="DatabaseApplication">
+  <Table Name="dbo.DatabaseDate" Member="DatabaseDate">
+    <Type Name="DatabaseDate">
       <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="Favorite" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
-      <Column Name="Title" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
-      <Column Name="Memo" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
-      <Association Name="DatabaseProcess_DatabaseApplication" Member="DatabaseProcess" ThisKey="Id" OtherKey="AppId" Type="DatabaseProcess" IsForeignKey="true" />
-      <Association Name="DatabaseDate_DatabaseApplication" Member="DatabaseDate" ThisKey="Id" OtherKey="AppId" Type="DatabaseDate" IsForeignKey="true" />
+      <Column Name="UsageTime" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="AddDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="LastDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="AppId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="DatabaseDate_DatabaseApplication" Member="DatabaseApplication" ThisKey="AppId" OtherKey="Id" Type="DatabaseApplication" />
     </Type>
   </Table>
   <Table Name="dbo.DatabaseProcess" Member="DatabaseProcess">
     <Type Name="DatabaseProcess">
       <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="Name" Type="System.String" DbType="VarChar(260) NOT NULL" CanBeNull="false" />
-      <Column Name="Path" Type="System.String" DbType="VarChar(512) NOT NULL" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(260) NOT NULL" CanBeNull="false" />
+      <Column Name="Path" Type="System.String" DbType="NVarChar(512) NOT NULL" CanBeNull="false" />
       <Column Name="AppId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Association Name="DatabaseProcess_DatabaseApplication" Member="DatabaseApplication" ThisKey="AppId" OtherKey="Id" Type="DatabaseApplication" />
     </Type>
   </Table>
-  <Table Name="dbo.DatabaseDate" Member="DatabaseDate">
-    <Type Name="DatabaseDate">
+  <Table Name="dbo.DatabaseApplication" Member="DatabaseApplication">
+    <Type Name="DatabaseApplication">
       <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="UsageTime" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="AddDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-      <Column Name="LastDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-      <Column Name="AppId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Association Name="DatabaseDate_DatabaseApplication" Member="DatabaseApplication" ThisKey="AppId" OtherKey="Id" Type="DatabaseApplication" />
+      <Column Name="Favorite" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="Title" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="Memo" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Association Name="DatabaseProcess_DatabaseApplication" Member="DatabaseProcess" ThisKey="Id" OtherKey="AppId" Type="DatabaseProcess" IsForeignKey="true" />
+      <Association Name="DatabaseDate_DatabaseApplication" Member="DatabaseDate" ThisKey="Id" OtherKey="AppId" Type="DatabaseDate" IsForeignKey="true" />
     </Type>
   </Table>
 </Database>
