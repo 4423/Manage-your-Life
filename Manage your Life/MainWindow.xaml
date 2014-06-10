@@ -9,28 +9,39 @@
             </TabItem>
             <TabItem Header="アプリケーション">
                 <Grid Background="#FFFFFF">
+                    
                     <DataGrid Name="dataGrid1" HorizontalAlignment="Left" VerticalAlignment="Top" Height="301" Width="613" 
                               SelectionChanged="dataGrid1_SelectionChanged" AutoGenerateColumns="False">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="ID" Binding="{Binding Id}"/>
-                            <DataGridTextColumn Header="タイトル" Binding="{Binding Title}" Width="100"/>
+                            <DataGridTextColumn Header="タイトル" Binding="{Binding Title}" Width="100" />
                             <DataGridTextColumn Header="プロセス名" Binding="{Binding ProcName}"/>
                             <DataGridTextColumn Header="場所" Binding="{Binding ProcPath}"/>
                             <DataGridTextColumn Header="使用時間" Binding="{Binding UsageTime}"/>
                             <DataGridTextColumn Header="登録日時" Binding="{Binding AddDate}"/>
                             <DataGridTextColumn Header="最終計測日時" Binding="{Binding LastDate}"/>
-                            <DataGridTextColumn Header="メモ" Binding="{Binding Memo}"/>                            
+                            <DataGridTextColumn Header="メモ" Binding="{Binding Memo}"/>
+                            <DataGridTemplateColumn Header="削除">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Content="削除" Click="DeleteRowButton_Click" />
+                                    </DataTemplate>   
+                                </DataGridTemplateColumn.CellTemplate>                                
+                            </DataGridTemplateColumn>
                         </DataGrid.Columns>                            
                     </DataGrid>
 
-                    <Image HorizontalAlignment="Left" Height="32" Width="32" Margin="627,10,0,0" VerticalAlignment="Top" />
-                    <ListView Name="listView1" HorizontalAlignment="Left" Height="301" Margin="664,0,0,0" VerticalAlignment="Top" Width="248">
+                    <Image Source="{Binding path}" Name="iconImage" HorizontalAlignment="Left" Height="32" Width="32" Margin="627,10,0,0" VerticalAlignment="Top" />
+                    <ListView Name="listView1" HorizontalAlignment="Left" Height="301" Margin="664,0,0,0" 
+                              VerticalAlignment="Top" Width="248"
+                              DataContext="{Binding CurrentCell, ElementName=dataGrid1}">
                         <ListView.View>
                             <GridView>
-                                <GridViewColumn/>
+                                <GridViewColumn Header="タイトル"  DisplayMemberBinding="{x:Null}"/>
                             </GridView>
                         </ListView.View>
                     </ListView>
+                    <Button Name="ref" Content="Button" HorizontalAlignment="Left" Margin="613,169,0,0" VerticalAlignment="Top" Width="75" Click="ref_Click"/>
                 </Grid>
             </TabItem>
             <TabItem Header="統計">

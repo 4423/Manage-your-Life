@@ -144,14 +144,13 @@ namespace Manage_your_Life
             else //最前面解除
             {
                 //計測時間追記の為にDBから該当Idを取得
-                int appId = dbOperator.GetCorrespondingAppId(activeProcess);
+                int appId = dbOperator.GetCorrespondingAppId(previousProcess);
 
-                //DBから使用時間を取得し、今回の使用時間を加算
-                TimeSpan usageTime = dbOperator.GetUsageTime(appId);
-                usageTime += timeUtil.GetInterval(firstActiveDate);
+                //DBから使用時間を取得し、今回の使用時間を加算してDB更新
+                var activeInterval = timeUtil.GetInterval(firstActiveDate);
+                TimeSpan usageTime = dbOperator.UpdateUsageTime(appId, activeInterval);
 
-                //TODO DBに追記
-
+                //TODO 更新された時間のDataGridへの表示処理
 
                 isRearApplication = false;
                 preTitleCheck = true;
@@ -172,7 +171,6 @@ namespace Manage_your_Life
         }
 
 
-
 //-----------------------------------------------------------------イベントハンドラ
 
         //DataGridの選択行が変更された時
@@ -180,9 +178,35 @@ namespace Manage_your_Life
         {
             listView1.Items.Clear();
 
-            int selectedIndex = dataGrid1.SelectedIndex;
+            //選択された行のデータを取得
+            try
+            {
+                int selectedIndex = dataGrid1.SelectedIndex;
+                var row = dataGrid1.Items[selectedIndex];
+            }catch(Exception ex){}
+            //var properties = row.GetType().GetProperties();
+            //string procPath = row.GetType().GetProperty("ProcPath").GetValue(row).ToString();
+        
+            //foreach (var p in properties) {
+            //    var a = p.GetValue(row);
+                
+            //}
+
+            //BitmapDecoder decoder = new BmpBitmapDecoder();
+            // System.Drawing.Icon.ExtractAssociatedIcon(procPath);
+
+            //iconImage.Source = new BitmapImage(new Uri(procPath));  
+        }
 
 
+        private void DeleteRowButton_Click(object sender, RoutedEventArgs e)
+        {
+            
+        }
+
+        private void ref_Click(object sender, RoutedEventArgs e)
+        {
+            SetDataGrid();
         }
 
 
@@ -190,7 +214,8 @@ namespace Manage_your_Life
         //see: http://ameblo.jp/shirokoma55/entry-11561024241.html
         //dataGrid1.ColumnFromDisplayIndex(0).Visibility = Visibility.Collapsed;
 
-
+        //objectから指定した名前のpropertyの値を取得するサンプル
+        //int id = (int)selectedItem.GetType().GetProperty("Id").GetValue(selectedItem);
 
     }
 }
