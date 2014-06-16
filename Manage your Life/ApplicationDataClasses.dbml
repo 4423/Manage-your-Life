@@ -27,6 +27,16 @@
       <Column Name="Memo" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
       <Association Name="DatabaseProcess_DatabaseApplication" Member="DatabaseProcess" ThisKey="Id" OtherKey="AppId" Type="DatabaseProcess" IsForeignKey="true" />
       <Association Name="DatabaseDate_DatabaseApplication" Member="DatabaseDate" ThisKey="Id" OtherKey="AppId" Type="DatabaseDate" IsForeignKey="true" />
+      <Association Name="DatabaseTimeline_DatabaseApplication" Member="DatabaseTimeline" ThisKey="Id" OtherKey="AppId" Type="DatabaseTimeline" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.DatabaseTimeline" Member="DatabaseTimeline">
+    <Type Name="DatabaseTimeline">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="AppId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="UsageTime" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Association Name="DatabaseTimeline_DatabaseApplication" Member="DatabaseApplication" ThisKey="AppId" OtherKey="Id" Type="DatabaseApplication" />
     </Type>
   </Table>
 </Database>

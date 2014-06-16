@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
+using System.Data.SqlClient;
 
 namespace Manage_your_Life
 {
@@ -36,7 +36,7 @@ namespace Manage_your_Life
             database.Dispose();
         }
 
-        //TODO プロセスが途中終了した時のために例外処理を実装する
+        //TODO プロセスが途中終了した時のために例外処理を実装した方がいい
 
 
         /// <summary>
@@ -54,18 +54,21 @@ namespace Manage_your_Life
             //see: http://bluestick.jp/tech/index.php/archives/50
             var id = app.Id;
 
-            //取得したIDを元に(そうでもない)Process/Dateに登録
+            #region 取得したIDを元にProcessDBに登録
             DatabaseProcess pro = new DatabaseProcess();
             pro.AppId = id;
             pro.Name = proc.ProcessName;
             pro.Path = proc.MainModule.FileName;
             database.DatabaseProcess.InsertOnSubmit(pro);
+            #endregion
 
+            #region 取得したIDを元にDateDBに登録
             DatabaseDate date = new DatabaseDate();
             date.AppId = id;
             date.AddDate = date.LastDate = DateTime.Now;
             date.UsageTime = "0.00:00:00";
             database.DatabaseDate.InsertOnSubmit(date);
+            #endregion
 
             database.SubmitChanges();
         }
@@ -142,6 +145,16 @@ namespace Manage_your_Life
 
             //DBの更新
             database.SubmitChanges();
+
+
+            //CAUTION Timelineの方にも新規レコードとしてロギング
+            DatabaseTimeline log = new DatabaseTimeline();
+            log.AppId = appId;
+            log.Date = DateTime.Now;
+            log.UsageTime = activeInterval.ToString();
+            database.DatabaseTimeline.InsertOnSubmit(log);
+            database.SubmitChanges();
+
 
             return usageSum;
         }

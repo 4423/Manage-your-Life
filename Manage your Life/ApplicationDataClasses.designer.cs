@@ -39,6 +39,9 @@ namespace Manage_your_Life
     partial void InsertDatabaseApplication(DatabaseApplication instance);
     partial void UpdateDatabaseApplication(DatabaseApplication instance);
     partial void DeleteDatabaseApplication(DatabaseApplication instance);
+    partial void InsertDatabaseTimeline(DatabaseTimeline instance);
+    partial void UpdateDatabaseTimeline(DatabaseTimeline instance);
+    partial void DeleteDatabaseTimeline(DatabaseTimeline instance);
     #endregion
 		
 		public ApplicationDataClassesDataContext() : 
@@ -92,6 +95,14 @@ namespace Manage_your_Life
 			get
 			{
 				return this.GetTable<DatabaseApplication>();
+			}
+		}
+		
+		public System.Data.Linq.Table<DatabaseTimeline> DatabaseTimeline
+		{
+			get
+			{
+				return this.GetTable<DatabaseTimeline>();
 			}
 		}
 	}
@@ -462,6 +473,8 @@ namespace Manage_your_Life
 		
 		private EntityRef<DatabaseDate> _DatabaseDate;
 		
+		private EntityRef<DatabaseTimeline> _DatabaseTimeline;
+		
     #region 拡張メソッドの定義
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -480,6 +493,7 @@ namespace Manage_your_Life
 		{
 			this._DatabaseProcess = default(EntityRef<DatabaseProcess>);
 			this._DatabaseDate = default(EntityRef<DatabaseDate>);
+			this._DatabaseTimeline = default(EntityRef<DatabaseTimeline>);
 			OnCreated();
 		}
 		
@@ -494,7 +508,8 @@ namespace Manage_your_Life
 			{
 				if ((this._Id != value))
 				{
-					if ((this._DatabaseProcess.HasLoadedOrAssignedValue || this._DatabaseDate.HasLoadedOrAssignedValue))
+					if (((this._DatabaseProcess.HasLoadedOrAssignedValue || this._DatabaseDate.HasLoadedOrAssignedValue) 
+								|| this._DatabaseTimeline.HasLoadedOrAssignedValue))
 					{
 						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
 					}
@@ -635,6 +650,40 @@ namespace Manage_your_Life
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="DatabaseTimeline_DatabaseApplication", Storage="_DatabaseTimeline", ThisKey="Id", OtherKey="AppId", IsForeignKey=true)]
+		public DatabaseTimeline DatabaseTimeline
+		{
+			get
+			{
+				return this._DatabaseTimeline.Entity;
+			}
+			set
+			{
+				DatabaseTimeline previousValue = this._DatabaseTimeline.Entity;
+				if (((previousValue != value) 
+							|| (this._DatabaseTimeline.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._DatabaseTimeline.Entity = null;
+						previousValue.DatabaseApplication.Remove(this);
+					}
+					this._DatabaseTimeline.Entity = value;
+					if ((value != null))
+					{
+						value.DatabaseApplication.Add(this);
+						this._Id = value.AppId;
+					}
+					else
+					{
+						this._Id = default(int);
+					}
+					this.SendPropertyChanged("DatabaseTimeline");
+				}
+			}
+		}
+		
 		public event PropertyChangingEventHandler PropertyChanging;
 		
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -653,6 +702,168 @@ namespace Manage_your_Life
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.DatabaseTimeline")]
+	public partial class DatabaseTimeline : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _Id;
+		
+		private int _AppId;
+		
+		private System.Nullable<System.DateTime> _Date;
+		
+		private string _UsageTime;
+		
+		private EntitySet<DatabaseApplication> _DatabaseApplication;
+		
+    #region 拡張メソッドの定義
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnIdChanging(int value);
+    partial void OnIdChanged();
+    partial void OnAppIdChanging(int value);
+    partial void OnAppIdChanged();
+    partial void OnDateChanging(System.Nullable<System.DateTime> value);
+    partial void OnDateChanged();
+    partial void OnUsageTimeChanging(string value);
+    partial void OnUsageTimeChanged();
+    #endregion
+		
+		public DatabaseTimeline()
+		{
+			this._DatabaseApplication = new EntitySet<DatabaseApplication>(new Action<DatabaseApplication>(this.attach_DatabaseApplication), new Action<DatabaseApplication>(this.detach_DatabaseApplication));
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int Id
+		{
+			get
+			{
+				return this._Id;
+			}
+			set
+			{
+				if ((this._Id != value))
+				{
+					this.OnIdChanging(value);
+					this.SendPropertyChanging();
+					this._Id = value;
+					this.SendPropertyChanged("Id");
+					this.OnIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AppId", DbType="Int NOT NULL")]
+		public int AppId
+		{
+			get
+			{
+				return this._AppId;
+			}
+			set
+			{
+				if ((this._AppId != value))
+				{
+					this.OnAppIdChanging(value);
+					this.SendPropertyChanging();
+					this._AppId = value;
+					this.SendPropertyChanged("AppId");
+					this.OnAppIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Date", DbType="DateTime")]
+		public System.Nullable<System.DateTime> Date
+		{
+			get
+			{
+				return this._Date;
+			}
+			set
+			{
+				if ((this._Date != value))
+				{
+					this.OnDateChanging(value);
+					this.SendPropertyChanging();
+					this._Date = value;
+					this.SendPropertyChanged("Date");
+					this.OnDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UsageTime", DbType="NVarChar(50)")]
+		public string UsageTime
+		{
+			get
+			{
+				return this._UsageTime;
+			}
+			set
+			{
+				if ((this._UsageTime != value))
+				{
+					this.OnUsageTimeChanging(value);
+					this.SendPropertyChanging();
+					this._UsageTime = value;
+					this.SendPropertyChanged("UsageTime");
+					this.OnUsageTimeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="DatabaseTimeline_DatabaseApplication", Storage="_DatabaseApplication", ThisKey="AppId", OtherKey="Id")]
+		public EntitySet<DatabaseApplication> DatabaseApplication
+		{
+			get
+			{
+				return this._DatabaseApplication;
+			}
+			set
+			{
+				this._DatabaseApplication.Assign(value);
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+		
+		private void attach_DatabaseApplication(DatabaseApplication entity)
+		{
+			this.SendPropertyChanging();
+			entity.DatabaseTimeline = this;
+		}
+		
+		private void detach_DatabaseApplication(DatabaseApplication entity)
+		{
+			this.SendPropertyChanging();
+			entity.DatabaseTimeline = null;
 		}
 	}
 }

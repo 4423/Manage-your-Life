@@ -161,6 +161,8 @@ namespace Manage_your_Life
         }
 
 
+
+
         private void SetDataGrid()
         {
             dataGrid1.ItemsSource = null;
@@ -217,8 +219,7 @@ namespace Manage_your_Life
         //see: http://ameblo.jp/shirokoma55/entry-11561024241.html
         //dataGrid1.ColumnFromDisplayIndex(0).Visibility = Visibility.Collapsed;
 
-        //objectから指定した名前のpropertyの値を取得するサンプル
-        //int id = (int)selectedItem.GetType().GetProperty("Id").GetValue(selectedItem);
-
+        //Listviewへのバインディングで参考になりそう
+        //see: http://gushwell.ldblog.jp/archives/52333865.html
     }
 }
