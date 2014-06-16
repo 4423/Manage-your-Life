@@ -16,6 +16,7 @@ using System.Windows.Shapes;
 using System.Diagnostics;
 using System.Windows.Threading;
 using System.IO;
+using System.Windows.Interop;
 
 namespace Manage_your_Life
 {
@@ -178,24 +179,26 @@ namespace Manage_your_Life
         {
             listView1.Items.Clear();
 
-            //選択された行のデータを取得
             try
             {
+                //選択された行のデータを取得
                 int selectedIndex = dataGrid1.SelectedIndex;
                 var row = dataGrid1.Items[selectedIndex];
-            }catch(Exception ex){}
-            //var properties = row.GetType().GetProperties();
-            //string procPath = row.GetType().GetProperty("ProcPath").GetValue(row).ToString();
-        
-            //foreach (var p in properties) {
-            //    var a = p.GetValue(row);
-                
-            //}
 
-            //BitmapDecoder decoder = new BmpBitmapDecoder();
-            // System.Drawing.Icon.ExtractAssociatedIcon(procPath);
+                //上のItemsより生成するObjectのプロパティの中からパスの値を取り出す
+                string procPath = row.GetType().GetProperty("ProcPath").GetValue(row).ToString();
 
-            //iconImage.Source = new BitmapImage(new Uri(procPath));  
+                //パスからアイコン生成
+                var icon = System.Drawing.Icon.ExtractAssociatedIcon(procPath);
+
+                //see: http://bit.ly/1i44IJo Icon を ImageSource に変換する 
+                iconImage.Source = Imaging.
+                    CreateBitmapSourceFromHIcon(icon.Handle, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
+            }
+            catch (Exception ex)
+            {
+                //何もしないんだよ
+            }
         }
 
 
