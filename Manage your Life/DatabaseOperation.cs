@@ -21,6 +21,12 @@ namespace Manage_your_Life
         ApplicationDataClassesDataContext database;
 
 
+        /// <summary>
+        /// TimelineDBに変更を加えた(追記)時の通知イベントハンドラ
+        /// </summary>
+        public event EventHandler TimelineLog_Changed;
+        
+
         public DatabaseOperation()
         {
             //接続文字列の生成
@@ -35,6 +41,7 @@ namespace Manage_your_Life
         {
             database.Dispose();
         }
+
 
         //TODO プロセスが途中終了した時のために例外処理を実装した方がいい
 
@@ -146,15 +153,21 @@ namespace Manage_your_Life
             //DBの更新
             database.SubmitChanges();
 
-
             //CAUTION Timelineの方にも新規レコードとしてロギング
+            #region            
             DatabaseTimeline log = new DatabaseTimeline();
             log.AppId = appId;
-            log.Date = DateTime.Now;
+            log.Year = DateTime.Now.Year;
+            log.Month = DateTime.Now.Month;
+            log.Day = DateTime.Now.Day;
+            log.Time = DateTime.Now.TimeOfDay;
             log.UsageTime = activeInterval.ToString();
             database.DatabaseTimeline.InsertOnSubmit(log);
             database.SubmitChanges();
-
+            #endregion
+            
+            //イベント発生
+            TimelineLog_Changed(this, EventArgs.Empty);
 
             return usageSum;
         }

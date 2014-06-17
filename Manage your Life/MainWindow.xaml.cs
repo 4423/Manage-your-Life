@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 //using System.Data.Objects;
 using System.Text;
@@ -76,6 +77,9 @@ namespace Manage_your_Life
             pInfo = new ProcessInformation();
             dbOperator = new DatabaseOperation();
             timeUtil = new TimeUtility();
+
+            //イベントハンドラの追加
+            dbOperator.TimelineLog_Changed += new EventHandler(this.TimelineLog_Changed);
 
             //タイマーの作成
             timer = new DispatcherTimer(DispatcherPriority.Normal, this.Dispatcher);
@@ -179,8 +183,6 @@ namespace Manage_your_Life
         //DataGridの選択行が変更された時
         private void dataGrid1_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            listView1.Items.Clear();
-
             try
             {
                 //選択された行のデータを取得
@@ -201,6 +203,19 @@ namespace Manage_your_Life
             {
                 //何もしないんだよ
             }
+
+            
+        }
+
+
+        /// <summary>
+        /// TimelineDBに変更を加えられた時の通知を受け取る(自作)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TimelineLog_Changed(object sender, System.EventArgs e)
+        {
+            listBox1.Items.Add(DateTime.Now.ToLongTimeString() + " - " + pInfo.GetWindowTitle());
         }
 
 
@@ -221,5 +236,49 @@ namespace Manage_your_Life
 
         //Listviewへのバインディングで参考になりそう
         //see: http://gushwell.ldblog.jp/archives/52333865.html
+
+
+//---------------------------------------------------------------ListBoxのバインディングとか
+
+        public ObservableCollection<AppListBoxBindingData> ListData { get; set; }
+
+
+
+        private void BindingListBox()
+        {
+            //listBoxの項目初期化
+            listBoxApp.Items.Clear();
+
+            //コレクションに変更を加えると通知してくれる
+            ListData = new ObservableCollection<AppListBoxBindingData>();
+
+            //項目の追加
+            ListData.Add(new AppListBoxBindingData
+            {
+                Title = "タイトル",
+                Text = ""
+            });
+
+
+
+            //listBoxのソースに流し込む
+            listBoxApp.ItemsSource = ListData;
+        }
+
+
+
     }
+
+
+
+    /// <summary>
+    /// AppListBoxへのバインディング用クラス
+    /// <see cref="http://gushwell.ldblog.jp/archives/52306210.html"/>
+    /// </summary>
+    public class AppListBoxBindingData
+    {
+        public string Title { get; set; }
+        public string Text { get; set; }
+    }
+
 }

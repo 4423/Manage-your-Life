@@ -3,13 +3,13 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="MainWindow" Height="564" Width="950">
     <Grid>
-        <TabControl HorizontalAlignment="Left" Height="335" Margin="10,89,0,0" VerticalAlignment="Top" Width="922">
+        <TabControl HorizontalAlignment="Left" Height="335" Margin="10,84,0,0" VerticalAlignment="Top" Width="922">
             <TabItem Header="ホーム">
                 <Grid Background="#FFE5E5E5"/>
             </TabItem>
             <TabItem Header="アプリケーション">
                 <Grid Background="#FFFFFF">
-                    
+
                     <DataGrid Name="dataGrid1" HorizontalAlignment="Left" VerticalAlignment="Top" Height="301" Width="613" 
                               SelectionChanged="dataGrid1_SelectionChanged" AutoGenerateColumns="False">
                         <DataGrid.Columns>
@@ -28,23 +28,34 @@
                             <DataGridTextColumn Header="登録日時" Binding="{Binding AddDate}"/>
                             <DataGridTextColumn Header="最終計測日時" Binding="{Binding LastDate}"/>
                             <DataGridTextColumn Header="メモ" Binding="{Binding Memo}"/>
-                        </DataGrid.Columns>                            
+                        </DataGrid.Columns>
                     </DataGrid>
 
                     <Image Source="{Binding path}" Name="iconImage" HorizontalAlignment="Left" 
-                           Height="32" Width="32" Margin="627,10,0,0" VerticalAlignment="Top" />
+                           Height="32" Width="32" Margin="628,10,0,0" VerticalAlignment="Top" />
+
+                    <Button Name="ref" Content="Button" HorizontalAlignment="Left" Margin="595,168,0,0" VerticalAlignment="Top" Width="75" Click="ref_Click"/>
+
+                    <!--see: http://stackoverflow.com/questions/13513957/listbox-with-items-width-following-control-width -->
+                    <ListBox Name="listBoxApp" Grid.IsSharedSizeScope="True" 
+                             HorizontalAlignment="Left" ItemsSource="{Binding}"
+                             Height="301" Margin="675,0,0,0" VerticalAlignment="Top" Width="237">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition SharedSizeGroup="col1" Width="200"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="1" Orientation="Vertical" Margin="5">
+                                        <TextBlock Text="{Binding Title}" TextWrapping="Wrap" FontWeight="Bold" />
+                                        <TextBlock Text="{Binding Text}" TextWrapping="Wrap" />
+                                    </StackPanel>
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
                     
-                    <ListView Name="listView1" HorizontalAlignment="Left" Height="301" Margin="664,0,0,0" 
-                              VerticalAlignment="Top" Width="248"
-                              DataContext="{Binding CurrentCell, ElementName=dataGrid1}">
-                        <ListView.View>
-                            <GridView>
-                                <GridViewColumn Header="タイトル" DisplayMemberBinding="{Binding Title}"/>
-                            </GridView>
-                        </ListView.View>
-                    </ListView>
                     
-                    <Button Name="ref" Content="Button" HorizontalAlignment="Left" Margin="613,169,0,0" VerticalAlignment="Top" Width="75" Click="ref_Click"/>
                 </Grid>
             </TabItem>
             <TabItem Header="統計">
@@ -62,10 +73,11 @@
         </Menu>
         <StatusBar HorizontalAlignment="Left" Height="26" VerticalAlignment="Bottom" Width="942" >
             <StatusBarItem>
-                <Label Name="statusBarItem_label" Height="23" HorizontalAlignment="Left" Width="234"/>
+                <Label Name="statusBarItem_label" Height="24" HorizontalAlignment="Left" Width="935" VerticalAlignment="Top"/>
             </StatusBarItem>
         </StatusBar>
-        <Label Content="メッセージ" HorizontalAlignment="Left" Margin="10,46,0,0" VerticalAlignment="Top"/>
+        <Label Content="メッセージ" HorizontalAlignment="Left" Margin="10,40,0,0" VerticalAlignment="Top"/>
+        <ListBox Name="listBox1" HorizontalAlignment="Left" Margin="10,430,0,37" Width="922"/>
 
     </Grid>
 </Window>
