@@ -185,9 +185,10 @@ namespace Manage_your_Life
         {
             try
             {
+                #region 実行ファイルパスからアイコンを表示したい
                 //選択された行のデータを取得
                 int selectedIndex = dataGrid1.SelectedIndex;
-                var row = dataGrid1.Items[selectedIndex];
+                 var row = dataGrid1.Items[selectedIndex];
 
                 //上のItemsより生成するObjectのプロパティの中からパスの値を取り出す
                 string procPath = row.GetType().GetProperty("ProcPath").GetValue(row).ToString();
@@ -196,15 +197,21 @@ namespace Manage_your_Life
                 var icon = System.Drawing.Icon.ExtractAssociatedIcon(procPath);
 
                 //see: http://bit.ly/1i44IJo Icon を ImageSource に変換する 
-                iconImage.Source = Imaging.
-                    CreateBitmapSourceFromHIcon(icon.Handle, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
+                iconImage.Source = Imaging.CreateBitmapSourceFromHIcon(
+                    icon.Handle, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
+                #endregion
+
+
+                //listBoxに現在選択中の行のデータを表示
+                listBoxApp.ItemsSource = null;
+                listBoxApp.Items.Clear();                
+                listBoxApp.ItemsSource = BindingListBox(row);
+
             }
             catch (Exception ex)
             {
-                //何もしないんだよ
-            }
-
-            
+                Debug.WriteLine(ex.Message);
+            }            
         }
 
 
@@ -243,26 +250,56 @@ namespace Manage_your_Life
         public ObservableCollection<AppListBoxBindingData> ListData { get; set; }
 
 
-
-        private void BindingListBox()
+        /// <summary>
+        /// ListBoxのItemsSourceに流すデータを生成
+        /// </summary>
+        /// <param name="row">gridView選択行のデータ</param>
+        /// <returns>選択行のobjectをコレクションにしたもの?</returns>
+        /// <see cref="http://ufcpp.net/study/csharp/misc_dynamic.html"/>
+        private ObservableCollection<AppListBoxBindingData> BindingListBox(dynamic row)
         {
-            //listBoxの項目初期化
-            listBoxApp.Items.Clear();
-
             //コレクションに変更を加えると通知してくれる
             ListData = new ObservableCollection<AppListBoxBindingData>();
 
             //項目の追加
+            //dynamicとかいう謎技術を使用
             ListData.Add(new AppListBoxBindingData
             {
                 Title = "タイトル",
-                Text = ""
+                Text = row.Title
+            });
+            ListData.Add(new AppListBoxBindingData
+            {
+                Title = "プロセス名",
+                Text = row.ProcName
+            });
+            ListData.Add(new AppListBoxBindingData
+            {
+                Title = "場所",
+                Text = row.ProcPath
+            });
+            ListData.Add(new AppListBoxBindingData
+            {
+                Title = "使用時間",
+                Text = row.UsageTime.ToString()
+            });
+            ListData.Add(new AppListBoxBindingData
+            {
+                Title = "追加日時",
+                Text = row.AddDate.ToString()
+            });
+            ListData.Add(new AppListBoxBindingData
+            {
+                Title = "最終更新日時",
+                Text = row.LastDate.ToString()
+            });
+            ListData.Add(new AppListBoxBindingData
+            {
+                Title = "メモ",
+                Text = row.Memo
             });
 
-
-
-            //listBoxのソースに流し込む
-            listBoxApp.ItemsSource = ListData;
+            return ListData;
         }
 
 
