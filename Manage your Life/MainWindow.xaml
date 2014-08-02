@@ -1,6 +1,7 @@
 ﻿<Window x:Class="Manage_your_Life.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:chartingToolkit="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit"
         Title="MainWindow" Height="564" Width="950">
     <Grid>
         <TabControl HorizontalAlignment="Left" Height="335" Margin="10,84,0,0" VerticalAlignment="Top" Width="922">
@@ -11,7 +12,8 @@
                 <Grid Background="#FFFFFF">
 
                     <DataGrid Name="dataGrid1" HorizontalAlignment="Left" VerticalAlignment="Top" Height="301" Width="613" 
-                              SelectionChanged="dataGrid1_SelectionChanged" AutoGenerateColumns="False">
+                              SelectionChanged="dataGrid1_SelectionChanged" AutoGenerateColumns="False" IsReadOnly="True"
+                              IsSynchronizedWithCurrentItem="True">
                         <DataGrid.Columns>
                             <DataGridTemplateColumn Header="編集">
                                 <DataGridTemplateColumn.CellTemplate>
@@ -34,7 +36,7 @@
                     <Image Source="{Binding path}" Name="iconImage" HorizontalAlignment="Left" 
                            Height="32" Width="32" Margin="628,10,0,0" VerticalAlignment="Top" />
 
-                    <Button Name="ref" Content="Button" HorizontalAlignment="Left" Margin="595,168,0,0" VerticalAlignment="Top" Width="75" Click="ref_Click"/>
+                    <Button Name="ref" Content="Refresh" HorizontalAlignment="Left" Margin="618,253,0,0" VerticalAlignment="Top" Width="52" Click="ref_Click" Height="25"/>
 
                     <!--see: http://stackoverflow.com/questions/13513957/listbox-with-items-width-following-control-width -->
                     <ListBox Name="listBoxApp" Grid.IsSharedSizeScope="True" 
@@ -54,12 +56,23 @@
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
-                    
-                    
+
+
                 </Grid>
             </TabItem>
             <TabItem Header="統計">
-                <Grid Background="#FFE5E5E5"/>
+                <Grid Background="#FFE5E5E5">
+                    <!-- http://www.c-sharpcorner.com/uploadfile/mahesh/pie-chart-in-wpf/ -->
+                    <chartingToolkit:Chart LegendTitle="ProcessName" Name="piChart1" Title="UsageTime">
+                        <chartingToolkit:Chart.Series>
+                            <chartingToolkit:PieSeries 
+                                IndependentValueBinding="{Binding Path=Key}"
+                                DependentValueBinding="{Binding Path=Value}"
+                                >
+                            </chartingToolkit:PieSeries>
+                        </chartingToolkit:Chart.Series>
+                    </chartingToolkit:Chart>
+                </Grid>
             </TabItem>
             <TabItem Header="カスタム">
                 <Grid Background="#FFE5E5E5"/>

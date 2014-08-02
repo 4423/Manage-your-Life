@@ -18,6 +18,8 @@ using System.Diagnostics;
 using System.Windows.Threading;
 using System.IO;
 using System.Windows.Interop;
+using System.Windows.Controls.DataVisualization;
+using System.Windows.Controls.DataVisualization.Charting;
 
 namespace Manage_your_Life
 {
@@ -81,6 +83,11 @@ namespace Manage_your_Life
             //イベントハンドラの追加
             dbOperator.TimelineLog_Changed += new EventHandler(this.TimelineLog_Changed);
 
+            //DB読み出し
+            SetDataGrid();
+
+            
+
             //タイマーの作成
             timer = new DispatcherTimer(DispatcherPriority.Normal, this.Dispatcher);
             timer.Interval = TimeSpan.FromSeconds(1);
@@ -116,6 +123,7 @@ namespace Manage_your_Life
 
             //最前面のアプリケーションが変わった時にしたい処理
             ApplicationChanged(activeProcess);
+            DrawChart();
             
             //キャッシュ
             previousProcess = activeProcess;
@@ -245,6 +253,39 @@ namespace Manage_your_Life
         //see: http://gushwell.ldblog.jp/archives/52333865.html
 
 
+//---------------------------------------------------------------グラフ描画
+
+        public ObservableCollection<CircleChart> points { get; set; }
+
+
+        /// <summary>
+        /// 円グラフを描画してみる
+        /// <see cref="http://www.c-sharpcorner.com/uploadfile/mahesh/pie-chart-in-wpf/"/>
+        /// </summary>
+        private void DrawChart()
+        {
+            points = new ObservableCollection<CircleChart>();
+            
+            var q = dbOperator.GetAllData();
+
+            foreach(dynamic r in q){
+                //usageTimeから合計時間を秒で取得
+                //http://dobon.net/vb/dotnet/system/timespan.html
+                double totalSeconds = (TimeSpan.Parse(r.UsageTime)).TotalSeconds;
+
+                //グラフに表示する項目の追加
+                points.Add(new CircleChart
+                {
+                    Key = r.ProcName,
+                    Value = totalSeconds
+                });
+            }
+
+            ((PieSeries)piChart1.Series[0]).ItemsSource = points;
+        }
+
+
+
 //---------------------------------------------------------------ListBoxのバインディングとか
 
         public ObservableCollection<AppListBoxBindingData> ListData { get; set; }
@@ -304,6 +345,8 @@ namespace Manage_your_Life
 
 
 
+
+
     }
 
 
@@ -316,6 +359,15 @@ namespace Manage_your_Life
     {
         public string Title { get; set; }
         public string Text { get; set; }
+    }
+
+
+
+    public class CircleChart
+    {
+        public string Key { get; set; }
+        public double Value { get; set; }
+
     }
 
 }

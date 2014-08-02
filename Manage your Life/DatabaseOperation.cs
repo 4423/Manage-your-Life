@@ -147,6 +147,10 @@ namespace Manage_your_Life
                 //DBに上書き
                 p.UsageTime = usageSum.ToString();
 
+
+                //最終使用日の更新
+                p.LastDate = DateTime.Now;
+
                 break;
             }
 
