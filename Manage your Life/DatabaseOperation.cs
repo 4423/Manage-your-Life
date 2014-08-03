@@ -22,10 +22,21 @@ namespace Manage_your_Life
 
 
         /// <summary>
-        /// TimelineDBに変更を加えた(追記)時の通知イベントハンドラ
+        /// TimelineDBに変更を加えた(追記)ときに発生
         /// </summary>
-        public event EventHandler TimelineLog_Changed;
-        
+        public event EventHandler TimelineLog_Updated;
+
+        /// <summary>
+        /// レコードを新規追加したときに発生
+        /// </summary>
+        public event EventHandler NewRecord_Registered;
+
+        /// <summary>
+        /// 使用時間を更新したときに発生
+        /// </summary>
+        public event EventHandler UsageTime_Updated;
+
+
 
         public DatabaseOperation()
         {
@@ -78,6 +89,8 @@ namespace Manage_your_Life
             #endregion
 
             database.SubmitChanges();
+
+            NewRecord_Registered(this, EventArgs.Empty);
         }
 
 
@@ -111,6 +124,7 @@ namespace Manage_your_Life
                 where p.Path == previousProcess.MainModule.FileName
                 select p;
 
+            //TODO エラーメモ: 型 'System.InvalidOperationException' のハンドルされていない例外が System.Data.Linq.dll で発生しました　追加情報:プロセス (8444) が終了したため、要求を処理できません。
             //TODO データ複数ある場合は…?
             foreach (var p in q)
             {
@@ -156,24 +170,42 @@ namespace Manage_your_Life
 
             //DBの更新
             database.SubmitChanges();
+            //UsageTime更新のイベント発生
+            if (UsageTime_Updated != null)
+            {
+                UsageTime_Updated(this, EventArgs.Empty);
+            }
 
-            //CAUTION Timelineの方にも新規レコードとしてロギング
-            #region            
+
+            //Timelineの方にも新規レコードとしてロギング         
+            AddingTimeline(appId, activeInterval);
+            //Timeline更新のイベント発生
+            if (TimelineLog_Updated != null)
+            {
+                TimelineLog_Updated(this, EventArgs.Empty);
+            }
+
+            return usageSum;
+        }
+
+
+        /// <summary>
+        /// 時間軸としてのTimelineにロギングする
+        /// </summary>
+        /// <param name="database"></param>
+        private void AddingTimeline(int appId, TimeSpan activeInterval)
+        {
             DatabaseTimeline log = new DatabaseTimeline();
+
             log.AppId = appId;
             log.Year = DateTime.Now.Year;
             log.Month = DateTime.Now.Month;
             log.Day = DateTime.Now.Day;
             log.Time = DateTime.Now.TimeOfDay;
             log.UsageTime = activeInterval.ToString();
+
             database.DatabaseTimeline.InsertOnSubmit(log);
             database.SubmitChanges();
-            #endregion
-            
-            //イベント発生
-            TimelineLog_Changed(this, EventArgs.Empty);
-
-            return usageSum;
         }
 
 

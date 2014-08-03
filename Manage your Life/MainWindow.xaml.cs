@@ -20,13 +20,15 @@ using System.IO;
 using System.Windows.Interop;
 using System.Windows.Controls.DataVisualization;
 using System.Windows.Controls.DataVisualization.Charting;
+using FirstFloor.ModernUI.Windows.Controls;
 
 namespace Manage_your_Life
 {
+
     /// <summary>
     /// MainWindow.xaml の相互作用ロジック
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : ModernWindow
     {
         #region メンバ
         /// <summary>
@@ -81,19 +83,18 @@ namespace Manage_your_Life
             timeUtil = new TimeUtility();
 
             //イベントハンドラの追加
-            dbOperator.TimelineLog_Changed += new EventHandler(this.TimelineLog_Changed);
+            dbOperator.TimelineLog_Updated += new EventHandler(this.TimelineLog_Changed);
 
-            //DB読み出し
-            SetDataGrid();
+            Pages.ApplicationPage page = new Pages.ApplicationPage();
+            dbOperator.UsageTime_Updated += new EventHandler(page.UsageTime_Updated);
 
             
-
             //タイマーの作成
             timer = new DispatcherTimer(DispatcherPriority.Normal, this.Dispatcher);
             timer.Interval = TimeSpan.FromSeconds(1);
             timer.Tick += new EventHandler(DispatcherTimer_Tick);
             //タイマーの実行開始
-            timer.Start();            
+            timer.Start();
         }
 
 
@@ -123,8 +124,9 @@ namespace Manage_your_Life
 
             //最前面のアプリケーションが変わった時にしたい処理
             ApplicationChanged(activeProcess);
-            DrawChart();
-            
+            //DrawChart();
+            SetDataGrid();
+
             //キャッシュ
             previousProcess = activeProcess;
             timer.Start();
@@ -145,7 +147,6 @@ namespace Manage_your_Life
                 if (!dbOperator.IsExist(activeProcess))
                 {
                     dbOperator.Register(activeProcess);
-                    SetDataGrid();
                 }
 
                 //最初にアクティブになった時間を取得
@@ -169,58 +170,33 @@ namespace Manage_your_Life
                 preTitleCheck = true;
             }
 
-            statusBarItem_label.Content = activeProcess.MainWindowTitle;
+            Pages.HomePage pageHome = new Pages.HomePage();
+            pageHome.statusBarItem_label.Content = activeProcess.MainWindowTitle;
+            
+            //statusBarItem_label.Content = activeProcess.MainWindowTitle;
         }
 
 
 
-
+        //CAUTION レコード新規登録時にするSetDataGridはイベントとして実装App.xaml側で実装した
         private void SetDataGrid()
         {
-            dataGrid1.ItemsSource = null;
+            
+            //pageApplication.dataGrid1.ItemsSource = null;
+            //pageApplication.dataGrid1.ItemsSource = dbOperator.GetAllData();
 
-          
-            dataGrid1.ItemsSource = dbOperator.GetAllData();
+            //pageApplication.SetDataGrid(dbOperator.GetAllData());
+
+            //dataGrid1.ItemsSource = null;
+
+
+            //dataGrid1.ItemsSource = dbOperator.GetAllData();
             //TODO DGVへの登録はDB登録毎に1つずつ行って、プレ版同様使用中Appを選択→使用後にそこのみ値を変更の方が良いかも
 
         }
 
 
-//-----------------------------------------------------------------イベントハンドラ
-
-        //DataGridの選択行が変更された時
-        private void dataGrid1_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            try
-            {
-                #region 実行ファイルパスからアイコンを表示したい
-                //選択された行のデータを取得
-                int selectedIndex = dataGrid1.SelectedIndex;
-                 var row = dataGrid1.Items[selectedIndex];
-
-                //上のItemsより生成するObjectのプロパティの中からパスの値を取り出す
-                string procPath = row.GetType().GetProperty("ProcPath").GetValue(row).ToString();
-
-                //パスからアイコン生成
-                var icon = System.Drawing.Icon.ExtractAssociatedIcon(procPath);
-
-                //see: http://bit.ly/1i44IJo Icon を ImageSource に変換する 
-                iconImage.Source = Imaging.CreateBitmapSourceFromHIcon(
-                    icon.Handle, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
-                #endregion
-
-
-                //listBoxに現在選択中の行のデータを表示
-                listBoxApp.ItemsSource = null;
-                listBoxApp.Items.Clear();                
-                listBoxApp.ItemsSource = BindingListBox(row);
-
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-            }            
-        }
+        //-----------------------------------------------------------------イベントハンドラ
 
 
         /// <summary>
@@ -230,144 +206,58 @@ namespace Manage_your_Life
         /// <param name="e"></param>
         private void TimelineLog_Changed(object sender, System.EventArgs e)
         {
-            listBox1.Items.Add(DateTime.Now.ToLongTimeString() + " - " + pInfo.GetWindowTitle());
+            Manage_your_Life.Pages.HomePage pageHome = new Pages.HomePage();
+            pageHome.listBox1.Items.Add(DateTime.Now.ToLongTimeString() + " - " + pInfo.GetWindowTitle());
         }
-
-
-        private void DeleteRowButton_Click(object sender, RoutedEventArgs e)
-        {
-            
-        }
-
-        private void ref_Click(object sender, RoutedEventArgs e)
-        {
-            SetDataGrid();
-        }
-
-
-        //Datagridの列非表示
-        //see: http://ameblo.jp/shirokoma55/entry-11561024241.html
-        //dataGrid1.ColumnFromDisplayIndex(0).Visibility = Visibility.Collapsed;
-
-        //Listviewへのバインディングで参考になりそう
-        //see: http://gushwell.ldblog.jp/archives/52333865.html
-
-
-//---------------------------------------------------------------グラフ描画
-
-        public ObservableCollection<CircleChart> points { get; set; }
-
-
-        /// <summary>
-        /// 円グラフを描画してみる
-        /// <see cref="http://www.c-sharpcorner.com/uploadfile/mahesh/pie-chart-in-wpf/"/>
-        /// </summary>
-        private void DrawChart()
-        {
-            points = new ObservableCollection<CircleChart>();
-            
-            var q = dbOperator.GetAllData();
-
-            foreach(dynamic r in q){
-                //usageTimeから合計時間を秒で取得
-                //http://dobon.net/vb/dotnet/system/timespan.html
-                double totalSeconds = (TimeSpan.Parse(r.UsageTime)).TotalSeconds;
-
-                //グラフに表示する項目の追加
-                points.Add(new CircleChart
-                {
-                    Key = r.ProcName,
-                    Value = totalSeconds
-                });
-            }
-
-            ((PieSeries)piChart1.Series[0]).ItemsSource = points;
-        }
+                
 
 
 
-//---------------------------------------------------------------ListBoxのバインディングとか
+        //---------------------------------------------------------------グラフ描画
 
-        public ObservableCollection<AppListBoxBindingData> ListData { get; set; }
-
-
-        /// <summary>
-        /// ListBoxのItemsSourceに流すデータを生成
-        /// </summary>
-        /// <param name="row">gridView選択行のデータ</param>
-        /// <returns>選択行のobjectをコレクションにしたもの?</returns>
-        /// <see cref="http://ufcpp.net/study/csharp/misc_dynamic.html"/>
-        private ObservableCollection<AppListBoxBindingData> BindingListBox(dynamic row)
-        {
-            //コレクションに変更を加えると通知してくれる
-            ListData = new ObservableCollection<AppListBoxBindingData>();
-
-            //項目の追加
-            //dynamicとかいう謎技術を使用
-            ListData.Add(new AppListBoxBindingData
-            {
-                Title = "タイトル",
-                Text = row.Title
-            });
-            ListData.Add(new AppListBoxBindingData
-            {
-                Title = "プロセス名",
-                Text = row.ProcName
-            });
-            ListData.Add(new AppListBoxBindingData
-            {
-                Title = "場所",
-                Text = row.ProcPath
-            });
-            ListData.Add(new AppListBoxBindingData
-            {
-                Title = "使用時間",
-                Text = row.UsageTime.ToString()
-            });
-            ListData.Add(new AppListBoxBindingData
-            {
-                Title = "追加日時",
-                Text = row.AddDate.ToString()
-            });
-            ListData.Add(new AppListBoxBindingData
-            {
-                Title = "最終更新日時",
-                Text = row.LastDate.ToString()
-            });
-            ListData.Add(new AppListBoxBindingData
-            {
-                Title = "メモ",
-                Text = row.Memo
-            });
-
-            return ListData;
-        }
+        //public ObservableCollection<CircleChart> points { get; set; }
 
 
+        ///// <summary>
+        ///// 円グラフを描画してみる
+        ///// <see cref="http://www.c-sharpcorner.com/uploadfile/mahesh/pie-chart-in-wpf/"/>
+        ///// </summary>
+        //private void DrawChart()
+        //{
+        //    points = new ObservableCollection<CircleChart>();
+
+        //    var q = dbOperator.GetAllData();
+
+        //    foreach (dynamic r in q)
+        //    {
+        //        //usageTimeから合計時間を秒で取得
+        //        //http://dobon.net/vb/dotnet/system/timespan.html
+        //        double totalSeconds = (TimeSpan.Parse(r.UsageTime)).TotalSeconds;
+
+        //        //グラフに表示する項目の追加
+        //        points.Add(new CircleChart
+        //        {
+        //            Key = r.ProcName,
+        //            Value = totalSeconds
+        //        });
+        //    }
+
+        //    Pages.StatisticalPage pageStatistical = new Pages.StatisticalPage();
+        //    ((PieSeries)pageStatistical.piChart1.Series[0]).ItemsSource = points;
+
+        //    //((PieSeries)piChart1.Series[0]).ItemsSource = points;
+        //}
 
 
 
     }
 
 
+    //public class CircleChart
+    //{
+    //    public string Key { get; set; }
+    //    public double Value { get; set; }
 
-    /// <summary>
-    /// AppListBoxへのバインディング用クラス
-    /// <see cref="http://gushwell.ldblog.jp/archives/52306210.html"/>
-    /// </summary>
-    public class AppListBoxBindingData
-    {
-        public string Title { get; set; }
-        public string Text { get; set; }
-    }
-
-
-
-    public class CircleChart
-    {
-        public string Key { get; set; }
-        public double Value { get; set; }
-
-    }
+    //}
 
 }
