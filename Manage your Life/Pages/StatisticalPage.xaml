@@ -4,13 +4,43 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-             xmlns:chartingToolkit="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit"
+             xmlns:chart="clr-namespace:De.TorstenMandelkow.MetroChart;assembly=De.TorstenMandelkow.MetroChart"
+             xmlns:chartingToolkist="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="500" d:DesignWidth="900">
+             
     <Grid Style="{StaticResource ContentRoot}">
         <ScrollViewer>
+            <Grid>
+                <!--
+            <chart:PieChart
+                Style="{StaticResource MinimalChartStyle}" ChartTitle="Pie Chart"
+                ChartSubTitle="Chart with fixed width and height" SelectedItem="{Binding Path=SelectedItem, Mode=TwoWay}" >
+                    <chart:PieChart.Series>
+                    <chart:ChartSeries
+                        SeriesTitle="Errors" DisplayMember="Key" ValueMember="Value" ItemsSource="{Binding Path=points}" />
+                    </chart:PieChart.Series>
+            </chart:PieChart>
+            -->
+                <chart:PieChart
+                    ChartTitle="Minimal Pie Chart"
+                    ChartSubTitle="Chart with fixed width and height"
+                    SelectedItem="{Binding Path=SelectedItem, Mode=TwoWay}" >
+                    <chart:PieChart.Series>
+                        <chart:ChartSeries
+                            SeriesTitle="Errors"
+                            DisplayMember="Category"
+                            ValueMember="Number"
+                            ItemsSource="{Binding Path=Warnings}" />
+                    </chart:PieChart.Series>
+                </chart:PieChart>
+
+              
+                
+                
+                <!--
             <Grid Background="#FFE5E5E5">
-                <!-- http://www.c-sharpcorner.com/uploadfile/mahesh/pie-chart-in-wpf/ -->
+                http://www.c-sharpcorner.com/uploadfile/mahesh/pie-chart-in-wpf/ 
                 <chartingToolkit:Chart LegendTitle="ProcessName" Name="piChart1" Title="UsageTime">
                     <chartingToolkit:Chart.Series>
                         <chartingToolkit:PieSeries 
@@ -20,6 +50,7 @@
                         </chartingToolkit:PieSeries>
                     </chartingToolkit:Chart.Series>
                 </chartingToolkit:Chart>
+            -->
             </Grid>
         </ScrollViewer>
     </Grid>

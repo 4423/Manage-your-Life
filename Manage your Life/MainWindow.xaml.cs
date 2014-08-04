@@ -158,7 +158,7 @@ namespace Manage_your_Life
             else //最前面解除
             {
                 //計測時間追記の為にDBから該当Idを取得
-                int appId = dbOperator.GetCorrespondingAppId(previousProcess);
+                int appId = dbOperator.GetCorrespondingAppId(previousProcess.MainModule.FileName);
 
                 //DBから使用時間を取得し、今回の使用時間を加算してDB更新
                 var activeInterval = timeUtil.GetInterval(firstActiveDate);

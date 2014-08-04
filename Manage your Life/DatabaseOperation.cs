@@ -114,17 +114,17 @@ namespace Manage_your_Life
         /// </summary>
         /// <param name="previousProcess">検索対象の(前回の)Process</param>
         /// <returns>プロセス名に対応するAppID</returns>
-        internal int GetCorrespondingAppId(Process previousProcess)
+        internal int GetCorrespondingAppId(string processModuleFileName)
         {
             int appId = -1;   
                         
             //クエリ発行
+            //CAUTION クエリ評価してる間にプロセス終了したらエラーになるっぽかったのでファイル名を引数にとるようにした
             var q =
                 from p in database.DatabaseProcess
-                where p.Path == previousProcess.MainModule.FileName
+                where p.Path == processModuleFileName
                 select p;
 
-            //TODO エラーメモ: 型 'System.InvalidOperationException' のハンドルされていない例外が System.Data.Linq.dll で発生しました　追加情報:プロセス (8444) が終了したため、要求を処理できません。
             //TODO データ複数ある場合は…?
             foreach (var p in q)
             {

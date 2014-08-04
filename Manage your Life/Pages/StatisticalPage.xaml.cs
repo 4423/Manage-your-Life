@@ -21,6 +21,8 @@ using System.Windows.Interop;
 using System.Windows.Controls.DataVisualization;
 using System.Windows.Controls.DataVisualization.Charting;
 using FirstFloor.ModernUI.Windows.Controls;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace Manage_your_Life.Pages
 {
@@ -36,6 +38,8 @@ namespace Manage_your_Life.Pages
         DatabaseOperation dbOperator;
 
 
+        public ObservableCollection<CircleChart> points { get; private set; }
+
 
         public StatisticalPage()
         {
@@ -43,12 +47,43 @@ namespace Manage_your_Life.Pages
 
 
             dbOperator = new DatabaseOperation();
-            DrawChart();
+
+            this.DataContext = new StatisticalPageViewModel();
+
+            
+        }
+
+        /// <summary>
+        /// 円グラフを描画してみる
+        /// <see cref="http://modernuicharts.codeplex.com/documentation#howto1"/>
+        /// </summary>
+        private void DrawChart()
+        {
+            points = new ObservableCollection<CircleChart>();
+
+            var q = dbOperator.GetAllData();
+
+            foreach (dynamic r in q)
+            {
+                //usageTimeから合計時間を秒で取得
+                //http://dobon.net/vb/dotnet/system/timespan.html
+                double totalSeconds = (TimeSpan.Parse(r.UsageTime)).TotalSeconds;
+
+                //グラフに表示する項目の追加
+                points.Add(new CircleChart
+                {
+                    Key = r.ProcName,
+                    Value = totalSeconds
+                });
+            }
         }
 
 
-        public ObservableCollection<CircleChart> points { get; set; }
+        ////////////////
 
+
+
+        /*
         /// <summary>
         /// 円グラフを描画してみる
         /// <see cref="http://www.c-sharpcorner.com/uploadfile/mahesh/pie-chart-in-wpf/"/>
@@ -78,6 +113,7 @@ namespace Manage_your_Life.Pages
 
             ((PieSeries)piChart1.Series[0]).ItemsSource = points;
         }
+         * */
     }
 
 
@@ -87,4 +123,5 @@ namespace Manage_your_Life.Pages
         public double Value { get; set; }
 
     }
+
 }
