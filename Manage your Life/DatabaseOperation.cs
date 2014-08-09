@@ -90,6 +90,7 @@ namespace Manage_your_Life
 
             database.SubmitChanges();
 
+            //CAUTION 参照がnullのときあり
             NewRecord_Registered(this, EventArgs.Empty);
         }
 

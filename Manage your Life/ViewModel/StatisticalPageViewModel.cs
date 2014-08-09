@@ -2,23 +2,194 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using De.TorstenMandelkow.MetroChart;
 
 
 namespace Manage_your_Life
 {
     public class StatisticalPageViewModel : INotifyPropertyChanged
     {
-        public DelegateCommand AddSeriesCommand { get; set; }
-        public ObservableCollection<string> ChartTypes { get; set; }
         public List<double> FontSizes { get; set; }
         public List<double> DoughnutInnerRadiusRatios { get; set; }
-        public Dictionary<string, De.TorstenMandelkow.MetroChart.ResourceDictionaryCollection> Palettes { get; set; }
+        public Dictionary<string, ResourceDictionaryCollection> Palettes { get; set; }
         public List<string> SelectionBrushes { get; set; }
+
+        public ObservableCollection<string> ChartTypes { get; set; }
+        public ObservableCollection<ChartData> Points { get; set; }  
+      
+        ApplicationDataClassesDataContext database;
+        string basePath;
+        string connStr;
+
+
+        //コンストラクタ
+        public StatisticalPageViewModel()
+        {
+            //データベース接続
+            basePath = Directory.GetCurrentDirectory() + @"\ApplicationDatabase.mdf";
+            connStr = @"Data Source=(LocalDB)\v11.0;AttachDbFilename=""" + basePath + @""";Integrated Security=True";
+            database = new ApplicationDataClassesDataContext(connStr);
+
+
+            LoadPalettes();
+            Settings();
+
+            
+            Series = new ObservableCollection<SeriesData>();
+            
+            Series.Add(new SeriesData() { SeriesDisplayName = "UsageTime", Items = TakeUsageTimeItems(5) });
+        }
+
+
+
+        /// <summary>
+        /// データベースから使用時間の上位数項目を取得
+        /// </summary>
+        /// <param name="takeNumber">取得する項目数</param>
+        /// <returns>使用時間とプロセス名のCollection</returns>
+        private ObservableCollection<ChartData> TakeUsageTimeItems(int takeNumber)
+        {
+            Points = new ObservableCollection<ChartData>();
+
+            
+
+            //使用時間のうちトップ5を選択
+            var q = (
+                from p in database.DatabaseApplication
+                select new
+                {
+                    Title = p.Title,
+                    ProcName = p.DatabaseProcess.Name,
+                    UsageTime = p.DatabaseDate.UsageTime,
+                })
+                .Take(takeNumber);
+
+
+            //抽出された使用時間の合計を算出
+            double sumOfUsageTime = 0;
+            foreach (var r in q)
+            {
+                sumOfUsageTime += (TimeSpan.Parse(r.UsageTime)).TotalSeconds;
+            }
+
+
+            //グラフに表示する項目の追加
+            foreach (var r in q)
+            {
+                //usageTimeから合計時間を秒で取得
+                //http://dobon.net/vb/dotnet/system/timespan.html
+                TimeSpan usageTime = TimeSpan.Parse(r.UsageTime);
+
+                //パーセンテージにする
+                double floorUsageTime = (usageTime.TotalSeconds / sumOfUsageTime) * 100;
+
+                Points.Add(new ChartData()
+                {
+                    Category = r.ProcName,
+                    //小数点2以下四捨五入
+                    Number = ToRoundDown(floorUsageTime, 2),
+                    TotalHours = ToRoundDown(usageTime.TotalHours, 2),
+                    Days = usageTime.Days,
+                    Hours = usageTime.Hours,
+                    Minutes = usageTime.Minutes,
+                    Seconds = usageTime.Seconds
+                });
+            }
+
+            return Points;
+        }
+
+
+        /// <summary>
+        /// 指定した精度の数値に切り捨てします。
+        /// </summary>
+        /// <see cref="http://jeanne.wankuma.com/tips/csharp/math/rounddown.html"/>
+        /// <param name="dValue">丸め対象の倍精度浮動小数点数</param>
+        /// <param name="iDigits">戻り値の有効桁数の精度</param>
+        /// <returns>iDigits に等しい精度の数値に切り捨てられた数値</returns>
+        public double ToRoundDown(double dValue, int iDigits)
+        {
+            double dCoef = System.Math.Pow(10, iDigits);
+
+            return dValue > 0 ? System.Math.Floor(dValue * dCoef) / dCoef :
+                                System.Math.Ceiling(dValue * dCoef) / dCoef;
+        }
+
+
+
+
+
+        /// <summary>
+        /// Chartの設定
+        /// </summary>
+        private void Settings()
+        {
+            ChartTypes = new ObservableCollection<string>();
+            ChartTypes.Add("All");
+            ChartTypes.Add("Column");
+            ChartTypes.Add("StackedColumn");
+            ChartTypes.Add("Bar");
+            ChartTypes.Add("StackedBar");
+            ChartTypes.Add("Pie");
+            ChartTypes.Add("Doughnut");
+            ChartTypes.Add("Gauge");
+            SelectedChartType = ChartTypes.FirstOrDefault();
+
+            FontSizes = new List<double>();
+            FontSizes.Add(9.0);
+            FontSizes.Add(11.0);
+            FontSizes.Add(13.0);
+            FontSizes.Add(18.0);
+            SelectedFontSize = 11.0;
+
+            DoughnutInnerRadiusRatios = new List<double>();
+            DoughnutInnerRadiusRatios.Add(0.90);
+            DoughnutInnerRadiusRatios.Add(0.75);
+            DoughnutInnerRadiusRatios.Add(0.5);
+            DoughnutInnerRadiusRatios.Add(0.25);
+            DoughnutInnerRadiusRatios.Add(0.1);
+            SelectedDoughnutInnerRadiusRatio = 0.75;
+
+            SelectionBrushes = new List<string>();
+            SelectionBrushes.Add("Orange");
+            SelectionBrushes.Add("Red");
+            SelectionBrushes.Add("Yellow");
+            SelectionBrushes.Add("Blue");
+            SelectionBrushes.Add("[NoColor]");
+            SelectedBrush = SelectionBrushes.FirstOrDefault();
+        }
+
+
+        /// <summary>
+        /// ぱれっとの設定
+        /// </summary>
+        private void LoadPalettes()
+        {
+            Palettes = new Dictionary<string, ResourceDictionaryCollection>();
+            Palettes.Add("Default", null);
+
+            var resources = Application.Current.Resources.MergedDictionaries.ToList();
+            foreach (var dict in resources)
+            {
+                foreach (var objkey in dict.Keys)
+                {
+                    if (dict[objkey] is ResourceDictionaryCollection)
+                    {
+                        Palettes.Add(objkey.ToString(), dict[objkey] as ResourceDictionaryCollection);
+                    }
+                }
+            }
+
+            SelectedPalette = Palettes.FirstOrDefault();
+        }
+
+
 
         private string selectedChartType = null;
         public string SelectedChartType
@@ -149,115 +320,6 @@ namespace Manage_your_Life
             }
         }
 
-        public StatisticalPageViewModel()
-        {
-            LoadPalettes();
-
-            AddSeriesCommand = new DelegateCommand(x => AddSeries());
-
-            ChartTypes = new ObservableCollection<string>();
-            ChartTypes.Add("All");
-            ChartTypes.Add("Column");
-            ChartTypes.Add("StackedColumn");
-            ChartTypes.Add("Bar");
-            ChartTypes.Add("StackedBar");
-            ChartTypes.Add("Pie");
-            ChartTypes.Add("Doughnut");
-            ChartTypes.Add("Gauge");
-            SelectedChartType = ChartTypes.FirstOrDefault();
-
-            FontSizes = new List<double>();
-            FontSizes.Add(9.0);
-            FontSizes.Add(11.0);
-            FontSizes.Add(13.0);
-            FontSizes.Add(18.0);
-            SelectedFontSize = 11.0;
-
-            DoughnutInnerRadiusRatios = new List<double>();
-            DoughnutInnerRadiusRatios.Add(0.90);
-            DoughnutInnerRadiusRatios.Add(0.75);
-            DoughnutInnerRadiusRatios.Add(0.5);
-            DoughnutInnerRadiusRatios.Add(0.25);
-            DoughnutInnerRadiusRatios.Add(0.1);
-            SelectedDoughnutInnerRadiusRatio = 0.75;
-
-            SelectionBrushes = new List<string>();
-            SelectionBrushes.Add("Orange");
-            SelectionBrushes.Add("Red");
-            SelectionBrushes.Add("Yellow");
-            SelectionBrushes.Add("Blue");
-            SelectionBrushes.Add("[NoColor]");
-            SelectedBrush = SelectionBrushes.FirstOrDefault();
-
-            Series = new ObservableCollection<SeriesData>();
-
-            Errors = new ObservableCollection<TestClass>();
-            Warnings = new ObservableCollection<TestClass>();
-
-            ObservableCollection<TestClass> Infos = new ObservableCollection<TestClass>();
-
-            Errors.Add(new TestClass() { Category = "Globalization", Number = 75 });
-            Errors.Add(new TestClass() { Category = "Features", Number = 2 });
-            Errors.Add(new TestClass() { Category = "ContentTypes", Number = 12 });
-            Errors.Add(new TestClass() { Category = "Correctness", Number = 83 });
-            //Errors.Add(new TestClass() { Category = "Naming", Number = 80 });
-            Errors.Add(new TestClass() { Category = "Best Practices", Number = 29 });
-
-            Warnings.Add(new TestClass() { Category = "Globalization", Number = 34 });
-            Warnings.Add(new TestClass() { Category = "Features", Number = 23 });
-            Warnings.Add(new TestClass() { Category = "ContentTypes", Number = 15 });
-            Warnings.Add(new TestClass() { Category = "Correctness", Number = 66 });
-            Warnings.Add(new TestClass() { Category = "Naming", Number = 56 });
-            Warnings.Add(new TestClass() { Category = "Best Practices", Number = 34 });
-
-            Infos.Add(new TestClass() { Category = "Globalization", Number = 14 });
-            Infos.Add(new TestClass() { Category = "Features", Number = 3 });
-            Infos.Add(new TestClass() { Category = "ContentTypes", Number = 55 });
-            Infos.Add(new TestClass() { Category = "Correctness", Number = 26 });
-            Infos.Add(new TestClass() { Category = "Naming", Number = 3 });
-            Infos.Add(new TestClass() { Category = "Best Practices", Number = 8 });
-
-            Series.Add(new SeriesData() { SeriesDisplayName = "Errors", Items = Errors });
-            Series.Add(new SeriesData() { SeriesDisplayName = "Warnings", Items = Warnings });
-            Series.Add(new SeriesData() { SeriesDisplayName = "Info", Items = Infos });
-        }
-
-        int newSeriesCounter = 1;
-        private void AddSeries()
-        {
-            ObservableCollection<TestClass> data = new ObservableCollection<TestClass>();
-
-            data.Add(new TestClass() { Category = "Globalization", Number = 5 });
-            data.Add(new TestClass() { Category = "Features", Number = 10 });
-            data.Add(new TestClass() { Category = "ContentTypes", Number = 15 });
-            data.Add(new TestClass() { Category = "Correctness", Number = 20 });
-            data.Add(new TestClass() { Category = "Naming", Number = 15 });
-            data.Add(new TestClass() { Category = "Best Practices", Number = 10 });
-
-            Series.Add(new SeriesData() { SeriesDisplayName = "New Series " + newSeriesCounter.ToString(), Items = data });
-
-            newSeriesCounter++;
-        }
-
-        private void LoadPalettes()
-        {
-            Palettes = new Dictionary<string, De.TorstenMandelkow.MetroChart.ResourceDictionaryCollection>();
-            Palettes.Add("Default", null);
-
-            var resources = Application.Current.Resources.MergedDictionaries.ToList();
-            foreach (var dict in resources)
-            {
-                foreach (var objkey in dict.Keys)
-                {
-                    if (dict[objkey] is De.TorstenMandelkow.MetroChart.ResourceDictionaryCollection)
-                    {
-                        Palettes.Add(objkey.ToString(), dict[objkey] as De.TorstenMandelkow.MetroChart.ResourceDictionaryCollection);
-                    }
-                }
-            }
-
-            SelectedPalette = Palettes.FirstOrDefault();
-        }
 
         private bool isRowColumnSwitched = false;
         public bool IsRowColumnSwitched
@@ -344,17 +406,6 @@ namespace Manage_your_Life
             set;
         }
 
-        public ObservableCollection<TestClass> Errors
-        {
-            get;
-            set;
-        }
-
-        public ObservableCollection<TestClass> Warnings
-        {
-            get;
-            set;
-        }
 
         private void NotifyPropertyChanged(string property)
         {
@@ -370,10 +421,14 @@ namespace Manage_your_Life
         {
             get
             {
-                return "{0} in series '{2}' has value '{1}' ({3:P2})";
+
+                return "ProcessName: {0}, UsageSeconds: {1} ({3:P2})";
             }
         }
     }
+
+
+//------------------------------------------------------------OtherClass
 
     public class DelegateCommand : ICommand
     {
@@ -425,15 +480,15 @@ namespace Manage_your_Life
 
         public string SeriesDescription { get; set; }
 
-        public ObservableCollection<TestClass> Items { get; set; }
+        public ObservableCollection<ChartData> Items { get; set; }
     }
 
-    public class TestClass : INotifyPropertyChanged
+    public class ChartData : INotifyPropertyChanged
     {
         public string Category { get; set; }
 
-        private float _number = 0;
-        public float Number
+        private double _number = 0;
+        public double Number
         {
             get
             {
@@ -449,6 +504,12 @@ namespace Manage_your_Life
             }
 
         }
+
+        public double TotalHours { get; set; }
+        public int Days { get; set; }
+        public int Hours { get; set; }
+        public int Minutes { get; set; }
+        public int Seconds { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
     }

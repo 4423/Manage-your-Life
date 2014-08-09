@@ -12,26 +12,19 @@
     <Grid Style="{StaticResource ContentRoot}">
         <ScrollViewer>
             <Grid>
-                <!--
-            <chart:PieChart
-                Style="{StaticResource MinimalChartStyle}" ChartTitle="Pie Chart"
-                ChartSubTitle="Chart with fixed width and height" SelectedItem="{Binding Path=SelectedItem, Mode=TwoWay}" >
-                    <chart:PieChart.Series>
-                    <chart:ChartSeries
-                        SeriesTitle="Errors" DisplayMember="Key" ValueMember="Value" ItemsSource="{Binding Path=points}" />
-                    </chart:PieChart.Series>
-            </chart:PieChart>
-            -->
                 <chart:PieChart
-                    ChartTitle="Minimal Pie Chart"
-                    ChartSubTitle="Chart with fixed width and height"
-                    SelectedItem="{Binding Path=SelectedItem, Mode=TwoWay}" >
+                    ChartTitle="UsageTime"
+                    ChartSubTitle="Top 5"
+                    SelectedItem="{Binding Path=SelectedItem, Mode=TwoWay}"
+                    ToolTipFormat="{}ProcessName: {0}, UsageTime: {1} hour, Percentage: {3:P2}"
+                    >
                     <chart:PieChart.Series>
                         <chart:ChartSeries
-                            SeriesTitle="Errors"
+                            SeriesTitle="UsageTime"
                             DisplayMember="Category"
-                            ValueMember="Number"
-                            ItemsSource="{Binding Path=Warnings}" />
+                            ValueMember="TotalHours"                            
+                            ItemsSource="{Binding Path=Points}"
+                            />
                     </chart:PieChart.Series>
                 </chart:PieChart>
 
