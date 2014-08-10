@@ -88,7 +88,7 @@ namespace Manage_your_Life
             Pages.ApplicationPage page = new Pages.ApplicationPage();
             dbOperator.UsageTime_Updated += new EventHandler(page.UsageTime_Updated);
 
-            
+
             //タイマーの作成
             timer = new DispatcherTimer(DispatcherPriority.Normal, this.Dispatcher);
             timer.Interval = TimeSpan.FromSeconds(1);
@@ -170,9 +170,11 @@ namespace Manage_your_Life
                 preTitleCheck = true;
             }
 
-            Pages.HomePage pageHome = new Pages.HomePage();
-            pageHome.statusBarItem_label.Content = activeProcess.MainWindowTitle;
-            
+            //CAUTION newスンナ
+            //Pages.HomePage pageHome = new Pages.HomePage();
+            //CAUTION 更新されてないからね。そもそもlabel消したから
+            //pageHome.statusBarItem_label.Content = activeProcess.MainWindowTitle;
+
             //statusBarItem_label.Content = activeProcess.MainWindowTitle;
         }
 
@@ -181,7 +183,7 @@ namespace Manage_your_Life
         //CAUTION レコード新規登録時にするSetDataGridはイベントとして実装App.xaml側で実装した
         private void SetDataGrid()
         {
-            
+
             //pageApplication.dataGrid1.ItemsSource = null;
             //pageApplication.dataGrid1.ItemsSource = dbOperator.GetAllData();
 
@@ -207,57 +209,9 @@ namespace Manage_your_Life
         private void TimelineLog_Changed(object sender, System.EventArgs e)
         {
             Manage_your_Life.Pages.HomePage pageHome = new Pages.HomePage();
-            pageHome.listBox1.Items.Add(DateTime.Now.ToLongTimeString() + " - " + pInfo.GetWindowTitle());
+            //CAUTION  意味なし
+            //pageHome.listBox1.Items.Add(DateTime.Now.ToLongTimeString() + " - " + pInfo.GetWindowTitle());
         }
-                
 
-
-
-        //---------------------------------------------------------------グラフ描画
-
-        //public ObservableCollection<CircleChart> points { get; set; }
-
-
-        ///// <summary>
-        ///// 円グラフを描画してみる
-        ///// <see cref="http://www.c-sharpcorner.com/uploadfile/mahesh/pie-chart-in-wpf/"/>
-        ///// </summary>
-        //private void DrawChart()
-        //{
-        //    points = new ObservableCollection<CircleChart>();
-
-        //    var q = dbOperator.GetAllData();
-
-        //    foreach (dynamic r in q)
-        //    {
-        //        //usageTimeから合計時間を秒で取得
-        //        //http://dobon.net/vb/dotnet/system/timespan.html
-        //        double totalSeconds = (TimeSpan.Parse(r.UsageTime)).TotalSeconds;
-
-        //        //グラフに表示する項目の追加
-        //        points.Add(new CircleChart
-        //        {
-        //            Key = r.ProcName,
-        //            Value = totalSeconds
-        //        });
-        //    }
-
-        //    Pages.StatisticalPage pageStatistical = new Pages.StatisticalPage();
-        //    ((PieSeries)pageStatistical.piChart1.Series[0]).ItemsSource = points;
-
-        //    //((PieSeries)piChart1.Series[0]).ItemsSource = points;
-        //}
-
-
-
-    }
-
-
-    //public class CircleChart
-    //{
-    //    public string Key { get; set; }
-    //    public double Value { get; set; }
-
-    //}
-
+    }      
 }

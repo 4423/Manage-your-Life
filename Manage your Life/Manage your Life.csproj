@@ -101,8 +101,12 @@
     <Compile Include="Pages\StatisticalPage.xaml.cs">
       <DependentUpon>StatisticalPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModel\HomePageViewModel.cs" />
     <Compile Include="ViewModel\StatisticalPageViewModel.cs" />
     <Compile Include="TimeUtility.cs" />
+    <Compile Include="ViewModel\Synthesis\ChartData.cs" />
+    <Compile Include="ViewModel\Synthesis\DelegateCommand.cs" />
+    <Compile Include="ViewModel\Synthesis\SeriesData.cs" />
     <Page Include="Content\About.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

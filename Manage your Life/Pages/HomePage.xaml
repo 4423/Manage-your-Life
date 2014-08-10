@@ -4,21 +4,73 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+             xmlns:chart="clr-namespace:De.TorstenMandelkow.MetroChart;assembly=De.TorstenMandelkow.MetroChart"             
              mc:Ignorable="d" 
-             d:DesignWidth="900">
-    
+             d:DesignWidth="900" d:DesignHeight="400">
+
     <Grid Style="{StaticResource ContentRoot}">
         <ScrollViewer>
-            <StackPanel MinWidth="200">
-                <ListBox Name="listBox1" HorizontalAlignment="Left" Width="600" Height="200"/>
-                
-                <StatusBar HorizontalAlignment="Left" Height="26" VerticalAlignment="Bottom" Width="942" >
-                    <StatusBarItem>
-                        <Label Name="statusBarItem_label" Height="24" HorizontalAlignment="Left" Width="935" VerticalAlignment="Top"/>
-                    </StatusBarItem>
-                </StatusBar>
-            </StackPanel>
-            
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" MinWidth="270" />
+                    <ColumnDefinition Width="auto" MinWidth="585" />
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" MinHeight="356" />
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
+
+                <chart:RadialGaugeChart
+                    Grid.Column="0"
+                    Grid.Row="0"
+                    x:Name="chart_upTime"
+                    ChartTitle="System Up Time" ChartSubTitle=""
+                    SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
+                    Margin="-10,-14,0,1" Width="250"
+                    Background="Transparent" HorizontalAlignment="Left">
+                    <chart:RadialGaugeChart.Series>
+                        <chart:ChartSeries 
+                    		SeriesTitle="SystemUpTime"
+                    		DisplayMember="Category"
+                    		ValueMember="Number"                            
+                    		ItemsSource="{Binding SystemUpTime}" />
+                    </chart:RadialGaugeChart.Series>
+                </chart:RadialGaugeChart>
+
+                <Label 
+                    Grid.Column="0"
+                    Grid.Row="0"
+                    Content="00:00:00" Width="195" Margin="0,20,0,0"
+                    Background="Transparent"                       
+                    VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="35"
+                    x:Name="label_upTime" Height="48" Foreground="#FF636363"/>
+
+
+                <chart:ClusteredBarChart
+                    Grid.Column="1"
+                    Grid.Row="0"
+                    x:Name="chart_Bar"
+                    ChartTitle="Application Usage Time"
+                    ChartSubTitle="Value of the bar represents the hours."
+                    SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
+                    HorizontalAlignment="Left" VerticalAlignment="Top"
+                    Background="Transparent"
+                    Width="517" Height="370" Margin="0,-14,0,0">
+                    <chart:ClusteredBarChart.Series>
+                        <chart:ChartSeries
+                            SeriesTitle="Application UsageTime"                            
+                            DisplayMember="Category"
+                            ValueMember="Number"
+                            ItemsSource="{Binding UsageTime}" />
+                    </chart:ClusteredBarChart.Series>
+                </chart:ClusteredBarChart>
+
+            </Grid>
+
         </ScrollViewer>
     </Grid>
+
+
 </UserControl>

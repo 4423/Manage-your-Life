@@ -1,51 +1,78 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+using System.Diagnostics;
+using System.Windows.Threading;
+using System.ComponentModel;
 using De.TorstenMandelkow.MetroChart;
+using System.Collections.ObjectModel;
+using System.IO;
 
 
 namespace Manage_your_Life
 {
-    public class StatisticalPageViewModel : INotifyPropertyChanged
+    public class HomePageViewModel : INotifyPropertyChanged
     {
+        #region Field
+
         public List<double> FontSizes { get; set; }
         public List<double> DoughnutInnerRadiusRatios { get; set; }
         public Dictionary<string, ResourceDictionaryCollection> Palettes { get; set; }
         public List<string> SelectionBrushes { get; set; }
 
         public ObservableCollection<string> ChartTypes { get; set; }
-        public ObservableCollection<ChartData> Points { get; set; }  
-      
+        public ObservableCollection<ChartData> SystemUpTime { get; set; }
+        public ObservableCollection<ChartData> UsageTime { get; set; }
+
         ApplicationDataClassesDataContext database;
         string basePath;
         string connStr;
 
+        #endregion
 
         //コンストラクタ
-        public StatisticalPageViewModel()
+        public HomePageViewModel()
         {
-            //データベース接続
-            basePath = Directory.GetCurrentDirectory() + @"\ApplicationDatabase.mdf";
-            connStr = @"Data Source=(LocalDB)\v11.0;AttachDbFilename=""" + basePath + @""";Integrated Security=True";
-            database = new ApplicationDataClassesDataContext(connStr);
-
-
             LoadPalettes();
             Settings();
 
-            
+            SystemUpTime = new ObservableCollection<ChartData>();
             Series = new ObservableCollection<SeriesData>();
-            
-            Series.Add(new SeriesData() { SeriesDisplayName = "UsageTime", Items = TakeUsageTimeItems(5) });
+
+            SystemUpTime.Add(new ChartData() { Category = "", Number = GetSystemUpTimePercentage() });
+                      
+            Series.Add(new SeriesData() { SeriesDisplayName = "SystemUpTime", Items = SystemUpTime });
+            Series.Add(new SeriesData() { SeriesDisplayName = "ApplicationUsageTime", Items = TakeUsageTimeItems(5) });
         }
 
+
+        /// <summary>
+        /// パソコンの稼働時間を24時間に対してのパーセンテージで求める
+        /// </summary>
+        /// <returns></returns>
+        private double GetSystemUpTimePercentage()
+        {
+            //パソコン稼働時間取得
+            PerformanceCounter upTime = new PerformanceCounter("System", "System Up Time");
+            upTime.NextValue();
+
+            double upTimeTotalMinutes = (TimeSpan.FromSeconds(upTime.NextValue())).TotalMinutes;
+            //パーセンテージ
+            double upTimePercentage = upTimeTotalMinutes / TimeSpan.FromHours(24).TotalMinutes;
+
+            return upTimePercentage * 100;
+        }
 
 
         /// <summary>
@@ -55,13 +82,18 @@ namespace Manage_your_Life
         /// <returns>使用時間とプロセス名のCollection</returns>
         private ObservableCollection<ChartData> TakeUsageTimeItems(int takeNumber)
         {
-            Points = new ObservableCollection<ChartData>();
+            //データベース接続
+            basePath = Directory.GetCurrentDirectory() + @"\ApplicationDatabase.mdf";
+            connStr = @"Data Source=(LocalDB)\v11.0;AttachDbFilename=""" + basePath + @""";Integrated Security=True";
+            database = new ApplicationDataClassesDataContext(connStr);
 
-
+            UsageTime = new ObservableCollection<ChartData>();
+            
 
             //使用時間のうちトップtakeNumberを選択
             var q = (
                 from p in database.DatabaseApplication
+                orderby p.DatabaseDate.UsageTime descending
                 select new
                 {
                     Title = p.Title,
@@ -89,7 +121,7 @@ namespace Manage_your_Life
                 //パーセンテージにする
                 double floorUsageTime = (usageTime.TotalSeconds / sumOfUsageTime) * 100;
 
-                Points.Add(new ChartData()
+                UsageTime.Add(new ChartData()
                 {
                     Category = r.ProcName,
                     //小数点2以下四捨五入
@@ -102,7 +134,7 @@ namespace Manage_your_Life
                 });
             }
 
-            return Points;
+            return UsageTime;
         }
 
 
@@ -123,7 +155,7 @@ namespace Manage_your_Life
 
 
 
-
+        #region Method
 
         /// <summary>
         /// Chartの設定
@@ -190,6 +222,18 @@ namespace Manage_your_Life
         }
 
 
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void NotifyPropertyChanged(string property)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged.Invoke(this, new PropertyChangedEventArgs(property));
+            }
+        }
+
+        #endregion
+
+        #region Property
 
         private string selectedChartType = null;
         public string SelectedChartType
@@ -407,23 +451,16 @@ namespace Manage_your_Life
         }
 
 
-        private void NotifyPropertyChanged(string property)
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged.Invoke(this, new PropertyChangedEventArgs(property));
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
         public string ToolTipFormat
         {
             get
             {
-
                 return "ProcessName: {0}, UsageSeconds: {1} ({3:P2})";
             }
         }
+
+        #endregion
     }
+     
+
 }
