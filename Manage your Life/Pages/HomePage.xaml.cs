@@ -28,6 +28,7 @@ namespace Manage_your_Life.Pages
     /// </summary>
     public partial class HomePage : UserControl
     {
+        #region Field
         /// <summary>
         /// 一秒ごとにイベントを発生させるタイマー
         /// </summary>
@@ -38,9 +39,18 @@ namespace Manage_your_Life.Pages
         /// </summary>
         DispatcherTimer tenMinTimer;
 
+        ProcessInformation pInfo;
+
+        string preWindowTitle = "";
+
+        #endregion
+        
+
         public HomePage()
         {
             InitializeComponent();
+
+            pInfo = new ProcessInformation();
 
             this.DataContext = new HomePageViewModel();
 
@@ -57,32 +67,45 @@ namespace Manage_your_Life.Pages
 
 
 //----------------------------------------------------------タイマーイベント
+
         private void oneSecDispatcherTimer_Tick(object sender, EventArgs e)
         {
+            oneSecTimer.Stop();
+
             //システムの稼働時間を取得
             PerformanceCounter upTime = new PerformanceCounter("System", "System Up Time");
             upTime.NextValue();
 
+            //labelの値を更新
             this.label_upTime.Content = TimeSpan.FromSeconds((int)upTime.NextValue());
+
+
+            //アクティブウィンドウが変化したか
+            string windowTitle = pInfo.GetWindowTitle();
+            if (windowTitle == preWindowTitle)
+            {
+                oneSecTimer.Start();
+                return;
+            }
+
+            //labelの値を更新
+            this.label_ForegroundWindow.Content = pInfo.GetWindowTitle();
+            
+            oneSecTimer.Start();
         }
 
 
         private void tenMinDispatcherTimer_Tick(object sender, EventArgs e)
         {
+            tenMinTimer.Stop();
+
             //Chartの値を更新させる
             this.DataContext = new HomePageViewModel();
+            tenMinTimer.Start();
         }
 
 
-        /// <summary>
-        /// listBox1にアイテムを追加します
-        /// </summary>
-        /// <param name="addItems"></param>
-        public void AddListBox(object addItems)
-        {
-            //listBox1.Items.Add(addItems);
-
-        }
+//----------------------------------------------------------イベントハンドラ
 
 
         

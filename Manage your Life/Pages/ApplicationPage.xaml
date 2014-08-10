@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Manage_your_Life.Pages.ApplicationPage"
+﻿<UserControl x:Class="Manage_your_Life.ApplicationPage"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -8,24 +8,28 @@
              d:DesignWidth="920">
     <Grid Style="{StaticResource ContentRoot}">
         <ScrollViewer>
-            <Grid Background="#FFFFFF">
+            <Grid Background="Transparent">
 
-                <DataGrid Name="dataGrid1" HorizontalAlignment="Left" VerticalAlignment="Top" Height="301" Width="613" 
-                              AutoGenerateColumns="False" IsReadOnly="True"
-                              IsSynchronizedWithCurrentItem="True" SelectionChanged="dataGrid1_SelectionChanged">
+                <DataGrid Name="dataGrid1" HorizontalAlignment="Left" VerticalAlignment="Top" 
+                          Height="301" Width="613" 
+                          SelectionMode="Single"
+                          AutoGenerateColumns="False" IsReadOnly="True"
+                          Background="Transparent"
+                          IsSynchronizedWithCurrentItem="True" 
+                          SelectionChanged="dataGrid1_SelectionChanged">
                     <DataGrid.Columns>
                         <DataGridTemplateColumn Header="編集">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <Button Content="編集" Click="editButton_Click" />
+                                    <Button Content="編集" Click="buttonEdit_Click" />
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTextColumn Header="ID" Binding="{Binding Id}"/>
-                        <DataGridTextColumn Header="タイトル" Binding="{Binding Title}" Width="100" />
+                        <DataGridTextColumn Header="ID" Binding="{Binding Id}" Visibility="Hidden"/>
+                        <DataGridTextColumn Header="タイトル" Binding="{Binding Title}" Width="150" />
                         <DataGridTextColumn Header="使用時間" Binding="{Binding UsageTime}"/>
-                        <DataGridTextColumn Header="プロセス名" Binding="{Binding ProcName}"/>
-                        <DataGridTextColumn Header="場所" Binding="{Binding ProcPath}"/>                        
+                        <DataGridTextColumn Header="プロセス名" Binding="{Binding ProcName}" Width="100"/>
+                        <DataGridTextColumn Header="場所" Binding="{Binding ProcPath}" Width="150"/>                        
                         <DataGridTextColumn Header="登録日時" Binding="{Binding AddDate}"/>
                         <DataGridTextColumn Header="最終計測日時" Binding="{Binding LastDate}"/>
                         <DataGridTextColumn Header="メモ" Binding="{Binding Memo}"/>
@@ -34,9 +38,6 @@
 
                 <Image Source="{Binding path}" Name="iconImage" HorizontalAlignment="Left" 
                            Height="32" Width="32" Margin="628,10,0,0" VerticalAlignment="Top" />
-
-                <Button Name="ref" Content="Refresh" HorizontalAlignment="Left" Margin="618,253,0,0" 
-                        VerticalAlignment="Top" Width="52" Height="25" Click="ref_Click"/>
 
                 <!--see: http://stackoverflow.com/questions/13513957/listbox-with-items-width-following-control-width -->
                 <ListBox Name="listBoxApp" Grid.IsSharedSizeScope="True" 

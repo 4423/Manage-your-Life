@@ -6,19 +6,17 @@
              xmlns:mui="http://firstfloorsoftware.com/ModernUI"
              xmlns:chart="clr-namespace:De.TorstenMandelkow.MetroChart;assembly=De.TorstenMandelkow.MetroChart"             
              mc:Ignorable="d" 
-             d:DesignWidth="900" d:DesignHeight="400">
+             d:DesignWidth="900" d:DesignHeight="430">
 
     <Grid Style="{StaticResource ContentRoot}">
         <ScrollViewer>
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto" MinWidth="270" />
-                    <ColumnDefinition Width="auto" MinWidth="585" />
-                    <ColumnDefinition Width="auto" />
-                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="270" MinWidth="270" />
+                    <ColumnDefinition Width="500*" MinWidth="500" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="auto" MinHeight="356" />
+                    <RowDefinition Height="100*" MinHeight="356" />
                     <RowDefinition Height="auto" />
                 </Grid.RowDefinitions>
 
@@ -67,6 +65,10 @@
                     </chart:ClusteredBarChart.Series>
                 </chart:ClusteredBarChart>
 
+                <Label Name="label_ForegroundWindow" Grid.Row="1" Grid.ColumnSpan="2" 
+                       Content="" FontSize="20" Foreground="#FF6C6C6C"
+                       HorizontalContentAlignment="Center" VerticalContentAlignment="Bottom" />
+                    
             </Grid>
 
         </ScrollViewer>

@@ -23,7 +23,7 @@ using System.Windows.Controls.DataVisualization.Charting;
 using FirstFloor.ModernUI.Windows.Controls;
 
 
-namespace Manage_your_Life.Pages
+namespace Manage_your_Life
 {
     /// <summary>
     /// Interaction logic for ApplicationPage.xaml
@@ -41,7 +41,7 @@ namespace Manage_your_Life.Pages
         {
             InitializeComponent();
             
-            dbOperator = new DatabaseOperation();
+            dbOperator = DatabaseOperation.Instance;
 
             //EventHandlerの追加
             dbOperator.UsageTime_Updated += new EventHandler(this.UsageTime_Updated);
@@ -63,7 +63,15 @@ namespace Manage_your_Life.Pages
 
 
 
-                
+        /// <summary>
+        /// 選択された行のデータを取得
+        /// </summary>
+        /// <param name="selectedIndex">選択された行のインデックス</param>
+        /// <returns>選択された行のデータ</returns>
+        private object GetSelectedItems(int selectedIndex)
+        {
+            return dataGrid1.Items[selectedIndex];
+        }
 
 
 
@@ -110,8 +118,7 @@ namespace Manage_your_Life.Pages
             {
                 #region 実行ファイルパスからアイコンを表示したい
                 //選択された行のデータを取得
-                int selectedIndex = dataGrid1.SelectedIndex;
-                var row = dataGrid1.Items[selectedIndex];
+                var row = GetSelectedItems(dataGrid1.SelectedIndex);
 
                 //上のItemsより生成するObjectのプロパティの中からパスの値を取り出す
                 string procPath = row.GetType().GetProperty("ProcPath").GetValue(row).ToString();
@@ -140,15 +147,34 @@ namespace Manage_your_Life.Pages
 
         
 
-
-        private void editButton_Click(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// DataGridの編集ボタン押下
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void buttonEdit_Click(object sender, RoutedEventArgs e)
         {
+            //選択行のデータを取得
+            dynamic selectedItems = GetSelectedItems(dataGrid1.SelectedIndex);
 
-        }
+            //データを格納
+            DataBanker context = DataBanker.GetInstance();
+            context["Id"] = selectedItems.Id;
+            context["Title"] = selectedItems.Title;
+            context["UsageTime"] = selectedItems.UsageTime;
+            context["ProcName"] = selectedItems.ProcName;
+            context["ProcPath"] = selectedItems.ProcPath;
+            context["AddDate"] = selectedItems.AddDate;
+            context["LastDate"] = selectedItems.LastDate;
+            context["Memo"] = selectedItems.Memo;
 
-        private void ref_Click(object sender, RoutedEventArgs e)
-        {
-            //SetDataGrid();
+            
+            DataGridRowEdit window = new DataGridRowEdit();
+            //保存ボタンで終了したらDataGrid再読み込み
+            if (window.ShowDialog() == true)
+            {
+                SetDataGrid();
+            }
         }
 
 

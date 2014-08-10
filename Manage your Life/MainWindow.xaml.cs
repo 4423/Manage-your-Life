@@ -79,15 +79,12 @@ namespace Manage_your_Life
             InitializeComponent();
 
             pInfo = new ProcessInformation();
-            dbOperator = new DatabaseOperation();
+            dbOperator = DatabaseOperation.Instance;
             timeUtil = new TimeUtility();
 
             //イベントハンドラの追加
             dbOperator.TimelineLog_Updated += new EventHandler(this.TimelineLog_Changed);
-
-            Pages.ApplicationPage page = new Pages.ApplicationPage();
-            dbOperator.UsageTime_Updated += new EventHandler(page.UsageTime_Updated);
-
+            
 
             //タイマーの作成
             timer = new DispatcherTimer(DispatcherPriority.Normal, this.Dispatcher);
@@ -99,7 +96,7 @@ namespace Manage_your_Life
 
 
         /// <summary>
-        /// タイマー間隔が経過すると呼び出される
+        /// タイマー指定時間が経過すると呼び出される
         /// </summary>
         /// <see cref="http://ari-it.doorblog.jp/archives/28684231.html"/>
         /// <param name="sender"></param>
@@ -169,13 +166,6 @@ namespace Manage_your_Life
                 isRearApplication = false;
                 preTitleCheck = true;
             }
-
-            //CAUTION newスンナ
-            //Pages.HomePage pageHome = new Pages.HomePage();
-            //CAUTION 更新されてないからね。そもそもlabel消したから
-            //pageHome.statusBarItem_label.Content = activeProcess.MainWindowTitle;
-
-            //statusBarItem_label.Content = activeProcess.MainWindowTitle;
         }
 
 

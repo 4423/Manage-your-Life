@@ -12,13 +12,13 @@ namespace Manage_your_Life
     /// <summary>
     /// データベースを操作するクラス
     /// </summary>
-    class DatabaseOperation
+    public sealed class DatabaseOperation
     {
+        private static readonly DatabaseOperation instance = new DatabaseOperation();
 
-        string basePath;
-        string connStr;
-
-        ApplicationDataClassesDataContext database;
+        private ApplicationDataClassesDataContext database;
+        private string basePath;
+        private string connStr;        
 
 
         /// <summary>
@@ -38,7 +38,8 @@ namespace Manage_your_Life
 
 
 
-        public DatabaseOperation()
+        //シングルトン 
+        private DatabaseOperation()
         {
             //接続文字列の生成
             basePath = Directory.GetCurrentDirectory() + @"\ApplicationDatabase.mdf";
@@ -48,9 +49,20 @@ namespace Manage_your_Life
             database = new ApplicationDataClassesDataContext(connStr);
         }
 
+
         ~DatabaseOperation()
         {
             database.Dispose();
+        }
+
+        
+
+        public static DatabaseOperation Instance
+        {
+            get
+            {
+                return instance;
+            }
         }
 
 
@@ -90,9 +102,13 @@ namespace Manage_your_Life
 
             database.SubmitChanges();
 
-            //CAUTION 参照がnullのときあり
-            NewRecord_Registered(this, EventArgs.Empty);
+            //レコード新規登録のイベント発生
+            if (NewRecord_Registered != null)
+            {
+                NewRecord_Registered(this, EventArgs.Empty);
+            }
         }
+
 
 
         /// <summary>
@@ -107,6 +123,7 @@ namespace Manage_your_Life
             return database.DatabaseProcess.Any(
                 p => p.Path.Contains(proc.MainModule.FileName));
         }
+
 
 
         /// <summary>
@@ -125,8 +142,7 @@ namespace Manage_your_Life
                 from p in database.DatabaseProcess
                 where p.Path == processModuleFileName
                 select p;
-
-            //TODO データ複数ある場合は…?
+            
             foreach (var p in q)
             {
                 appId = p.AppId;
@@ -176,18 +192,13 @@ namespace Manage_your_Life
             {
                 UsageTime_Updated(this, EventArgs.Empty);
             }
-
-
+            
             //Timelineの方にも新規レコードとしてロギング         
-            AddingTimeline(appId, activeInterval);
-            //Timeline更新のイベント発生
-            if (TimelineLog_Updated != null)
-            {
-                TimelineLog_Updated(this, EventArgs.Empty);
-            }
+            AddingTimeline(appId, activeInterval);            
 
             return usageSum;
         }
+
 
 
         /// <summary>
@@ -207,7 +218,14 @@ namespace Manage_your_Life
 
             database.DatabaseTimeline.InsertOnSubmit(log);
             database.SubmitChanges();
+
+            //Timeline更新のイベント発生
+            if (TimelineLog_Updated != null)
+            {
+                TimelineLog_Updated(this, EventArgs.Empty);
+            }
         }
+
 
 
         /// <summary>

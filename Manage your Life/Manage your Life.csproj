@@ -88,6 +88,7 @@
       <DependentUpon>SettingsAppearance.xaml</DependentUpon>
     </Compile>
     <Compile Include="Content\SettingsAppearanceViewModel.cs" />
+    <Compile Include="DataBanker.cs" />
     <Compile Include="DatabaseOperation.cs" />
     <Compile Include="Pages\ApplicationPage.xaml.cs">
       <DependentUpon>ApplicationPage.xaml</DependentUpon>
@@ -107,6 +108,12 @@
     <Compile Include="ViewModel\Synthesis\ChartData.cs" />
     <Compile Include="ViewModel\Synthesis\DelegateCommand.cs" />
     <Compile Include="ViewModel\Synthesis\SeriesData.cs" />
+    <Compile Include="Window\DataGridRowEdit.xaml.cs">
+      <DependentUpon>DataGridRowEdit.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Window\EditPage.xaml.cs">
+      <DependentUpon>EditPage.xaml</DependentUpon>
+    </Compile>
     <Page Include="Content\About.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -150,6 +157,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\StatisticalPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Window\DataGridRowEdit.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Window\EditPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
