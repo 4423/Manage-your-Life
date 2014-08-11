@@ -41,6 +41,8 @@ namespace Manage_your_Life.Pages
 
         ProcessInformation pInfo;
 
+        List<ChartData> preHatenaKeywordCollections;
+
         string preWindowTitle = "";
 
         #endregion
@@ -51,6 +53,7 @@ namespace Manage_your_Life.Pages
             InitializeComponent();
 
             pInfo = new ProcessInformation();
+            preHatenaKeywordCollections = new List<ChartData>();
 
             this.DataContext = new HomePageViewModel();
 
@@ -92,8 +95,18 @@ namespace Manage_your_Life.Pages
             this.label_ForegroundWindow.Content = pInfo.GetWindowTitle();
             Utility.DoEvents();
 
+
             //TODO Hatena系は時間が掛かるので非同期処理にしたい
-            this.chart_Hatena.DataContext = new HatenaKeywordViewModel(windowTitle);
+            var context = new HatenaKeywordViewModel(windowTitle, preHatenaKeywordCollections);
+            this.chart_Hatena.DataContext = context;
+
+            //今回のwindowTitleでカテゴライズされたものを追記
+            if (context.GetHatenaKeywordData != null)
+            {
+                preHatenaKeywordCollections.AddRange(context.GetHatenaKeywordData);
+            }
+            
+            //this.chart_Hatena.DataContext = GetInstanceHatena(windowTitle);
             Debug.WriteLine("ViewModel");
 
             preWindowTitle = windowTitle;
@@ -109,10 +122,6 @@ namespace Manage_your_Life.Pages
             this.chart_upTime.DataContext = new HomePageViewModel();
             tenMinTimer.Start();
         }
-
-
-//----------------------------------------------------------イベントハンドラ
-
 
         
     }
