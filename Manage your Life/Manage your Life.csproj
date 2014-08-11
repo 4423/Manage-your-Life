@@ -50,6 +50,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CookComputing.XmlRpcV2">
+      <HintPath>.\CookComputing.XmlRpcV2.dll</HintPath>
+    </Reference>
     <Reference Include="De.TorstenMandelkow.MetroChart">
       <HintPath>.\De.TorstenMandelkow.MetroChart.dll</HintPath>
     </Reference>
@@ -90,6 +93,7 @@
     <Compile Include="Content\SettingsAppearanceViewModel.cs" />
     <Compile Include="DataBanker.cs" />
     <Compile Include="DatabaseOperation.cs" />
+    <Compile Include="Hatena.cs" />
     <Compile Include="Pages\ApplicationPage.xaml.cs">
       <DependentUpon>ApplicationPage.xaml</DependentUpon>
     </Compile>
@@ -102,6 +106,9 @@
     <Compile Include="Pages\StatisticalPage.xaml.cs">
       <DependentUpon>StatisticalPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Utility.cs" />
+    <Compile Include="ViewModel\HatenaKeywordViewModel.cs" />
+    <Compile Include="ViewModel\ViewModel.cs" />
     <Compile Include="ViewModel\HomePageViewModel.cs" />
     <Compile Include="ViewModel\StatisticalPageViewModel.cs" />
     <Compile Include="TimeUtility.cs" />

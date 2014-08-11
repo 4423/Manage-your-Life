@@ -22,16 +22,17 @@ using System.IO;
 
 namespace Manage_your_Life
 {
-    public class HomePageViewModel : INotifyPropertyChanged
+    public class HomePageViewModel : ViewModel
     {
         #region Field
-
+        /*
         public List<double> FontSizes { get; set; }
         public List<double> DoughnutInnerRadiusRatios { get; set; }
         public Dictionary<string, ResourceDictionaryCollection> Palettes { get; set; }
         public List<string> SelectionBrushes { get; set; }
 
         public ObservableCollection<string> ChartTypes { get; set; }
+        */
         public ObservableCollection<ChartData> SystemUpTime { get; set; }
         public ObservableCollection<ChartData> UsageTime { get; set; }
 
@@ -125,8 +126,8 @@ namespace Manage_your_Life
                 {
                     Category = r.ProcName,
                     //小数点2以下四捨五入
-                    Number = ToRoundDown(floorUsageTime, 2),
-                    TotalHours = ToRoundDown(usageTime.TotalHours, 2),
+                    Number = Utility.ToRoundDown(floorUsageTime, 2),
+                    TotalHours = Utility.ToRoundDown(usageTime.TotalHours, 2),
                     Days = usageTime.Days,
                     Hours = usageTime.Hours,
                     Minutes = usageTime.Minutes,
@@ -138,29 +139,14 @@ namespace Manage_your_Life
         }
 
 
-        /// <summary>
-        /// 指定した精度の数値に切り捨てします。
-        /// </summary>
-        /// <see cref="http://jeanne.wankuma.com/tips/csharp/math/rounddown.html"/>
-        /// <param name="dValue">丸め対象の倍精度浮動小数点数</param>
-        /// <param name="iDigits">戻り値の有効桁数の精度</param>
-        /// <returns>iDigits に等しい精度の数値に切り捨てられた数値</returns>
-        public double ToRoundDown(double dValue, int iDigits)
-        {
-            double dCoef = System.Math.Pow(10, iDigits);
-
-            return dValue > 0 ? System.Math.Floor(dValue * dCoef) / dCoef :
-                                System.Math.Ceiling(dValue * dCoef) / dCoef;
-        }
-
-
+        /*
 
         #region Method
 
         /// <summary>
         /// Chartの設定
         /// </summary>
-        private void Settings()
+        internal void Settings()
         {
             ChartTypes = new ObservableCollection<string>();
             ChartTypes.Add("All");
@@ -201,7 +187,7 @@ namespace Manage_your_Life
         /// <summary>
         /// ぱれっとの設定
         /// </summary>
-        private void LoadPalettes()
+        internal void LoadPalettes()
         {
             Palettes = new Dictionary<string, ResourceDictionaryCollection>();
             Palettes.Add("Default", null);
@@ -223,7 +209,7 @@ namespace Manage_your_Life
 
 
         public event PropertyChangedEventHandler PropertyChanged;
-        private void NotifyPropertyChanged(string property)
+        internal void NotifyPropertyChanged(string property)
         {
             if (PropertyChanged != null)
             {
@@ -235,7 +221,7 @@ namespace Manage_your_Life
 
         #region Property
 
-        private string selectedChartType = null;
+        internal string selectedChartType = null;
         public string SelectedChartType
         {
             get
@@ -249,7 +235,7 @@ namespace Manage_your_Life
             }
         }
 
-        private object selectedPalette = null;
+        internal object selectedPalette = null;
         public object SelectedPalette
         {
             get
@@ -263,7 +249,7 @@ namespace Manage_your_Life
             }
         }
 
-        private bool darkLayout = false;
+        internal bool darkLayout = false;
         public bool DarkLayout
         {
             get
@@ -327,7 +313,7 @@ namespace Manage_your_Life
         }
 
 
-        private string selectedBrush = null;
+        internal string selectedBrush = null;
         public string SelectedBrush
         {
             get
@@ -341,7 +327,7 @@ namespace Manage_your_Life
             }
         }
 
-        private double selectedDoughnutInnerRadiusRatio = 0.75;
+        internal double selectedDoughnutInnerRadiusRatio = 0.75;
         public double SelectedDoughnutInnerRadiusRatio
         {
             get
@@ -365,7 +351,7 @@ namespace Manage_your_Life
         }
 
 
-        private bool isRowColumnSwitched = false;
+        internal bool isRowColumnSwitched = false;
         public bool IsRowColumnSwitched
         {
             get
@@ -379,7 +365,7 @@ namespace Manage_your_Life
             }
         }
 
-        private bool isLegendVisible = true;
+        internal bool isLegendVisible = true;
         public bool IsLegendVisible
         {
             get
@@ -393,7 +379,7 @@ namespace Manage_your_Life
             }
         }
 
-        private bool isTitleVisible = true;
+        internal bool isTitleVisible = true;
         public bool IsTitleVisible
         {
             get
@@ -407,7 +393,7 @@ namespace Manage_your_Life
             }
         }
 
-        private double fontSize = 11.0;
+        internal double fontSize = 11.0;
         public double SelectedFontSize
         {
             get
@@ -430,7 +416,7 @@ namespace Manage_your_Life
             }
         }
 
-        private object selectedItem = null;
+        internal object selectedItem = null;
         public object SelectedItem
         {
             get
@@ -460,6 +446,8 @@ namespace Manage_your_Life
         }
 
         #endregion
+
+        */
     }
      
 

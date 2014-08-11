@@ -198,9 +198,7 @@ namespace Manage_your_Life
         /// <param name="e"></param>
         private void TimelineLog_Changed(object sender, System.EventArgs e)
         {
-            Manage_your_Life.Pages.HomePage pageHome = new Pages.HomePage();
-            //CAUTION  意味なし
-            //pageHome.listBox1.Items.Add(DateTime.Now.ToLongTimeString() + " - " + pInfo.GetWindowTitle());
+            
         }
 
     }      

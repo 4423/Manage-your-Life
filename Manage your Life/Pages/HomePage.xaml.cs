@@ -90,7 +90,13 @@ namespace Manage_your_Life.Pages
 
             //labelの値を更新
             this.label_ForegroundWindow.Content = pInfo.GetWindowTitle();
-            
+            Utility.DoEvents();
+
+            //TODO Hatena系は時間が掛かるので非同期処理にしたい
+            this.chart_Hatena.DataContext = new HatenaKeywordViewModel(windowTitle);
+            Debug.WriteLine("ViewModel");
+
+            preWindowTitle = windowTitle;
             oneSecTimer.Start();
         }
 
@@ -99,8 +105,8 @@ namespace Manage_your_Life.Pages
         {
             tenMinTimer.Stop();
 
-            //Chartの値を更新させる
-            this.DataContext = new HomePageViewModel();
+            //稼働時間Chartの値を更新させる
+            this.chart_upTime.DataContext = new HomePageViewModel();
             tenMinTimer.Start();
         }
 
