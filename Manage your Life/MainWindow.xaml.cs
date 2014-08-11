@@ -56,8 +56,6 @@ namespace Manage_your_Life
         /// </summary>
         DatabaseOperation dbOperator;
 
-        TimeUtility timeUtil;
-
         /// <summary>
         /// 登録アプリ同士の計測スルーバグ回避用
         /// </summary>
@@ -79,12 +77,7 @@ namespace Manage_your_Life
             InitializeComponent();
 
             pInfo = new ProcessInformation();
-            dbOperator = DatabaseOperation.Instance;
-            timeUtil = new TimeUtility();
-
-            //イベントハンドラの追加
-            dbOperator.TimelineLog_Updated += new EventHandler(this.TimelineLog_Changed);
-            
+            dbOperator = DatabaseOperation.Instance;       
 
             //タイマーの作成
             timer = new DispatcherTimer(DispatcherPriority.Normal, this.Dispatcher);
@@ -121,8 +114,6 @@ namespace Manage_your_Life
 
             //最前面のアプリケーションが変わった時にしたい処理
             ApplicationChanged(activeProcess);
-            //DrawChart();
-            SetDataGrid();
 
             //キャッシュ
             previousProcess = activeProcess;
@@ -155,49 +146,16 @@ namespace Manage_your_Life
             else //最前面解除
             {
                 //計測時間追記の為にDBから該当Idを取得
+                //CAUTION プロセス終了の例外発生
                 int appId = dbOperator.GetCorrespondingAppId(previousProcess.MainModule.FileName);
 
                 //DBから使用時間を取得し、今回の使用時間を加算してDB更新
-                var activeInterval = timeUtil.GetInterval(firstActiveDate);
+                var activeInterval = Utility.GetInterval(firstActiveDate);
                 TimeSpan usageTime = dbOperator.UpdateUsageTime(appId, activeInterval);
-
-                //TODO 更新された時間のDataGridへの表示処理
 
                 isRearApplication = false;
                 preTitleCheck = true;
             }
-        }
-
-
-
-        //CAUTION レコード新規登録時にするSetDataGridはイベントとして実装App.xaml側で実装した
-        private void SetDataGrid()
-        {
-
-            //pageApplication.dataGrid1.ItemsSource = null;
-            //pageApplication.dataGrid1.ItemsSource = dbOperator.GetAllData();
-
-            //pageApplication.SetDataGrid(dbOperator.GetAllData());
-
-            //dataGrid1.ItemsSource = null;
-
-
-            //dataGrid1.ItemsSource = dbOperator.GetAllData();
-            //TODO DGVへの登録はDB登録毎に1つずつ行って、プレ版同様使用中Appを選択→使用後にそこのみ値を変更の方が良いかも
-
-        }
-
-
-        //-----------------------------------------------------------------イベントハンドラ
-
-
-        /// <summary>
-        /// TimelineDBに変更を加えられた時の通知を受け取る(自作)
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void TimelineLog_Changed(object sender, System.EventArgs e)
-        {
             
         }
 

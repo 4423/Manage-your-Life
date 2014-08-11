@@ -39,10 +39,12 @@ namespace Manage_your_Life.Pages
         /// </summary>
         DispatcherTimer tenMinTimer;
 
+        /// <summary>
+        /// windowTitleからカテゴライズした今までのDictionary
+        /// </summary>
+        Dictionary<string, int> preCategorizedCountData;
+
         ProcessInformation pInfo;
-
-        List<ChartData> preHatenaKeywordCollections;
-
         string preWindowTitle = "";
 
         #endregion
@@ -53,7 +55,7 @@ namespace Manage_your_Life.Pages
             InitializeComponent();
 
             pInfo = new ProcessInformation();
-            preHatenaKeywordCollections = new List<ChartData>();
+            preCategorizedCountData = new Dictionary<string, int>();
 
             this.DataContext = new HomePageViewModel();
 
@@ -97,17 +99,18 @@ namespace Manage_your_Life.Pages
 
 
             //TODO Hatena系は時間が掛かるので非同期処理にしたい
-            var context = new HatenaKeywordViewModel(windowTitle, preHatenaKeywordCollections);
-            this.chart_Hatena.DataContext = context;
-
-            //今回のwindowTitleでカテゴライズされたものを追記
-            if (context.GetHatenaKeywordData != null)
+            var context = new HatenaKeywordViewModel(windowTitle, preCategorizedCountData);
+            if (context.HatenaKeyword.Count != 0)
             {
-                preHatenaKeywordCollections.AddRange(context.GetHatenaKeywordData);
+                this.chart_Hatena.DataContext = context;
             }
-            
-            //this.chart_Hatena.DataContext = GetInstanceHatena(windowTitle);
-            Debug.WriteLine("ViewModel");
+
+            //今回Chartに設定したカウントDictionaryがnullではないとき
+            if (context.GetHatenaCategorizedCountData != null)
+            {
+                //今回の値を保持する
+                preCategorizedCountData = context.GetHatenaCategorizedCountData;
+            }
 
             preWindowTitle = windowTitle;
             oneSecTimer.Start();
@@ -123,6 +126,9 @@ namespace Manage_your_Life.Pages
             tenMinTimer.Start();
         }
 
+
+
+        
         
     }
 }

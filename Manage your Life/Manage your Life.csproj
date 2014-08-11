@@ -111,7 +111,6 @@
     <Compile Include="ViewModel\ViewModel.cs" />
     <Compile Include="ViewModel\HomePageViewModel.cs" />
     <Compile Include="ViewModel\StatisticalPageViewModel.cs" />
-    <Compile Include="TimeUtility.cs" />
     <Compile Include="ViewModel\Synthesis\ChartData.cs" />
     <Compile Include="ViewModel\Synthesis\DelegateCommand.cs" />
     <Compile Include="ViewModel\Synthesis\SeriesData.cs" />
