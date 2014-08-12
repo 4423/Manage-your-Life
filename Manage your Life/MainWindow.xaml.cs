@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Forms;
+using System.Drawing;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
@@ -68,6 +70,10 @@ namespace Manage_your_Life
         /// </summary>
         bool isRearApplication = false;
 
+        /// <summary>
+        /// バルーン通知
+        /// </summary>
+        private NotifyIcon notifyIcon;
 
         #endregion
 
@@ -78,6 +84,12 @@ namespace Manage_your_Life
 
             pInfo = new ProcessInformation();
             dbOperator = DatabaseOperation.Instance;       
+
+            //バルーン通知の設定
+            notifyIcon = new NotifyIcon();
+            notifyIcon.Text = "Manage your Life";
+            notifyIcon.Icon = Properties.Resources.taskTrayIcon;
+            notifyIcon.Visible = true;
 
             //タイマーの作成
             timer = new DispatcherTimer(DispatcherPriority.Normal, this.Dispatcher);
@@ -105,7 +117,6 @@ namespace Manage_your_Life
             if (previousProcess == null) previousProcess = activeProcess;
 
             //前回と同じプロセス名だったら何もしない
-            //TODO ブラウザ等はページ遷移毎に処理されない！！
             if ((activeProcess.ProcessName == previousProcess.ProcessName) && !preTitleCheck)
             {
                 timer.Start();
@@ -114,7 +125,7 @@ namespace Manage_your_Life
 
             //最前面のアプリケーションが変わった時にしたい処理
             ApplicationChanged(activeProcess);
-
+            
             //キャッシュ
             previousProcess = activeProcess;
             timer.Start();
@@ -131,10 +142,18 @@ namespace Manage_your_Life
             //最初に最前面になった時
             if (!isRearApplication)
             {
-                //DBに存在していなければ新規にデータ挿入
-                if (!dbOperator.IsExist(activeProcess))
+                try
                 {
-                    dbOperator.Register(activeProcess);
+                    //DBに存在していなければ新規にデータ挿入
+                    if (!dbOperator.IsExist(activeProcess))
+                    {
+                        dbOperator.Register(activeProcess);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    notifyIcon.ShowBalloonTip(500, "Error",
+                        ex.Message + "\n画面の遷移に処理が追いつかなかったようです。", ToolTipIcon.Error);
                 }
 
                 //最初にアクティブになった時間を取得
@@ -147,16 +166,30 @@ namespace Manage_your_Life
             {
                 //計測時間追記の為にDBから該当Idを取得
                 //CAUTION プロセス終了の例外発生
-                int appId = dbOperator.GetCorrespondingAppId(previousProcess.MainModule.FileName);
+                try
+                {
+                    int appId = dbOperator.GetCorrespondingAppId(previousProcess.MainModule.FileName);
 
-                //DBから使用時間を取得し、今回の使用時間を加算してDB更新
-                var activeInterval = Utility.GetInterval(firstActiveDate);
-                TimeSpan usageTime = dbOperator.UpdateUsageTime(appId, activeInterval);
+                    //DBから使用時間を取得し、今回の使用時間を加算してDB更新
+                    var activeInterval = Utility.GetInterval(firstActiveDate);
+                    TimeSpan usageTime = dbOperator.UpdateUsageTime(appId, activeInterval);
+                }
+                catch (Exception ex)
+                {
+                    notifyIcon.ShowBalloonTip(500, "Error",
+                        ex.Message + "\n画面の遷移に処理が追いつかなかったようです。", ToolTipIcon.Error);
+                }
 
                 isRearApplication = false;
                 preTitleCheck = true;
             }
             
+        }
+
+
+        private void ModernWindow_Closed(object sender, EventArgs e)
+        {
+
         }
 
     }      

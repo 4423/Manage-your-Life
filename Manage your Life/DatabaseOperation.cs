@@ -66,6 +66,12 @@ namespace Manage_your_Life
         }
 
 
+        public ApplicationDataClassesDataContext GetConnectionedDataContext
+        {
+            get { return database; }
+        }
+
+
         //TODO プロセスが途中終了した時のために例外処理を実装した方がいい
 
 
@@ -210,10 +216,8 @@ namespace Manage_your_Life
             DatabaseTimeline log = new DatabaseTimeline();
 
             log.AppId = appId;
-            log.Year = DateTime.Now.Year;
-            log.Month = DateTime.Now.Month;
-            log.Day = DateTime.Now.Day;
-            log.Time = DateTime.Now.TimeOfDay;
+            log.Today = DateTime.Today;
+            log.Now = DateTime.Now;
             log.UsageTime = activeInterval.ToString();
 
             database.DatabaseTimeline.InsertOnSubmit(log);
@@ -227,6 +231,7 @@ namespace Manage_your_Life
         }
 
 
+//--------------------------------------------------------データベース取得
 
         /// <summary>
         /// Databases内の全てのデータを取得
@@ -250,6 +255,8 @@ namespace Manage_your_Life
             return r;
         }
 
+
+        
 
     }
 }

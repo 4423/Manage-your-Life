@@ -21,7 +21,7 @@ using System.IO;
 using System.Threading;
 
 
-namespace Manage_your_Life.Pages
+namespace Manage_your_Life
 {
     /// <summary>
     /// Interaction logic for HomePage.xaml
@@ -44,7 +44,15 @@ namespace Manage_your_Life.Pages
         /// </summary>
         Dictionary<string, int> preCategorizedCountData;
 
+        /// <summary>
+        /// このアプリの終了時に「今日のまとめ」としてデータを使いたい
+        /// MainWindowに渡すためにDataBanker使用
+        /// </summary>
+        //DataBanker dataBanker;
+
+        DatabaseOperation dbOperator;       
         ProcessInformation pInfo;
+        
         string preWindowTitle = "";
 
         #endregion
@@ -57,8 +65,14 @@ namespace Manage_your_Life.Pages
             pInfo = new ProcessInformation();
             preCategorizedCountData = new Dictionary<string, int>();
 
-            this.DataContext = new HomePageViewModel();
+            dbOperator = DatabaseOperation.Instance;
+            dbOperator.UsageTime_Updated += new EventHandler(this.UsageTime_Updated);
 
+            this.chart_upTime.DataContext = new SystemUptimeViewModel();
+            //this.chart_Bar.DataContext = new UsageTimeViewModel();
+            this.chart_Bar.DataContext = new OneDayUsageTimeViewModel(DateTime.Today, 5);
+
+            //タイマー登録
             oneSecTimer = new DispatcherTimer();
             oneSecTimer.Interval = new TimeSpan(0, 0, 1);
             oneSecTimer.Tick += oneSecDispatcherTimer_Tick;
@@ -69,6 +83,7 @@ namespace Manage_your_Life.Pages
             tenMinTimer.Tick += tenMinDispatcherTimer_Tick;
             tenMinTimer.Start();            
         }
+
 
 
 //----------------------------------------------------------タイマーイベント
@@ -97,7 +112,6 @@ namespace Manage_your_Life.Pages
             this.label_ForegroundWindow.Content = pInfo.GetWindowTitle();
             Utility.DoEvents();
 
-
             //TODO Hatena系は時間が掛かるので非同期処理にしたい
             var context = new HatenaKeywordViewModel(windowTitle, preCategorizedCountData);
             if (context.HatenaKeyword.Count != 0)
@@ -112,6 +126,7 @@ namespace Manage_your_Life.Pages
                 preCategorizedCountData = context.GetHatenaCategorizedCountData;
             }
 
+
             preWindowTitle = windowTitle;
             oneSecTimer.Start();
         }
@@ -122,13 +137,25 @@ namespace Manage_your_Life.Pages
             tenMinTimer.Stop();
 
             //稼働時間Chartの値を更新させる
-            this.chart_upTime.DataContext = new HomePageViewModel();
+            this.chart_upTime.DataContext = new SystemUptimeViewModel();
             tenMinTimer.Start();
         }
 
 
 
+//---------------------------------------------------------イベントハンドラ
         
-        
+        /// <summary>
+        /// データベースの使用時間が更新されたら、棒グラフを更新
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void UsageTime_Updated(object sender, EventArgs e)
+        {
+            //this.chart_Bar.DataContext = new UsageTimeViewModel();
+            this.chart_Bar.DataContext = new OneDayUsageTimeViewModel(DateTime.Today, 5);
+        }
+
+
     }
 }

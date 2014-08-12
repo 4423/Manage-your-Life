@@ -717,13 +717,9 @@ namespace Manage_your_Life
 		
 		private string _UsageTime;
 		
-		private System.Nullable<int> _Year;
+		private System.Nullable<System.DateTime> _Today;
 		
-		private System.Nullable<int> _Month;
-		
-		private System.Nullable<int> _Day;
-		
-		private System.Nullable<System.TimeSpan> _Time;
+		private System.Nullable<System.DateTime> _Now;
 		
 		private EntitySet<DatabaseApplication> _DatabaseApplication;
 		
@@ -737,14 +733,10 @@ namespace Manage_your_Life
     partial void OnAppIdChanged();
     partial void OnUsageTimeChanging(string value);
     partial void OnUsageTimeChanged();
-    partial void OnYearChanging(System.Nullable<int> value);
-    partial void OnYearChanged();
-    partial void OnMonthChanging(System.Nullable<int> value);
-    partial void OnMonthChanged();
-    partial void OnDayChanging(System.Nullable<int> value);
-    partial void OnDayChanged();
-    partial void OnTimeChanging(System.Nullable<System.TimeSpan> value);
-    partial void OnTimeChanged();
+    partial void OnTodayChanging(System.Nullable<System.DateTime> value);
+    partial void OnTodayChanged();
+    partial void OnNowChanging(System.Nullable<System.DateTime> value);
+    partial void OnNowChanged();
     #endregion
 		
 		public DatabaseTimeline()
@@ -813,82 +805,42 @@ namespace Manage_your_Life
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Year", DbType="Int")]
-		public System.Nullable<int> Year
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Today", DbType="Date")]
+		public System.Nullable<System.DateTime> Today
 		{
 			get
 			{
-				return this._Year;
+				return this._Today;
 			}
 			set
 			{
-				if ((this._Year != value))
+				if ((this._Today != value))
 				{
-					this.OnYearChanging(value);
+					this.OnTodayChanging(value);
 					this.SendPropertyChanging();
-					this._Year = value;
-					this.SendPropertyChanged("Year");
-					this.OnYearChanged();
+					this._Today = value;
+					this.SendPropertyChanged("Today");
+					this.OnTodayChanged();
 				}
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Month", DbType="Int")]
-		public System.Nullable<int> Month
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Now", DbType="DateTime")]
+		public System.Nullable<System.DateTime> Now
 		{
 			get
 			{
-				return this._Month;
+				return this._Now;
 			}
 			set
 			{
-				if ((this._Month != value))
+				if ((this._Now != value))
 				{
-					this.OnMonthChanging(value);
+					this.OnNowChanging(value);
 					this.SendPropertyChanging();
-					this._Month = value;
-					this.SendPropertyChanged("Month");
-					this.OnMonthChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Day", DbType="Int")]
-		public System.Nullable<int> Day
-		{
-			get
-			{
-				return this._Day;
-			}
-			set
-			{
-				if ((this._Day != value))
-				{
-					this.OnDayChanging(value);
-					this.SendPropertyChanging();
-					this._Day = value;
-					this.SendPropertyChanged("Day");
-					this.OnDayChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Time", DbType="Time")]
-		public System.Nullable<System.TimeSpan> Time
-		{
-			get
-			{
-				return this._Time;
-			}
-			set
-			{
-				if ((this._Time != value))
-				{
-					this.OnTimeChanging(value);
-					this.SendPropertyChanging();
-					this._Time = value;
-					this.SendPropertyChanged("Time");
-					this.OnTimeChanged();
+					this._Now = value;
+					this.SendPropertyChanged("Now");
+					this.OnNowChanged();
 				}
 			}
 		}
