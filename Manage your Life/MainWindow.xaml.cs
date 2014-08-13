@@ -172,7 +172,11 @@ namespace Manage_your_Life
 
                     //DBから使用時間を取得し、今回の使用時間を加算してDB更新
                     var activeInterval = Utility.GetInterval(firstActiveDate);
-                    TimeSpan usageTime = dbOperator.UpdateUsageTime(appId, activeInterval);
+                    dbOperator.UpdateUsageTime(appId, activeInterval);
+
+                    //バルーンで通知
+                    ShowBalloonTip(activeInterval);
+
                 }
                 catch (Exception ex)
                 {
@@ -184,6 +188,20 @@ namespace Manage_your_Life
                 preTitleCheck = true;
             }
             
+        }
+
+
+
+        /// <summary>
+        /// 今まで最前面にあったプロセスの使用時間を通知する
+        /// </summary>
+        /// <param name="activeInterval">今回の使用時間</param>
+        private void ShowBalloonTip(TimeSpan activeInterval)
+        {
+            notifyIcon.BalloonTipIcon = ToolTipIcon.Info;
+            notifyIcon.BalloonTipTitle = "\"" + previousProcess.ProcessName + "\"" + "の計測終了";
+            notifyIcon.BalloonTipText = "使用時間: " + activeInterval.ToString(@"hh\:mm\:ss");
+            notifyIcon.ShowBalloonTip(1000);
         }
 
 

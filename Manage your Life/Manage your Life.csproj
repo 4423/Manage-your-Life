@@ -116,9 +116,14 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Utility.cs" />
+    <Compile Include="ViewModel\CustomDefaultViewModel.cs" />
+    <Compile Include="ViewModel\CustomLastUsedDateViewModel.cs" />
+    <Compile Include="ViewModel\CustomRegistrationDateViewModel.cs" />
+    <Compile Include="ViewModel\CustomUsageTimeViewModel.cs" />
     <Compile Include="ViewModel\HomePage\HatenaKeywordViewModel.cs" />
     <Compile Include="ViewModel\HomePage\UsageTimeViewModel.cs" />
     <Compile Include="ViewModel\OneDayUsageTimeViewModel.cs" />
+    <Compile Include="ViewModel\RangeDayUsageTimeViewModel.cs" />
     <Compile Include="ViewModel\ViewModel.cs" />
     <Compile Include="ViewModel\HomePage\HomePageViewModel.cs" />
     <Compile Include="ViewModel\StatisticalPageViewModel.cs" />

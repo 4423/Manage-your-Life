@@ -334,11 +334,11 @@ namespace Manage_your_Life
         }
 
 
-        public string ToolTipFormat
+        public virtual string ToolTipFormat
         {
             get
             {
-                return "ProcessName: {0}, UsageSeconds: {1} ({3:P2})";
+                return "{0}: {1} ({3:P2})";
             }
         }
 
