@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 
 namespace Manage_your_Life
@@ -69,6 +73,34 @@ namespace Manage_your_Life
             T c = a; a = b; b = c;
         }
 
+
+
+        /// <summary>
+        /// 自身のスクリーンショットをレンダリングする
+        /// </summary>
+        /// <see cref="http://urx.nu/b0Bh"/>
+        /// <param name="target">pngイメージ</param>
+        public static PngBitmapEncoder RenderingVisual(Visual target)
+        {
+            Rect bounds = VisualTreeHelper.GetDescendantBounds(target);
+
+            var renderTarget = new RenderTargetBitmap((Int32)bounds.Width,
+                                (Int32)bounds.Height, 96, 96, PixelFormats.Pbgra32);
+
+            DrawingVisual visual = new DrawingVisual();
+
+            using (DrawingContext context = visual.RenderOpen())
+            {
+                VisualBrush visualBrush = new VisualBrush(target);
+                context.DrawRectangle(visualBrush, null, new Rect(new Point(), bounds.Size));
+            }
+
+            renderTarget.Render(visual);
+            PngBitmapEncoder bitmapEncoder = new PngBitmapEncoder();
+            bitmapEncoder.Frames.Add(BitmapFrame.Create(renderTarget));
+
+            return bitmapEncoder;
+        }
 
 
 //----------------------------------------------------------------Dictionary

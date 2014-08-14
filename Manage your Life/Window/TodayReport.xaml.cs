@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -13,6 +14,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using CoreTweet;
 
 namespace Manage_your_Life
 {
@@ -139,20 +141,50 @@ namespace Manage_your_Life
 
 
 
+
+
+//----------------------------------------------------------------ボタンイベントハンドラ
+
+        /// <summary>
+        /// OKボタン押下で終了
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void button_Ok_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
         }
 
 
+        /// <summary>
+        /// Tweetボタン押下
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void button_Tweet_Click(object sender, RoutedEventArgs e)
         {
-            var tokens = CoreTweet.Tokens.Create(
+            var tokens = Tokens.Create(
                 "nV7WUMvQV0WNoXaL2jxb47ydC",
                 "gAje4KL3JL9Y6Sfr2KnMNlrhxdX6Bf2xcgYMjnFyquxZ4z1aGw",
                 "634603423-msefji4BeiSoRMXJW96YXIXBrWTiN6IjScPCIArp",
                 "Sz1WGwB2nvMs9myblrOek7Qyc1mOFBs3SqAswRkIucMMJ"
                 );
+            string filename = "test.png";
+
+
+
+            //画像の取得
+            var bitmapEncoder = Utility.RenderingVisual(this);
+            using (Stream stram = File.Create(filename))
+            {
+                bitmapEncoder.Save(stram);
+            }
+
+            //画像の投稿
+            MediaUploadResult result = tokens.Media.Upload(media => new FileInfo(filename));
+            //Status a =  tokens.Statuses.Update(status => "test", media_ids => new long[] { result.MediaId });
+
+
 
             if (tweetString.Length >= 140)
             {

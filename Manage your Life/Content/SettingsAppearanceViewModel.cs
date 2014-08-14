@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
 
-namespace Manage_your_Life.Content
+namespace Manage_your_Life
 {
     /// <summary>
     /// A simple view model for configuring theme, font and accent colors.
@@ -15,8 +15,10 @@ namespace Manage_your_Life.Content
     public class SettingsAppearanceViewModel
         : NotifyPropertyChanged
     {
+        /*
         private const string FontSmall = "small";
         private const string FontLarge = "large";
+        */
 
         // 9 accent colors from metro design principles
         /*private Color[] accentColors = new Color[]{
@@ -31,7 +33,7 @@ namespace Manage_your_Life.Content
             Color.FromRgb(0xa2, 0x00, 0xff),   // purple            
         };*/
 
-        // 20 accent colors from Windows Phone 8
+        //WP8で使われているカラー
         private Color[] accentColors = new Color[]{
             Color.FromRgb(0xa4, 0xc4, 0x00),   // lime
             Color.FromRgb(0x60, 0xa9, 0x17),   // green
@@ -56,29 +58,39 @@ namespace Manage_your_Life.Content
         };
 
         private Color selectedAccentColor;
+        
+        /*
         private LinkCollection themes = new LinkCollection();
         private Link selectedTheme;
         private string selectedFontSize;
+        */
 
         public SettingsAppearanceViewModel()
         {
+            /*
             // add the default themes
             this.themes.Add(new Link { DisplayName = "dark", Source = AppearanceManager.DarkThemeSource });
             this.themes.Add(new Link { DisplayName = "light", Source = AppearanceManager.LightThemeSource });
 
             this.SelectedFontSize = AppearanceManager.Current.FontSize == FontSize.Large ? FontLarge : FontSmall;
-            SyncThemeAndColor();
+            */
+            SyncColor();
 
             AppearanceManager.Current.PropertyChanged += OnAppearanceManagerPropertyChanged;
         }
 
-        private void SyncThemeAndColor()
+        private void SyncColor()
         {
+            /*
             // synchronizes the selected viewmodel theme with the actual theme used by the appearance manager.
             this.SelectedTheme = this.themes.FirstOrDefault(l => l.Source.Equals(AppearanceManager.Current.ThemeSource));
+            */
+
 
             // and make sure accent color is up-to-date
             this.SelectedAccentColor = AppearanceManager.Current.AccentColor;
+
+            //現在の色の保存
             Properties.Settings.Default.ThemeColor = AppearanceManager.Current.AccentColor;
             Properties.Settings.Default.Save();
         }
@@ -87,10 +99,11 @@ namespace Manage_your_Life.Content
         {
             if (e.PropertyName == "ThemeSource" || e.PropertyName == "AccentColor")
             {
-                SyncThemeAndColor();
+                SyncColor();
             }
         }
 
+        /*
         public LinkCollection Themes
         {
             get { return this.themes; }
@@ -100,12 +113,14 @@ namespace Manage_your_Life.Content
         {
             get { return new string[] { FontSmall, FontLarge }; }
         }
+        */
 
         public Color[] AccentColors
         {
             get { return this.accentColors; }
         }
 
+        /*
         public Link SelectedTheme
         {
             get { return this.selectedTheme; }
@@ -136,6 +151,7 @@ namespace Manage_your_Life.Content
                 }
             }
         }
+        */
 
         public Color SelectedAccentColor
         {

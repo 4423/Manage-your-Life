@@ -38,8 +38,12 @@ namespace Manage_your_Life
             label_working.Content = "Connecting to database...";
             Utility.DoEvents();
 
-            DatabaseOperation dbOp = DatabaseOperation.Instance;
-            new StatisticalPageViewModel();
+            try
+            {
+                DatabaseOperation dbOp = DatabaseOperation.Instance;
+                new StatisticalPageViewModel();
+            }
+            catch (Exception ex) { label_working.Content = ex.Message; Thread.Sleep(1000); }
 
             label_working.Content = "Initializing window...";
             Utility.DoEvents();

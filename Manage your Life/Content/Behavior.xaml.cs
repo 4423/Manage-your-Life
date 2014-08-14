@@ -13,18 +13,16 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Manage_your_Life
+namespace Manage_your_Life.Content
 {
     /// <summary>
-    /// Interaction logic for SettingsAppearance.xaml
+    /// Interaction logic for Behavior.xaml
     /// </summary>
-    public partial class SettingsAppearance : UserControl
+    public partial class Behavior : UserControl
     {
-        public SettingsAppearance()
+        public Behavior()
         {
             InitializeComponent();
-
-            this.DataContext = new SettingsAppearanceViewModel();
         }
     }
 }
