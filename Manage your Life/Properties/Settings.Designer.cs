@@ -33,5 +33,17 @@ namespace Manage_your_Life.Properties {
                 return ((string)(this["ApplicationDatabaseConnectionString"]));
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FF06A4FF")]
+        public global::System.Windows.Media.Color ThemeColor {
+            get {
+                return ((global::System.Windows.Media.Color)(this["ThemeColor"]));
+            }
+            set {
+                this["ThemeColor"] = value;
+            }
+        }
     }
 }

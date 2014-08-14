@@ -79,6 +79,8 @@ namespace Manage_your_Life.Content
 
             // and make sure accent color is up-to-date
             this.SelectedAccentColor = AppearanceManager.Current.AccentColor;
+            Properties.Settings.Default.ThemeColor = AppearanceManager.Current.AccentColor;
+            Properties.Settings.Default.Save();
         }
 
         private void OnAppearanceManagerPropertyChanged(object sender, PropertyChangedEventArgs e)

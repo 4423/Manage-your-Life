@@ -6,7 +6,6 @@
         ContentSource="/Pages/HomePage.xaml"
         Title="MainWindow" Height="550" Width="1000" Closing="ModernWindow_Closing">
 
-
     <mui:ModernWindow.MenuLinkGroups>
         <mui:LinkGroup DisplayName="Manage your Life">
             <mui:LinkGroup.Links>

@@ -10,5 +10,8 @@
 &lt;/SerializableConnectionString&gt;</DesignTimeValue>
       <Value Profile="(Default)">Data Source=(LocalDB)\v11.0;AttachDbFilename=|DataDirectory|\ApplicationDatabase.mdf;Integrated Security=True</Value>
     </Setting>
+    <Setting Name="ThemeColor" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#FF06A4FF</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

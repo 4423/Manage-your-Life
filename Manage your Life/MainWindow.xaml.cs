@@ -153,7 +153,7 @@ namespace Manage_your_Life
                 catch (Exception ex)
                 {
                     notifyIcon.ShowBalloonTip(500, "Error",
-                        ex.Message + "\n画面の遷移に処理が追いつかなかったようです。", ToolTipIcon.Error);
+                        ex.Message + "\n画面の遷移に処理が追いつきませんでした。", ToolTipIcon.Error);
                 }
 
                 //最初にアクティブになった時間を取得
@@ -181,7 +181,7 @@ namespace Manage_your_Life
                 catch (Exception ex)
                 {
                     notifyIcon.ShowBalloonTip(500, "Error",
-                        ex.Message + "\n画面の遷移に処理が追いつかなかったようです。", ToolTipIcon.Error);
+                        ex.Message + "\n画面の遷移に処理が追いつきませんでした。", ToolTipIcon.Error);
                 }
 
                 isRearApplication = false;
