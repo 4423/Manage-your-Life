@@ -32,12 +32,13 @@ namespace Manage_your_Life
         /// <summary>
         /// 一秒ごとにイベントを発生させるタイマー
         /// </summary>
-        DispatcherTimer oneSecTimer;
+        DispatcherTimer clockTimer;
+        DispatcherTimer hatenaTimer;
 
         /// <summary>
         /// 15分ごとにイベントを発生させるタイマー
         /// </summary>
-        DispatcherTimer tenMinTimer;
+        DispatcherTimer updateUpTimeTimer;
 
         /// <summary>
         /// windowTitleからカテゴライズした今までのDictionary
@@ -48,7 +49,7 @@ namespace Manage_your_Life
         /// このアプリの終了時に「今日のまとめ」としてデータを使いたい
         /// MainWindowに渡すためにDataBanker使用
         /// </summary>
-        //DataBanker dataBanker;
+        DataBanker dataBanker;
 
         DatabaseOperation dbOperator;       
         ProcessInformation pInfo;
@@ -64,33 +65,41 @@ namespace Manage_your_Life
 
             pInfo = new ProcessInformation();
             preCategorizedCountData = new Dictionary<string, int>();
+            dataBanker = DataBanker.GetInstance();
 
             dbOperator = DatabaseOperation.Instance;
             dbOperator.UsageTime_Updated += new EventHandler(this.UsageTime_Updated);
 
             this.chart_upTime.DataContext = new SystemUptimeViewModel();
-            //this.chart_Bar.DataContext = new UsageTimeViewModel();
             this.chart_Bar.DataContext = new OneDayUsageTimeViewModel(DateTime.Today, 5);
 
+            //起動時刻保存
+            dataBanker["StartUpTime"] = DateTime.Now;
+
             //タイマー登録
-            oneSecTimer = new DispatcherTimer();
-            oneSecTimer.Interval = new TimeSpan(0, 0, 1);
-            oneSecTimer.Tick += oneSecDispatcherTimer_Tick;
-            oneSecTimer.Start();
+            clockTimer = new DispatcherTimer();
+            clockTimer.Interval = new TimeSpan(0, 0, 1);
+            clockTimer.Tick += ClockDispatcherTimer_Tick;
+            clockTimer.Start();
             
-            tenMinTimer = new DispatcherTimer();
-            tenMinTimer.Interval = new TimeSpan(0, 15, 0);
-            tenMinTimer.Tick += tenMinDispatcherTimer_Tick;
-            tenMinTimer.Start();            
+            updateUpTimeTimer = new DispatcherTimer();
+            updateUpTimeTimer.Interval = new TimeSpan(0, 15, 0);
+            updateUpTimeTimer.Tick += UpdateUpTimeDispatcherTimer_Tick;
+            updateUpTimeTimer.Start();
+
+            hatenaTimer = new DispatcherTimer();
+            hatenaTimer.Interval = new TimeSpan(0, 0, 1);
+            hatenaTimer.Tick += HatenaDispatcherTimer_Tick;
+            hatenaTimer.Start();
         }
 
 
 
 //----------------------------------------------------------タイマーイベント
 
-        private void oneSecDispatcherTimer_Tick(object sender, EventArgs e)
+        private void ClockDispatcherTimer_Tick(object sender, EventArgs e)
         {
-            oneSecTimer.Stop();
+            clockTimer.Stop();
 
             //システムの稼働時間を取得
             PerformanceCounter upTime = new PerformanceCounter("System", "System Up Time");
@@ -99,12 +108,20 @@ namespace Manage_your_Life
             //labelの値を更新
             this.label_upTime.Content = TimeSpan.FromSeconds((int)upTime.NextValue());
 
+            clockTimer.Start();
+        }
+
+
+
+        private async void HatenaDispatcherTimer_Tick(object sender, EventArgs e)
+        {
+            hatenaTimer.Stop();
 
             //アクティブウィンドウが変化したか
             string windowTitle = pInfo.GetWindowTitle();
             if (windowTitle == preWindowTitle)
             {
-                oneSecTimer.Start();
+                hatenaTimer.Start();
                 return;
             }
 
@@ -112,8 +129,10 @@ namespace Manage_your_Life
             this.label_ForegroundWindow.Content = pInfo.GetWindowTitle();
             Utility.DoEvents();
 
-            //TODO Hatena系は時間が掛かるので非同期処理にしたい
-            var context = new HatenaKeywordViewModel(windowTitle, preCategorizedCountData);
+            //Hatena系は時間が掛かるので非同期処理にした
+            var context = await Task.Run(() => 
+                GetHatenaKeywordViewModel(windowTitle, preCategorizedCountData));
+
             if (context.HatenaKeyword.Count != 0)
             {
                 this.chart_Hatena.DataContext = context;
@@ -124,23 +143,36 @@ namespace Manage_your_Life
             {
                 //今回の値を保持する
                 preCategorizedCountData = context.GetHatenaCategorizedCountData;
+                dataBanker["CategorizedCountData"] = preCategorizedCountData;
             }
 
-
             preWindowTitle = windowTitle;
-            oneSecTimer.Start();
+            hatenaTimer.Start();
         }
 
 
-        private void tenMinDispatcherTimer_Tick(object sender, EventArgs e)
+        private void UpdateUpTimeDispatcherTimer_Tick(object sender, EventArgs e)
         {
-            tenMinTimer.Stop();
+            updateUpTimeTimer.Stop();
 
             //稼働時間Chartの値を更新させる
             this.chart_upTime.DataContext = new SystemUptimeViewModel();
-            tenMinTimer.Start();
+            updateUpTimeTimer.Start();
         }
 
+
+
+        /// <summary>
+        /// HatenaKeywordViewModelのインスタンスを生成
+        /// </summary>
+        /// <param name="windowTitle"></param>
+        /// <param name="preCategorizedCountData"></param>
+        /// <returns></returns>
+        private HatenaKeywordViewModel 
+            GetHatenaKeywordViewModel(string windowTitle, Dictionary<string, int> preCategorizedCountData)
+        {
+            return new HatenaKeywordViewModel(windowTitle, preCategorizedCountData);
+        }
 
 
 //---------------------------------------------------------イベントハンドラ

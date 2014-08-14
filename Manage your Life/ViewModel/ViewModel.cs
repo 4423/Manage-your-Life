@@ -94,9 +94,17 @@ namespace Manage_your_Life
             {
                 foreach (var objkey in dict.Keys)
                 {
-                    if (dict[objkey] is ResourceDictionaryCollection)
+                    try
                     {
-                        Palettes.Add(objkey.ToString(), dict[objkey] as ResourceDictionaryCollection);
+                        if (dict[objkey] is ResourceDictionaryCollection)
+                        {
+                            Palettes.Add(objkey.ToString(), dict[objkey] as ResourceDictionaryCollection);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        //CAUTION 非同期にするとXamlParseExceptionが発生する。WPFのバグらしい?
+                        Debug.WriteLine(ex.Message);
                     }
                 }
             }

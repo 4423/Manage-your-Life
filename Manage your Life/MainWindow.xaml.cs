@@ -205,10 +205,18 @@ namespace Manage_your_Life
         }
 
 
-        private void ModernWindow_Closed(object sender, EventArgs e)
+
+        private void ModernWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
+            timer.Stop();
+            this.Hide();
+
+            TodayReport window = new TodayReport();
+            window.ShowDialog();
+
 
         }
+        
 
     }      
 }

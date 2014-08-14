@@ -53,11 +53,17 @@
     <Reference Include="CookComputing.XmlRpcV2">
       <HintPath>.\CookComputing.XmlRpcV2.dll</HintPath>
     </Reference>
+    <Reference Include="CoreTweet">
+      <HintPath>..\packages\CoreTweet.0.3.4\lib\net45\CoreTweet.dll</HintPath>
+    </Reference>
     <Reference Include="De.TorstenMandelkow.MetroChart">
       <HintPath>.\De.TorstenMandelkow.MetroChart.dll</HintPath>
     </Reference>
     <Reference Include="FirstFloor.ModernUI">
       <HintPath>..\packages\ModernUI.WPF.1.0.5\lib\net45\FirstFloor.ModernUI.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.4.5.11\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -116,12 +122,11 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Utility.cs" />
-    <Compile Include="ViewModel\CustomDefaultViewModel.cs" />
-    <Compile Include="ViewModel\CustomLastUsedDateViewModel.cs" />
-    <Compile Include="ViewModel\CustomRegistrationDateViewModel.cs" />
-    <Compile Include="ViewModel\CustomUsageTimeViewModel.cs" />
+    <Compile Include="ViewModel\Custom\CustomDefaultViewModel.cs" />
+    <Compile Include="ViewModel\Custom\CustomLastUsedDateViewModel.cs" />
+    <Compile Include="ViewModel\Custom\CustomRegistrationDateViewModel.cs" />
+    <Compile Include="ViewModel\Custom\CustomUsageTimeViewModel.cs" />
     <Compile Include="ViewModel\HomePage\HatenaKeywordViewModel.cs" />
-    <Compile Include="ViewModel\HomePage\UsageTimeViewModel.cs" />
     <Compile Include="ViewModel\OneDayUsageTimeViewModel.cs" />
     <Compile Include="ViewModel\RangeDayUsageTimeViewModel.cs" />
     <Compile Include="ViewModel\ViewModel.cs" />
@@ -133,8 +138,8 @@
     <Compile Include="Window\DataGridRowEdit.xaml.cs">
       <DependentUpon>DataGridRowEdit.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Window\EditPage.xaml.cs">
-      <DependentUpon>EditPage.xaml</DependentUpon>
+    <Compile Include="Window\TodayReport.xaml.cs">
+      <DependentUpon>TodayReport.xaml</DependentUpon>
     </Compile>
     <Page Include="Content\About.xaml">
       <SubType>Designer</SubType>
@@ -190,7 +195,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Window\EditPage.xaml">
+    <Page Include="Window\TodayReport.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
