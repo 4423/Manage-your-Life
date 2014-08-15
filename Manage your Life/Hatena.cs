@@ -13,6 +13,7 @@ using System.Net;
 using System.IO;
 using System.Web;
 using System.Xml;
+using System.Collections.Specialized;
 
 namespace Manage_your_Life
 {
@@ -56,7 +57,8 @@ namespace Manage_your_Life
         string xPath = "/methodResponse/params/param/value/struct/member"
                      + "/value/array/data/value/struct";
 
-        string[] ngWords = { "Google Chrome" };
+        //カテゴリNGワード
+        StringCollection ngWords;
 
         int score;
 
@@ -68,6 +70,8 @@ namespace Manage_your_Life
         public Hatena(int score)
         {
             this.score = score;
+
+            ngWords = Properties.Settings.Default.categoryNGWord;
         }
 
 
@@ -116,7 +120,7 @@ namespace Manage_your_Life
                 string cname = element.GetElementsByTagName("value")[0].InnerText;
 
                 if (cname == "") continue;
-                if (Array.IndexOf(ngWords, word) != -1) continue;
+                if (ngWords.Contains(word)) continue;
 
                 try
                 {

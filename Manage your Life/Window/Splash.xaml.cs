@@ -22,7 +22,6 @@ namespace Manage_your_Life
             AppearanceManager.Current.AccentColor = Properties.Settings.Default.ThemeColor;
             this.border.Background = 
                 new SolidColorBrush(FirstFloor.ModernUI.Presentation.AppearanceManager.Current.AccentColor);
-            
 
             timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromSeconds(2);
@@ -43,8 +42,25 @@ namespace Manage_your_Life
                 DatabaseOperation dbOp = DatabaseOperation.Instance;
                 new StatisticalPageViewModel();
             }
-            catch (Exception ex) { label_working.Content = ex.Message; Thread.Sleep(1000); }
+            catch (Exception ex)
+            {
+                label_working.Content = "Test Connection timed out..."; Thread.Sleep(1000);
+                try
+                {
+                    label_working.Content = "Reconnecting...";
+                    Utility.DoEvents();
+                    new StatisticalPageViewModel();
+                    goto EX;
+                }
+                catch (Exception exx)
+                {
+                    label_working.Content = "Error! Please retry.";
+                    Utility.DoEvents(); Thread.Sleep(1000); Environment.Exit(1);
+                }
+            }
+            
 
+         EX:
             label_working.Content = "Initializing window...";
             Utility.DoEvents();
 

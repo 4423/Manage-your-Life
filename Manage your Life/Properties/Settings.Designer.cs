@@ -45,5 +45,91 @@ namespace Manage_your_Life.Properties {
                 this["ThemeColor"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool checkBox_IsTweetOver {
+            get {
+                return ((bool)(this["checkBox_IsTweetOver"]));
+            }
+            set {
+                this["checkBox_IsTweetOver"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool checkBox_IsTweetImage {
+            get {
+                return ((bool)(this["checkBox_IsTweetImage"]));
+            }
+            set {
+                this["checkBox_IsTweetImage"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1000")]
+        public int label_TimeSpan {
+            get {
+                return ((int)(this["label_TimeSpan"]));
+            }
+            set {
+                this["label_TimeSpan"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool checkBox_IsBalloonEnable {
+            get {
+                return ((bool)(this["checkBox_IsBalloonEnable"]));
+            }
+            set {
+                this["checkBox_IsBalloonEnable"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool checkBox_IsReportEnable {
+            get {
+                return ((bool)(this["checkBox_IsReportEnable"]));
+            }
+            set {
+                this["checkBox_IsReportEnable"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool checkBox_IsCategorizeStop {
+            get {
+                return ((bool)(this["checkBox_IsCategorizeStop"]));
+            }
+            set {
+                this["checkBox_IsCategorizeStop"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsi=\"http://www.w3." +
+            "org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\r\n  <s" +
+            "tring>Google Chrome</string>\r\n</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection categoryNGWord {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["categoryNGWord"]));
+            }
+            set {
+                this["categoryNGWord"] = value;
+            }
+        }
     }
 }

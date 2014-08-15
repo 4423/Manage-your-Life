@@ -169,47 +169,57 @@ namespace Manage_your_Life
                 "634603423-msefji4BeiSoRMXJW96YXIXBrWTiN6IjScPCIArp",
                 "Sz1WGwB2nvMs9myblrOek7Qyc1mOFBs3SqAswRkIucMMJ"
                 );
-            string filename = "test.png";
+            
+            string filename = "tweet.png";
+            MediaUploadResult result = new MediaUploadResult();
 
 
-
-            //画像の取得
-            var bitmapEncoder = Utility.RenderingVisual(this);
-            using (Stream stram = File.Create(filename))
+            //画像ツイート機能
+            if(Properties.Settings.Default.checkBox_IsTweetImage)
             {
-                bitmapEncoder.Save(stram);
+                //画像の取得
+                var bitmapEncoder = Utility.RenderingVisual(this);
+                using (Stream stram = File.Create(filename))
+                {
+                    bitmapEncoder.Save(stram);
+                }
+                //画像の投稿
+                result = tokens.Media.Upload(media => new FileInfo(filename));
             }
 
-            //画像の投稿
-            MediaUploadResult result = tokens.Media.Upload(media => new FileInfo(filename));
-            //Status a =  tokens.Statuses.Update(status => "test", media_ids => new long[] { result.MediaId });
 
-
-
-            if (tweetString.Length >= 140)
+            //文字数オーバー
+            if (Properties.Settings.Default.checkBox_IsTweetOver)
             {
-                MessageBox.Show(String.Format("文字数がオーバーしました。 ({0})", tweetString.Length), "エラー",
+                switch (Properties.Settings.Default.checkBox_IsTweetImage)
+                {
+                    case true:
+                        tweetString = tweetString.Substring(0, 110);
+                        tokens.Statuses.Update(status => tweetString + "...", media_ids => new long[] { result.MediaId });
+                        break;
+
+                    case false:
+                        tweetString = tweetString.Substring(0, 135);
+                        tokens.Statuses.Update(new { status = tweetString + "..." });
+                        break;
+                }
+            }
+            else
+            {
+                if (tweetString.Length >= 140)
+                {
+                    MessageBox.Show(String.Format("文字数がオーバーしました。 ({0})", tweetString.Length), "エラー",
                     MessageBoxButton.OK, MessageBoxImage.Error);
-                tweetString = "";
-                return;
-            }
-
-            if (MessageBoxResult.OK == MessageBox.Show(tweetString, "Tweet内容の確認"))
-            {
-                try
+                    return;
+                }
+                else
                 {
                     tokens.Statuses.Update(new { status = tweetString });
-                    MessageBox.Show("Tweetしました。", "情報", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message, "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-                finally
-                {
-                    tweetString = "";
-                }
-            }            
+            }
+
+            MessageBox.Show("Tweetしました。\n" + tweetString, "情報", MessageBoxButton.OK, MessageBoxImage.Information);
+            tweetString = "";
         }
     }
 }

@@ -198,10 +198,13 @@ namespace Manage_your_Life
         /// <param name="activeInterval">今回の使用時間</param>
         private void ShowBalloonTip(TimeSpan activeInterval)
         {
-            notifyIcon.BalloonTipIcon = ToolTipIcon.Info;
-            notifyIcon.BalloonTipTitle = "\"" + previousProcess.ProcessName + "\"" + "の計測終了";
-            notifyIcon.BalloonTipText = "使用時間: " + activeInterval.ToString(@"hh\:mm\:ss");
-            notifyIcon.ShowBalloonTip(1000);
+            if (Properties.Settings.Default.checkBox_IsBalloonEnable)
+            {
+                notifyIcon.BalloonTipIcon = ToolTipIcon.Info;
+                notifyIcon.BalloonTipTitle = "\"" + previousProcess.ProcessName + "\"" + "の計測終了";
+                notifyIcon.BalloonTipText = "使用時間: " + activeInterval.ToString(@"hh\:mm\:ss");
+                notifyIcon.ShowBalloonTip(1000);
+            }
         }
 
 
@@ -211,10 +214,14 @@ namespace Manage_your_Life
             timer.Stop();
             this.Hide();
 
-            TodayReport window = new TodayReport();
-            window.ShowDialog();
+            Properties.Settings.Default.Save();
 
-
+            //TodayReportの表示
+            if (Properties.Settings.Default.checkBox_IsReportEnable)
+            {
+                TodayReport window = new TodayReport();
+                window.ShowDialog();
+            }
         }
         
 

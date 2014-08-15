@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Manage_your_Life.Properties;
+using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -102,6 +104,26 @@ namespace Manage_your_Life
             return bitmapEncoder;
         }
 
+
+        /// <summary>
+        /// StringCollectionのクローンを作る
+        /// 
+        /// 愚直にthis.listBox.Items.Add(this.textBox_ItemAdd.Text)とかやると、
+        /// 使用中のやつ変更するなと怒られるので、
+        /// 参照渡しを回避するために遠回りな方法でクローンを作った
+        /// </summary>
+        /// <param name="preCategoryNGWord">クローン元のStringCollection</param>
+        /// <returns>まっさらなStringCollection</returns>
+        public static StringCollection CreateClone(StringCollection preCategoryNGWord)
+        {
+            string[] copyTmp = new string[preCategoryNGWord.Count];
+            preCategoryNGWord.CopyTo(copyTmp, 0);
+
+            StringCollection categoryNGWords = new StringCollection();
+            categoryNGWords.AddRange(copyTmp);
+
+            return categoryNGWords;
+        }
 
 //----------------------------------------------------------------Dictionary
 

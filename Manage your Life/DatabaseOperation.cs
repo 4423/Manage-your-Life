@@ -83,6 +83,7 @@ namespace Manage_your_Life
         {
             DatabaseApplication app = new DatabaseApplication();
             app.Title = proc.MainWindowTitle;
+            app.Favorite = false;
             database.DatabaseApplication.InsertOnSubmit(app);
             database.SubmitChanges();
 
@@ -187,8 +188,6 @@ namespace Manage_your_Life
 
                 //最終使用日の更新
                 p.LastDate = DateTime.Now;
-
-                break;
             }
 
             //DBの更新

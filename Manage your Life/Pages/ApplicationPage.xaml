@@ -4,9 +4,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-             mc:Ignorable="d" 
-             d:DesignWidth="940">
+             mc:Ignorable="d" d:DesignHeight="430" d:DesignWidth="940">
     <Grid Style="{StaticResource ContentRoot}">
+        
         <ScrollViewer>
             <Grid Background="Transparent">
                 <Grid.ColumnDefinitions>
@@ -14,6 +14,12 @@
                     <ColumnDefinition Width="59"/>
                     <ColumnDefinition Width="236"/>
                 </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                
+                <ScrollViewer>
+                    <StackPanel VerticalAlignment="Top">
                 <DataGrid Name="dataGrid1"                           
                           SelectionMode="Single"
                           AutoGenerateColumns="False" IsReadOnly="True"
@@ -21,23 +27,34 @@
                           IsSynchronizedWithCurrentItem="True"                           
                           SelectionChanged="dataGrid1_SelectionChanged">
                     <DataGrid.Columns>
-                        <DataGridTemplateColumn Header="編集">
+                        <DataGridTemplateColumn Header="Edit">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <Button Content="編集" Click="buttonEdit_Click" />
+                                    <Button Content="Edit" Click="buttonEdit_Click" 
+                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTextColumn Header="ID" Binding="{Binding Id}" Visibility="Hidden"/>
-                        <DataGridTextColumn Header="タイトル" Binding="{Binding Title}" Width="150" />
-                        <DataGridTextColumn Header="使用時間" Binding="{Binding UsageTime}"/>
-                        <DataGridTextColumn Header="プロセス名" Binding="{Binding ProcName}" Width="100"/>
-                        <DataGridTextColumn Header="場所" Binding="{Binding ProcPath}" Width="150"/>
-                        <DataGridTextColumn Header="登録日時" Binding="{Binding AddDate}"/>
-                        <DataGridTextColumn Header="最終計測日時" Binding="{Binding LastDate}"/>
-                        <DataGridTextColumn Header="メモ" Binding="{Binding Memo}"/>
+                        <DataGridTextColumn Header="ID" Binding="{Binding Id}" Visibility="Hidden" />
+                        <DataGridTemplateColumn Header="Favorite" Width="65">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <CheckBox IsChecked="{Binding Favorite, Mode=OneWay}" IsHitTestVisible="False" IsTabStop="False" 
+                                              HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn Header="Title" Binding="{Binding Title}" Width="150" />
+                        <DataGridTextColumn Header="UsageTime" Binding="{Binding UsageTime}"/>
+                        <DataGridTextColumn Header="ProcessName" Binding="{Binding ProcName}" Width="100"/>
+                        <DataGridTextColumn Header="Path" Binding="{Binding ProcPath}" Width="150"/>
+                        <DataGridTextColumn Header="RegisteredDate" Binding="{Binding AddDate}"/>
+                        <DataGridTextColumn Header="LastUsedDate" Binding="{Binding LastDate}"/>
+                        <DataGridTextColumn Header="Memo" Binding="{Binding Memo}"/>
                     </DataGrid.Columns>
                 </DataGrid>
+                    </StackPanel>
+                </ScrollViewer>
 
                 <Image Grid.Column="1" Source="{Binding path}" Name="iconImage" 
                            Height="32" Width="32" VerticalAlignment="Top" />

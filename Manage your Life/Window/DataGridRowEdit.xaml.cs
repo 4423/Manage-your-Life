@@ -32,7 +32,7 @@ namespace Manage_your_Life
     {
 
         /// <summary>
-        /// Window間データ共有用クラス
+        /// Window間データ共有用
         /// </summary>
         DataBanker context;
 
@@ -88,6 +88,7 @@ namespace Manage_your_Life
 
                 foreach (var r in q)
                 {
+                    r.Favorite = this.checkBox_Favorite.IsChecked;                        
                     r.Title = this.textBox_Title.Text;
                     r.DatabaseDate.UsageTime = this.textBox_UsageTime.Text;
                     r.Memo = this.textBox_Memo.Text;
@@ -115,6 +116,7 @@ namespace Manage_your_Life
         {
             //データを取得する
             this.textBox_Title.Text = (string)context["Title"];
+            this.checkBox_Favorite.IsChecked = (bool)context["Favorite"];
             this.textbox_ProcName.Text = (string)context["ProcName"];
             this.textbox_Path.Text = (string)context["ProcPath"];
             this.textBox_Memo.Text = (string)context["Memo"];

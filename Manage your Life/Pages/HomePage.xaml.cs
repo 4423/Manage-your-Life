@@ -87,10 +87,17 @@ namespace Manage_your_Life
             updateUpTimeTimer.Tick += UpdateUpTimeDispatcherTimer_Tick;
             updateUpTimeTimer.Start();
 
-            hatenaTimer = new DispatcherTimer();
-            hatenaTimer.Interval = new TimeSpan(0, 0, 1);
-            hatenaTimer.Tick += HatenaDispatcherTimer_Tick;
-            hatenaTimer.Start();
+            //カテゴライズを停止しない!
+            if (!Properties.Settings.Default.checkBox_IsCategorizeStop)
+            {
+                int sec = Properties.Settings.Default.label_TimeSpan / 1000;
+                int milliSec = Properties.Settings.Default.label_TimeSpan % 1000;
+
+                hatenaTimer = new DispatcherTimer();
+                hatenaTimer.Interval = new TimeSpan(0, 0, 0, sec, milliSec);
+                hatenaTimer.Tick += HatenaDispatcherTimer_Tick;
+                hatenaTimer.Start();
+            }
         }
 
 

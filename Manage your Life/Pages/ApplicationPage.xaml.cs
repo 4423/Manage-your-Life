@@ -160,6 +160,7 @@ namespace Manage_your_Life
             //データを格納
             DataBanker context = DataBanker.GetInstance();
             context["Id"] = selectedItems.Id;
+            context["Favorite"] = selectedItems.Favorite;
             context["Title"] = selectedItems.Title;
             context["UsageTime"] = selectedItems.UsageTime;
             context["ProcName"] = selectedItems.ProcName;
