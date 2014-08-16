@@ -77,8 +77,8 @@
                                     <CheckBox Grid.Row="1"  Content="終了時にToday Reportの表示をする" Name="checkBox_IsReportEnable"
                                       HorizontalAlignment="Left" VerticalAlignment="Center" Checked="checkBox_IsReportEnable_Checked" Unchecked="checkBox_IsReportEnable_Unchecked" />
 
-                                    <Label Grid.Row="2" Grid.Column="0" Content="使いすぎ警告"
-                                    VerticalAlignment="Center" HorizontalAlignment="Left" />
+                                    <CheckBox Grid.Row="2" Grid.Column="0" Content="使いすぎ警告を有効にする" Name="checkBox_IsOveruseWarining"
+                                    VerticalAlignment="Center" HorizontalAlignment="Left" Checked="checkBox_IsOveruseWarining_Checked" Unchecked="checkBox_IsOveruseWarining_Unchecked" />
                                     <Button Grid.Row="2" Grid.Column="1" Name="button_SettingCautionApp" Content="設定" Margin="1" VerticalAlignment="Center" Click="button_SettingCautionApp_Click" />
                                 </Grid>
                             </StackPanel>

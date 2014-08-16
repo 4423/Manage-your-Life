@@ -1,10 +1,13 @@
 ﻿using FirstFloor.ModernUI.Presentation;
 using System;
+using System.Linq;
 using System.Diagnostics;
 using System.Threading;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Manage_your_Life
 {
@@ -14,6 +17,7 @@ namespace Manage_your_Life
     public partial class Splash : Window
     {
         DispatcherTimer timer;
+        DatabaseOperation dbOperator;
 
         public Splash()
         {
@@ -34,17 +38,19 @@ namespace Manage_your_Life
             timer.Stop();
             timer.Tick -= new EventHandler(DispatcherTimer_Tick);
 
+
+            //データベース接続
             label_working.Content = "Connecting to database...";
             Utility.DoEvents();
 
             try
             {
-                DatabaseOperation dbOp = DatabaseOperation.Instance;
+                dbOperator = DatabaseOperation.Instance;
                 new StatisticalPageViewModel();
             }
             catch (Exception ex)
             {
-                label_working.Content = "Test Connection timed out..."; Thread.Sleep(1000);
+                label_working.Content = "Test connection failed..."; Thread.Sleep(1000);
                 try
                 {
                     label_working.Content = "Reconnecting...";
@@ -55,12 +61,11 @@ namespace Manage_your_Life
                 catch (Exception exx)
                 {
                     label_working.Content = "Error! Please retry.";
-                    Utility.DoEvents(); Thread.Sleep(1000); Environment.Exit(1);
+                    //Utility.DoEvents(); Thread.Sleep(1000); Environment.Exit(1);
                 }
             }
-            
-
-         EX:
+        EX:
+            //MainWindow作成
             label_working.Content = "Initializing window...";
             Utility.DoEvents();
 
@@ -71,6 +76,5 @@ namespace Manage_your_Life
             main.Show();
             this.Close();
         }
-
     }
 }

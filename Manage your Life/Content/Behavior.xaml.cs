@@ -29,17 +29,26 @@ namespace Manage_your_Life.Content
         {
             InitializeComponent();
         }
-        
-        
+
+
+
         //コントロールにユーザー設定を反映
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
+            this.button_SettingCautionApp.Visibility = System.Windows.Visibility.Visible;
+
+            if (Utility.IsDatabaseEmpty() || !Settings.Default.checkBox_IsOveruseWarining)
+            {
+                this.button_SettingCautionApp.Visibility = System.Windows.Visibility.Hidden;
+            }
+
             checkBox_IsOver.IsChecked = Settings.Default.checkBox_IsTweetOver;
             checkBox_IsImage.IsChecked = Settings.Default.checkBox_IsTweetImage;
 
             checkBox_IsCategorizeStop.IsChecked = Settings.Default.checkBox_IsCategorizeStop;
             slider_TimeSpan.Value = Settings.Default.label_TimeSpan;
             textBlock_TimeSpan.Text = Settings.Default.label_TimeSpan.ToString();
+            checkBox_IsOveruseWarining.IsChecked = Settings.Default.checkBox_IsOveruseWarining;
 
             checkBox_IsBalloonEnable.IsChecked = Settings.Default.checkBox_IsBalloonEnable;
             checkBox_IsReportEnable.IsChecked = Settings.Default.checkBox_IsReportEnable;
@@ -109,6 +118,27 @@ namespace Manage_your_Life.Content
             }
         }
 
+        //使いすぎ警告を有効にする
+        private void checkBox_IsOveruseWarining_Checked(object sender, RoutedEventArgs e)
+        {
+            if (isUserControlLoaded)
+            {
+                Settings.Default.checkBox_IsOveruseWarining = true;
+                this.button_SettingCautionApp.Visibility = System.Windows.Visibility.Visible;
+                Settings.Default.Save();
+            }
+        }
+
+        private void checkBox_IsOveruseWarining_Unchecked(object sender, RoutedEventArgs e)
+        {
+            if (isUserControlLoaded)
+            {
+                Settings.Default.checkBox_IsOveruseWarining = false;
+                this.button_SettingCautionApp.Visibility = System.Windows.Visibility.Hidden;
+                Settings.Default.Save();
+            }
+        }
+
 
 
         //文字数オーバー時は省略して投稿
@@ -148,7 +178,8 @@ namespace Manage_your_Life.Content
         //使いすぎ警告
         private void button_SettingCautionApp_Click(object sender, RoutedEventArgs e)
         {
-            
+            OveruseWarning window = new OveruseWarning();
+            window.ShowDialog();
         }
 
 
@@ -214,6 +245,8 @@ namespace Manage_your_Life.Content
             isUserControlLoaded = false;
             Settings.Default.Save();
         }
+
+        
 
     }
 }

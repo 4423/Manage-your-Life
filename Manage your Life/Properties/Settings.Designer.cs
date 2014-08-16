@@ -131,5 +131,17 @@ namespace Manage_your_Life.Properties {
                 this["categoryNGWord"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool checkBox_IsOveruseWarining {
+            get {
+                return ((bool)(this["checkBox_IsOveruseWarining"]));
+            }
+            set {
+                this["checkBox_IsOveruseWarining"] = value;
+            }
+        }
     }
 }

@@ -18,8 +18,9 @@ namespace Manage_your_Life
 
         private ApplicationDataClassesDataContext database;
         private string basePath;
-        private string connStr;        
+        private string connStr;
 
+        private string timeSpanToStringFormat = @"d\:hh\:mm\:ss";
 
         /// <summary>
         /// TimelineDBに変更を加えた(追記)ときに発生
@@ -104,6 +105,7 @@ namespace Manage_your_Life
             date.AppId = id;
             date.AddDate = date.LastDate = DateTime.Now;
             date.UsageTime = "0.00:00:00";
+            date.AlertTime = "0.00:00:00";
             database.DatabaseDate.InsertOnSubmit(date);
             #endregion
 
@@ -157,6 +159,24 @@ namespace Manage_your_Life
 
             database.DatabaseApplication.DeleteOnSubmit(appQuery);
 
+
+            database.SubmitChanges();
+        }
+
+
+
+        /// <summary>
+        /// 使いすぎ警告の使用時間を設定
+        /// </summary>
+        /// <param name="appId">警告の対象となるID</param>
+        internal void SetAlert(int appId, TimeSpan alertTime)
+        {
+            var q = (
+                from p in database.DatabaseDate
+                where p.AppId == appId
+                select p).First();
+
+            q.AlertTime = alertTime.ToString(timeSpanToStringFormat);
 
             database.SubmitChanges();
         }
@@ -228,7 +248,7 @@ namespace Manage_your_Life
                 //今回の測定の時間を加算
                 usageSum += activeInterval;
                 //DBに上書き
-                p.UsageTime = usageSum.ToString();
+                p.UsageTime = usageSum.ToString(timeSpanToStringFormat);
 
 
                 //最終使用日の更新
@@ -291,6 +311,7 @@ namespace Manage_your_Life
                     ProcName = p.DatabaseProcess.Name,
                     ProcPath = p.DatabaseProcess.Path,
                     UsageTime = p.DatabaseDate.UsageTime, 
+                    AlertTime = p.DatabaseDate.AlertTime,
                     AddDate = p.DatabaseDate.AddDate, 
                     LastDate = p.DatabaseDate.LastDate,
                     Memo = p.Memo 
@@ -300,7 +321,53 @@ namespace Manage_your_Life
         }
 
 
-        
+        /// <summary>
+        /// 使いすぎ警告の対象に含まれているプロセスのIDと警告時間を取得
+        /// </summary>
+        /// <returns>IDと警告時間のDictionary</returns>
+        internal Dictionary<int, TimeSpan> GetOveruseWarningCollection()
+        {            
+            var q =
+                from p in database.DatabaseApplication
+                where p.DatabaseDate.AlertTime != "0.00:00:00"
+                select new
+                {
+                    Id = p.Id,
+                    AlertTime = p.DatabaseDate.AlertTime
+                };
+
+            var dict = new Dictionary<int, TimeSpan>();
+            foreach (var r in q)
+            {
+                dict.Add(r.Id, TimeSpan.Parse(r.AlertTime));
+            }
+
+            return dict;
+        }
+
+
+        /// <summary>
+        /// 指定されたIDの今日の使用時間を取得
+        /// </summary>
+        /// <param name="appId">使用時間を知りたいID</param>
+        /// <returns>IDに対応する今日の使用時間</returns>
+        internal TimeSpan GetTodayPrpcessUsageTime(int appId)
+        {
+            var q = (
+                    from p in database.DatabaseApplication
+                    where appId == p.Id
+                    where DateTime.Today == p.DatabaseTimeline.Today                    
+                    select new
+                    {
+                        Key = p.DatabaseProcess.Name,
+                        Value = TimeSpan.Parse(p.DatabaseTimeline.UsageTime)
+                    });
+            
+            //断片的な使用時間をまとめる
+            var dict = Utility.DictionaryOrganizingValue(q).Single();
+
+            return dict.Value;
+        }
 
     }
 }

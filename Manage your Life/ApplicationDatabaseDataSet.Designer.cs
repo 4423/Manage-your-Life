@@ -700,6 +700,8 @@ namespace Manage_your_Life {
             
             private global::System.Data.DataColumn columnUsageTime;
             
+            private global::System.Data.DataColumn columnAlertTime;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public DatabaseDateDataTable() {
@@ -775,6 +777,14 @@ namespace Manage_your_Life {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn AlertTimeColumn {
+                get {
+                    return this.columnAlertTime;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -810,14 +820,15 @@ namespace Manage_your_Life {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public DatabaseDateRow AddDatabaseDateRow(System.DateTime AddDate, System.DateTime LastDate, int AppId, string UsageTime) {
+            public DatabaseDateRow AddDatabaseDateRow(System.DateTime AddDate, System.DateTime LastDate, int AppId, string UsageTime, string AlertTime) {
                 DatabaseDateRow rowDatabaseDateRow = ((DatabaseDateRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         null,
                         AddDate,
                         LastDate,
                         AppId,
-                        UsageTime};
+                        UsageTime,
+                        AlertTime};
                 rowDatabaseDateRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowDatabaseDateRow);
                 return rowDatabaseDateRow;
@@ -852,6 +863,7 @@ namespace Manage_your_Life {
                 this.columnLastDate = base.Columns["LastDate"];
                 this.columnAppId = base.Columns["AppId"];
                 this.columnUsageTime = base.Columns["UsageTime"];
+                this.columnAlertTime = base.Columns["AlertTime"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -867,6 +879,8 @@ namespace Manage_your_Life {
                 base.Columns.Add(this.columnAppId);
                 this.columnUsageTime = new global::System.Data.DataColumn("UsageTime", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnUsageTime);
+                this.columnAlertTime = new global::System.Data.DataColumn("AlertTime", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnAlertTime);
                 this.Constraints.Add(new global::System.Data.UniqueConstraint("Constraint1", new global::System.Data.DataColumn[] {
                                 this.columnId}, true));
                 this.columnId.AutoIncrement = true;
@@ -878,6 +892,7 @@ namespace Manage_your_Life {
                 this.columnAppId.AllowDBNull = false;
                 this.columnUsageTime.AllowDBNull = false;
                 this.columnUsageTime.MaxLength = 50;
+                this.columnAlertTime.MaxLength = 50;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1824,6 +1839,22 @@ namespace Manage_your_Life {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string AlertTime {
+                get {
+                    try {
+                        return ((string)(this[this.tableDatabaseDate.AlertTimeColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("テーブル \'DatabaseDate\' にある列 \'AlertTime\' の値は DBNull です。", e);
+                    }
+                }
+                set {
+                    this[this.tableDatabaseDate.AlertTimeColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public bool IsAddDateNull() {
                 return this.IsNull(this.tableDatabaseDate.AddDateColumn);
             }
@@ -1844,6 +1875,18 @@ namespace Manage_your_Life {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void SetLastDateNull() {
                 this[this.tableDatabaseDate.LastDateColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsAlertTimeNull() {
+                return this.IsNull(this.tableDatabaseDate.AlertTimeColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetAlertTimeNull() {
+                this[this.tableDatabaseDate.AlertTimeColumn] = global::System.Convert.DBNull;
             }
         }
         
@@ -2647,10 +2690,11 @@ SELECT Id, Favorite, Title, Memo FROM DatabaseApplication WHERE (Id = @Id)";
             tableMapping.ColumnMappings.Add("LastDate", "LastDate");
             tableMapping.ColumnMappings.Add("AppId", "AppId");
             tableMapping.ColumnMappings.Add("UsageTime", "UsageTime");
+            tableMapping.ColumnMappings.Add("AlertTime", "AlertTime");
             this._adapter.TableMappings.Add(tableMapping);
             this._adapter.DeleteCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.DeleteCommand.Connection = this.Connection;
-            this._adapter.DeleteCommand.CommandText = @"DELETE FROM [DatabaseDate] WHERE (([Id] = @Original_Id) AND ((@IsNull_AddDate = 1 AND [AddDate] IS NULL) OR ([AddDate] = @Original_AddDate)) AND ((@IsNull_LastDate = 1 AND [LastDate] IS NULL) OR ([LastDate] = @Original_LastDate)) AND ([AppId] = @Original_AppId) AND ([UsageTime] = @Original_UsageTime))";
+            this._adapter.DeleteCommand.CommandText = @"DELETE FROM [DatabaseDate] WHERE (([Id] = @Original_Id) AND ((@IsNull_AddDate = 1 AND [AddDate] IS NULL) OR ([AddDate] = @Original_AddDate)) AND ((@IsNull_LastDate = 1 AND [LastDate] IS NULL) OR ([LastDate] = @Original_LastDate)) AND ([AppId] = @Original_AppId) AND ([UsageTime] = @Original_UsageTime) AND ((@IsNull_AlertTime = 1 AND [AlertTime] IS NULL) OR ([AlertTime] = @Original_AlertTime)))";
             this._adapter.DeleteCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_Id", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Id", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_AddDate", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "AddDate", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
@@ -2658,33 +2702,40 @@ SELECT Id, Favorite, Title, Memo FROM DatabaseApplication WHERE (Id = @Id)";
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_LastDate", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "LastDate", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_LastDate", global::System.Data.SqlDbType.DateTime, 0, global::System.Data.ParameterDirection.Input, 0, 0, "LastDate", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_AppId", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "AppId", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
-            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_UsageTime", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "UsageTime", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_UsageTime", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "UsageTime", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_AlertTime", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "AlertTime", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_AlertTime", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "AlertTime", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.InsertCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.InsertCommand.Connection = this.Connection;
-            this._adapter.InsertCommand.CommandText = "INSERT INTO [DatabaseDate] ([AddDate], [LastDate], [AppId], [UsageTime]) VALUES (" +
-                "@AddDate, @LastDate, @AppId, @UsageTime);\r\nSELECT Id, AddDate, LastDate, AppId, " +
-                "UsageTime FROM DatabaseDate WHERE (Id = SCOPE_IDENTITY())";
+            this._adapter.InsertCommand.CommandText = "INSERT INTO [DatabaseDate] ([AddDate], [LastDate], [AppId], [UsageTime], [AlertTi" +
+                "me]) VALUES (@AddDate, @LastDate, @AppId, @UsageTime, @AlertTime);\r\nSELECT Id, A" +
+                "ddDate, LastDate, AppId, UsageTime, AlertTime FROM DatabaseDate WHERE (Id = SCOP" +
+                "E_IDENTITY())";
             this._adapter.InsertCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@AddDate", global::System.Data.SqlDbType.DateTime, 0, global::System.Data.ParameterDirection.Input, 0, 0, "AddDate", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@LastDate", global::System.Data.SqlDbType.DateTime, 0, global::System.Data.ParameterDirection.Input, 0, 0, "LastDate", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@AppId", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "AppId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
-            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@UsageTime", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "UsageTime", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@UsageTime", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "UsageTime", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@AlertTime", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "AlertTime", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.UpdateCommand.Connection = this.Connection;
-            this._adapter.UpdateCommand.CommandText = @"UPDATE [DatabaseDate] SET [AddDate] = @AddDate, [LastDate] = @LastDate, [AppId] = @AppId, [UsageTime] = @UsageTime WHERE (([Id] = @Original_Id) AND ((@IsNull_AddDate = 1 AND [AddDate] IS NULL) OR ([AddDate] = @Original_AddDate)) AND ((@IsNull_LastDate = 1 AND [LastDate] IS NULL) OR ([LastDate] = @Original_LastDate)) AND ([AppId] = @Original_AppId) AND ([UsageTime] = @Original_UsageTime));
-SELECT Id, AddDate, LastDate, AppId, UsageTime FROM DatabaseDate WHERE (Id = @Id)";
+            this._adapter.UpdateCommand.CommandText = @"UPDATE [DatabaseDate] SET [AddDate] = @AddDate, [LastDate] = @LastDate, [AppId] = @AppId, [UsageTime] = @UsageTime, [AlertTime] = @AlertTime WHERE (([Id] = @Original_Id) AND ((@IsNull_AddDate = 1 AND [AddDate] IS NULL) OR ([AddDate] = @Original_AddDate)) AND ((@IsNull_LastDate = 1 AND [LastDate] IS NULL) OR ([LastDate] = @Original_LastDate)) AND ([AppId] = @Original_AppId) AND ([UsageTime] = @Original_UsageTime) AND ((@IsNull_AlertTime = 1 AND [AlertTime] IS NULL) OR ([AlertTime] = @Original_AlertTime)));
+SELECT Id, AddDate, LastDate, AppId, UsageTime, AlertTime FROM DatabaseDate WHERE (Id = @Id)";
             this._adapter.UpdateCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@AddDate", global::System.Data.SqlDbType.DateTime, 0, global::System.Data.ParameterDirection.Input, 0, 0, "AddDate", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@LastDate", global::System.Data.SqlDbType.DateTime, 0, global::System.Data.ParameterDirection.Input, 0, 0, "LastDate", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@AppId", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "AppId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
-            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@UsageTime", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "UsageTime", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@UsageTime", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "UsageTime", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@AlertTime", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "AlertTime", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_Id", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Id", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_AddDate", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "AddDate", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_AddDate", global::System.Data.SqlDbType.DateTime, 0, global::System.Data.ParameterDirection.Input, 0, 0, "AddDate", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_LastDate", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "LastDate", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_LastDate", global::System.Data.SqlDbType.DateTime, 0, global::System.Data.ParameterDirection.Input, 0, 0, "LastDate", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_AppId", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "AppId", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
-            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_UsageTime", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "UsageTime", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_UsageTime", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "UsageTime", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_AlertTime", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "AlertTime", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_AlertTime", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "AlertTime", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Id", global::System.Data.SqlDbType.Int, 4, global::System.Data.ParameterDirection.Input, 0, 0, "Id", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
         }
         
@@ -2701,7 +2752,7 @@ SELECT Id, AddDate, LastDate, AppId, UsageTime FROM DatabaseDate WHERE (Id = @Id
             this._commandCollection = new global::System.Data.SqlClient.SqlCommand[1];
             this._commandCollection[0] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[0].Connection = this.Connection;
-            this._commandCollection[0].CommandText = "SELECT Id, AddDate, LastDate, AppId, UsageTime FROM DatabaseDate";
+            this._commandCollection[0].CommandText = "SELECT Id, AddDate, LastDate, AppId, UsageTime, AlertTime FROM DatabaseDate";
             this._commandCollection[0].CommandType = global::System.Data.CommandType.Text;
         }
         
@@ -2762,7 +2813,7 @@ SELECT Id, AddDate, LastDate, AppId, UsageTime FROM DatabaseDate WHERE (Id = @Id
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Delete, true)]
-        public virtual int Delete(int Original_Id, global::System.Nullable<global::System.DateTime> Original_AddDate, global::System.Nullable<global::System.DateTime> Original_LastDate, int Original_AppId, string Original_UsageTime) {
+        public virtual int Delete(int Original_Id, global::System.Nullable<global::System.DateTime> Original_AddDate, global::System.Nullable<global::System.DateTime> Original_LastDate, int Original_AppId, string Original_UsageTime, string Original_AlertTime) {
             this.Adapter.DeleteCommand.Parameters[0].Value = ((int)(Original_Id));
             if ((Original_AddDate.HasValue == true)) {
                 this.Adapter.DeleteCommand.Parameters[1].Value = ((object)(0));
@@ -2787,6 +2838,14 @@ SELECT Id, AddDate, LastDate, AppId, UsageTime FROM DatabaseDate WHERE (Id = @Id
             else {
                 this.Adapter.DeleteCommand.Parameters[6].Value = ((string)(Original_UsageTime));
             }
+            if ((Original_AlertTime == null)) {
+                this.Adapter.DeleteCommand.Parameters[7].Value = ((object)(1));
+                this.Adapter.DeleteCommand.Parameters[8].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.DeleteCommand.Parameters[7].Value = ((object)(0));
+                this.Adapter.DeleteCommand.Parameters[8].Value = ((string)(Original_AlertTime));
+            }
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.DeleteCommand.Connection.State;
             if (((this.Adapter.DeleteCommand.Connection.State & global::System.Data.ConnectionState.Open) 
                         != global::System.Data.ConnectionState.Open)) {
@@ -2807,7 +2866,7 @@ SELECT Id, AddDate, LastDate, AppId, UsageTime FROM DatabaseDate WHERE (Id = @Id
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Insert, true)]
-        public virtual int Insert(global::System.Nullable<global::System.DateTime> AddDate, global::System.Nullable<global::System.DateTime> LastDate, int AppId, string UsageTime) {
+        public virtual int Insert(global::System.Nullable<global::System.DateTime> AddDate, global::System.Nullable<global::System.DateTime> LastDate, int AppId, string UsageTime, string AlertTime) {
             if ((AddDate.HasValue == true)) {
                 this.Adapter.InsertCommand.Parameters[0].Value = ((System.DateTime)(AddDate.Value));
             }
@@ -2826,6 +2885,12 @@ SELECT Id, AddDate, LastDate, AppId, UsageTime FROM DatabaseDate WHERE (Id = @Id
             }
             else {
                 this.Adapter.InsertCommand.Parameters[3].Value = ((string)(UsageTime));
+            }
+            if ((AlertTime == null)) {
+                this.Adapter.InsertCommand.Parameters[4].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.InsertCommand.Parameters[4].Value = ((string)(AlertTime));
             }
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.InsertCommand.Connection.State;
             if (((this.Adapter.InsertCommand.Connection.State & global::System.Data.ConnectionState.Open) 
@@ -2847,7 +2912,7 @@ SELECT Id, AddDate, LastDate, AppId, UsageTime FROM DatabaseDate WHERE (Id = @Id
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, true)]
-        public virtual int Update(global::System.Nullable<global::System.DateTime> AddDate, global::System.Nullable<global::System.DateTime> LastDate, int AppId, string UsageTime, int Original_Id, global::System.Nullable<global::System.DateTime> Original_AddDate, global::System.Nullable<global::System.DateTime> Original_LastDate, int Original_AppId, string Original_UsageTime, int Id) {
+        public virtual int Update(global::System.Nullable<global::System.DateTime> AddDate, global::System.Nullable<global::System.DateTime> LastDate, int AppId, string UsageTime, string AlertTime, int Original_Id, global::System.Nullable<global::System.DateTime> Original_AddDate, global::System.Nullable<global::System.DateTime> Original_LastDate, int Original_AppId, string Original_UsageTime, string Original_AlertTime, int Id) {
             if ((AddDate.HasValue == true)) {
                 this.Adapter.UpdateCommand.Parameters[0].Value = ((System.DateTime)(AddDate.Value));
             }
@@ -2867,31 +2932,45 @@ SELECT Id, AddDate, LastDate, AppId, UsageTime FROM DatabaseDate WHERE (Id = @Id
             else {
                 this.Adapter.UpdateCommand.Parameters[3].Value = ((string)(UsageTime));
             }
-            this.Adapter.UpdateCommand.Parameters[4].Value = ((int)(Original_Id));
-            if ((Original_AddDate.HasValue == true)) {
-                this.Adapter.UpdateCommand.Parameters[5].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[6].Value = ((System.DateTime)(Original_AddDate.Value));
+            if ((AlertTime == null)) {
+                this.Adapter.UpdateCommand.Parameters[4].Value = global::System.DBNull.Value;
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[5].Value = ((object)(1));
-                this.Adapter.UpdateCommand.Parameters[6].Value = global::System.DBNull.Value;
+                this.Adapter.UpdateCommand.Parameters[4].Value = ((string)(AlertTime));
+            }
+            this.Adapter.UpdateCommand.Parameters[5].Value = ((int)(Original_Id));
+            if ((Original_AddDate.HasValue == true)) {
+                this.Adapter.UpdateCommand.Parameters[6].Value = ((object)(0));
+                this.Adapter.UpdateCommand.Parameters[7].Value = ((System.DateTime)(Original_AddDate.Value));
+            }
+            else {
+                this.Adapter.UpdateCommand.Parameters[6].Value = ((object)(1));
+                this.Adapter.UpdateCommand.Parameters[7].Value = global::System.DBNull.Value;
             }
             if ((Original_LastDate.HasValue == true)) {
-                this.Adapter.UpdateCommand.Parameters[7].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[8].Value = ((System.DateTime)(Original_LastDate.Value));
+                this.Adapter.UpdateCommand.Parameters[8].Value = ((object)(0));
+                this.Adapter.UpdateCommand.Parameters[9].Value = ((System.DateTime)(Original_LastDate.Value));
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[7].Value = ((object)(1));
-                this.Adapter.UpdateCommand.Parameters[8].Value = global::System.DBNull.Value;
+                this.Adapter.UpdateCommand.Parameters[8].Value = ((object)(1));
+                this.Adapter.UpdateCommand.Parameters[9].Value = global::System.DBNull.Value;
             }
-            this.Adapter.UpdateCommand.Parameters[9].Value = ((int)(Original_AppId));
+            this.Adapter.UpdateCommand.Parameters[10].Value = ((int)(Original_AppId));
             if ((Original_UsageTime == null)) {
                 throw new global::System.ArgumentNullException("Original_UsageTime");
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[10].Value = ((string)(Original_UsageTime));
+                this.Adapter.UpdateCommand.Parameters[11].Value = ((string)(Original_UsageTime));
             }
-            this.Adapter.UpdateCommand.Parameters[11].Value = ((int)(Id));
+            if ((Original_AlertTime == null)) {
+                this.Adapter.UpdateCommand.Parameters[12].Value = ((object)(1));
+                this.Adapter.UpdateCommand.Parameters[13].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.UpdateCommand.Parameters[12].Value = ((object)(0));
+                this.Adapter.UpdateCommand.Parameters[13].Value = ((string)(Original_AlertTime));
+            }
+            this.Adapter.UpdateCommand.Parameters[14].Value = ((int)(Id));
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.UpdateCommand.Connection.State;
             if (((this.Adapter.UpdateCommand.Connection.State & global::System.Data.ConnectionState.Open) 
                         != global::System.Data.ConnectionState.Open)) {
@@ -2912,8 +2991,8 @@ SELECT Id, AddDate, LastDate, AppId, UsageTime FROM DatabaseDate WHERE (Id = @Id
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, true)]
-        public virtual int Update(global::System.Nullable<global::System.DateTime> AddDate, global::System.Nullable<global::System.DateTime> LastDate, int AppId, string UsageTime, int Original_Id, global::System.Nullable<global::System.DateTime> Original_AddDate, global::System.Nullable<global::System.DateTime> Original_LastDate, int Original_AppId, string Original_UsageTime) {
-            return this.Update(AddDate, LastDate, AppId, UsageTime, Original_Id, Original_AddDate, Original_LastDate, Original_AppId, Original_UsageTime, Original_Id);
+        public virtual int Update(global::System.Nullable<global::System.DateTime> AddDate, global::System.Nullable<global::System.DateTime> LastDate, int AppId, string UsageTime, string AlertTime, int Original_Id, global::System.Nullable<global::System.DateTime> Original_AddDate, global::System.Nullable<global::System.DateTime> Original_LastDate, int Original_AppId, string Original_UsageTime, string Original_AlertTime) {
+            return this.Update(AddDate, LastDate, AppId, UsageTime, AlertTime, Original_Id, Original_AddDate, Original_LastDate, Original_AppId, Original_UsageTime, Original_AlertTime, Original_Id);
         }
     }
     

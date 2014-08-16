@@ -74,6 +74,11 @@ namespace Manage_your_Life
         /// バルーン通知
         /// </summary>
         private NotifyIcon notifyIcon;
+        
+        /// <summary>
+        /// 使いすぎ警告の対象Dictionary
+        /// </summary>
+        Dictionary<int, TimeSpan> overuseWarningItems;
 
         #endregion
 
@@ -83,7 +88,8 @@ namespace Manage_your_Life
             InitializeComponent();
 
             pInfo = new ProcessInformation();
-            dbOperator = DatabaseOperation.Instance;       
+            dbOperator = DatabaseOperation.Instance;
+            overuseWarningItems = dbOperator.GetOveruseWarningCollection();
 
             //バルーン通知の設定
             notifyIcon = new NotifyIcon();
@@ -174,6 +180,9 @@ namespace Manage_your_Life
                     var activeInterval = Utility.GetInterval(firstActiveDate);
                     dbOperator.UpdateUsageTime(appId, activeInterval);
 
+                    //使用時間の警告
+                    DoOveruseWarining(appId);
+
                     //バルーンで通知
                     ShowBalloonTip(activeInterval);
 
@@ -186,10 +195,29 @@ namespace Manage_your_Life
 
                 isRearApplication = false;
                 preTitleCheck = true;
-            }
-            
+            }            
         }
 
+
+        /// <summary>
+        /// 使用時間の警告を実行する
+        /// </summary>
+        /// <param name="appId"></param>
+        private void DoOveruseWarining(int appId)
+        {
+            if (!Properties.Settings.Default.checkBox_IsOveruseWarining) return;
+            if (!overuseWarningItems.ContainsKey(appId)) return;
+
+            //今日の使用時間と警告時間を取得
+            TimeSpan warningTime = overuseWarningItems[appId];
+            TimeSpan todayUsageTime = dbOperator.GetTodayPrpcessUsageTime(appId);
+
+            //今日の使用時間が警告時間よりも大きい場合
+            if (todayUsageTime > warningTime)
+            {
+                //TODO ウィンドウ作成して警告
+            }           
+        }
 
 
         /// <summary>

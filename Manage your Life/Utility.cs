@@ -78,6 +78,22 @@ namespace Manage_your_Life
 
 
         /// <summary>
+        /// データベースの中身が初期状態のままかどうか
+        /// </summary>
+        /// <returns>true: 初期状態　false: 何か入ってる</returns>
+        public static bool IsDatabaseEmpty()
+        {
+            var dbOperator = DatabaseOperation.Instance;
+            foreach (var nullTest in dbOperator.GetAllData())
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+
+        /// <summary>
         /// 自身のスクリーンショットをレンダリングする
         /// </summary>
         /// <see cref="http://urx.nu/b0Bh"/>
