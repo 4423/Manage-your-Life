@@ -5,81 +5,95 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:mui="http://firstfloorsoftware.com/ModernUI"
              mc:Ignorable="d" d:DesignHeight="430" d:DesignWidth="940">
-    <Grid Style="{StaticResource ContentRoot}">
-        
-        <ScrollViewer>
-            <Grid Background="Transparent">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition Width="59"/>
-                    <ColumnDefinition Width="236"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition/>
-                </Grid.RowDefinitions>
-                
-                <ScrollViewer>
-                    <StackPanel VerticalAlignment="Top">
-                <DataGrid Name="dataGrid1"                           
+
+
+    
+    <Grid Background="Transparent" Style="{StaticResource ContentRoot}" >
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition Width="59"/>
+            <ColumnDefinition Width="236"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+
+
+        <DataGrid Name="dataGrid1"                           
                           SelectionMode="Single"
                           AutoGenerateColumns="False" IsReadOnly="True"
                           Background="Transparent"
                           IsSynchronizedWithCurrentItem="True"                           
                           SelectionChanged="dataGrid1_SelectionChanged">
-                    <DataGrid.Columns>
-                        <DataGridTemplateColumn Header="Edit">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <Button Content="Edit" Click="buttonEdit_Click" 
+            <DataGrid.Columns>
+                <DataGridTemplateColumn Header="Edit" CanUserSort="False">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Content="Edit" Click="buttonEdit_Click" 
                                             HorizontalAlignment="Center" VerticalAlignment="Center" />
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                        <DataGridTextColumn Header="ID" Binding="{Binding Id}" Visibility="Hidden" />
-                        <DataGridTemplateColumn Header="Favorite" Width="65">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <CheckBox IsChecked="{Binding Favorite, Mode=OneWay}" IsHitTestVisible="False" IsTabStop="False" 
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Visibility="Hidden" />
+                <DataGridTemplateColumn Header="Favorite" Width="65" CanUserSort="True" SortMemberPath="Favorite">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <CheckBox IsChecked="{Binding Favorite, Mode=OneWay}" IsHitTestVisible="False" IsTabStop="False" 
                                               HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                        <DataGridTextColumn Header="Title" Binding="{Binding Title}" Width="150" />
-                        <DataGridTextColumn Header="UsageTime" Binding="{Binding UsageTime}"/>
-                        <DataGridTextColumn Header="ProcessName" Binding="{Binding ProcName}" Width="100"/>
-                        <DataGridTextColumn Header="Path" Binding="{Binding ProcPath}" Width="150"/>
-                        <DataGridTextColumn Header="RegisteredDate" Binding="{Binding AddDate}"/>
-                        <DataGridTextColumn Header="LastUsedDate" Binding="{Binding LastDate}"/>
-                        <DataGridTextColumn Header="Memo" Binding="{Binding Memo}"/>
-                    </DataGrid.Columns>
-                </DataGrid>
-                    </StackPanel>
-                </ScrollViewer>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="Title" Binding="{Binding Title}" Width="150" />
+                <DataGridTextColumn Header="UsageTime" Binding="{Binding UsageTime}"/>
+                <DataGridTextColumn Header="ProcessName" Binding="{Binding ProcName}" Width="100"/>
+                <DataGridTextColumn Header="Path" Binding="{Binding ProcPath}" Width="150"/>
+                <DataGridTextColumn Header="RegisteredDate" Binding="{Binding AddDate}"/>
+                <DataGridTextColumn Header="LastUsedDate" Binding="{Binding LastDate}"/>
+                <DataGridTextColumn Header="Memo" Binding="{Binding Memo}"/>
+            </DataGrid.Columns>
 
-                <Image Grid.Column="1" Source="{Binding path}" Name="iconImage" 
+            <!--
+            <DataGrid.ColumnHeaderStyle >
+                <Style TargetType="DataGridColumnHeader" >
+                    <Setter Property="FontSize" Value="15" />
+                    
+                    <Setter Property="BorderThickness" Value="0,0,1,1"/>
+                    <Setter Property="BorderBrush" Value="LightGray"/>
+
+                    
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    <Setter Property="VerticalContentAlignment" Value="Center"/>
+                    <Setter Property="TextBlock.TextAlignment" Value="Center"/>
+                </Style>
+            </DataGrid.ColumnHeaderStyle>
+            -->
+        </DataGrid>
+
+        <Image Grid.Column="1" Source="{Binding path}" Name="iconImage" 
                            Height="32" Width="32" VerticalAlignment="Top" />
 
-                <!--see: http://stackoverflow.com/questions/13513957/listbox-with-items-width-following-control-width -->
-                <ListBox Name="listBoxApp" Grid.IsSharedSizeScope="True" 
-                             HorizontalAlignment="Right" ItemsSource="{Binding}"
-                             Height="300" Width="235" Grid.Column="2" VerticalAlignment="Top">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition SharedSizeGroup="col1" Width="200"/>
-                                </Grid.ColumnDefinitions>
-                                <StackPanel Grid.Column="1" Orientation="Vertical" Margin="5">
-                                    <TextBlock Text="{Binding Title}" TextWrapping="Wrap" FontWeight="Bold" />
-                                    <TextBlock Text="{Binding Text}" TextWrapping="Wrap" />
-                                </StackPanel>
-                            </Grid>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
+        <!--see: http://stackoverflow.com/questions/13513957/listbox-with-items-width-following-control-width -->
+        
+        <ListBox Name="listBoxApp" Grid.IsSharedSizeScope="True" 
+                            HorizontalAlignment="Right" ItemsSource="{Binding}"
+                            Width="235" Grid.Column="2" VerticalAlignment="Top" >
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition SharedSizeGroup="col1" Width="200"/>
+                        </Grid.ColumnDefinitions>
+                        <Border BorderThickness="2,0,0,0" Margin="-2,0,0,0" BorderBrush="{Binding Color}">
+                        <StackPanel Grid.Column="1" Orientation="Vertical" Margin="5" >
+                            <TextBlock Text="{Binding Title}" TextWrapping="Wrap" FontWeight="Bold" />
+                            <TextBlock Text="{Binding Text}" TextWrapping="Wrap" />
+                        </StackPanel>
+                        </Border>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
 
-
-            </Grid>
-        </ScrollViewer>
     </Grid>
 </UserControl>

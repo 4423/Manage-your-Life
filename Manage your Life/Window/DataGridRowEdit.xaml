@@ -42,6 +42,8 @@
                         IsDefault="True" Name="button_Save" Click="button_Save_Click"  Foreground="#FFE2E2E2" Background="#FF515151"  BorderBrush="#FF666666"/>
             <Button Grid.Row="9" Grid.Column="1" Content="キャンセル" HorizontalAlignment="Right" Margin="0,0,80,0" VerticalAlignment="Top" Width="100" 
                         IsDefault="True" Name="button_Cancel" Click="button_Cancel_Click"  Foreground="#FFE2E2E2" Background="#FF515151" BorderBrush="#FF666666"/>
+            <Button Grid.Row="9" Grid.Column="0" Content="削除" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" 
+                        IsDefault="True" Name="button_Delete" Foreground="#FFE2E2E2" Background="#FF515151" BorderBrush="#FF666666" Click="button_Delete_Click"/>
 
 
             <ScrollViewer Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" VerticalScrollBarVisibility="Auto">

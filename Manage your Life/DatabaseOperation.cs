@@ -117,6 +117,51 @@ namespace Manage_your_Life
         }
 
 
+        /// <summary>
+        /// IDに一致するレコードを削除
+        /// </summary>
+        /// <param name="appId">削除するレコードのID</param>
+        internal void Delete(int appId)
+        {
+            var dateQuery = (
+                from p in database.DatabaseDate
+                where p.AppId == appId
+                select p).First();
+
+            database.DatabaseDate.DeleteOnSubmit(dateQuery);
+
+            
+            var procQuery = (
+                from p in database.DatabaseProcess
+                where p.AppId == appId
+                select p).First();
+
+            database.DatabaseProcess.DeleteOnSubmit(procQuery);
+
+
+            var timelineQuery = (
+                from p in database.DatabaseTimeline
+                where p.AppId == appId
+                select p);
+
+            foreach (var r in timelineQuery)
+            {
+                database.DatabaseTimeline.DeleteOnSubmit(r);
+            }
+
+
+            var appQuery = (
+                from p in database.DatabaseApplication
+                where p.Id == appId
+                select p).First();
+
+            database.DatabaseApplication.DeleteOnSubmit(appQuery);
+
+
+            database.SubmitChanges();
+        }
+
+
 
         /// <summary>
         /// Pathが既にデータベース内に存在するか

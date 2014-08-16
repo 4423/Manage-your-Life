@@ -3,7 +3,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:chart="clr-namespace:De.TorstenMandelkow.MetroChart;assembly=De.TorstenMandelkow.MetroChart"
              StartupUri="/Window/Splash.xaml">
+    
+    
     <Application.Resources>
+        
+        
+        
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/ModernUI.xaml" />
@@ -172,7 +177,7 @@
                     </LinearGradientBrush>
                 </ResourceDictionary>
             </chart:ResourceDictionaryCollection>
-            
+
         </ResourceDictionary>
     </Application.Resources>
 </Application>

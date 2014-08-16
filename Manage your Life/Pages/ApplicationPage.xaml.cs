@@ -21,6 +21,7 @@ using System.Windows.Interop;
 using System.Windows.Controls.DataVisualization;
 using System.Windows.Controls.DataVisualization.Charting;
 using FirstFloor.ModernUI.Windows.Controls;
+using FirstFloor.ModernUI.Presentation;
 
 
 namespace Manage_your_Life
@@ -35,17 +36,22 @@ namespace Manage_your_Life
         /// データベースを操作
         /// </summary>
         DatabaseOperation dbOperator;
+        Brush themeColor;
         
 
         public ApplicationPage()
         {
             InitializeComponent();
-            
+
+            themeColor = new SolidColorBrush(AppearanceManager.Current.AccentColor);
+
             dbOperator = DatabaseOperation.Instance;
 
             //EventHandlerの追加
             dbOperator.UsageTime_Updated += new EventHandler(this.UsageTime_Updated);
             dbOperator.NewRecord_Registered += new EventHandler(this.NewRecord_Registered);
+
+            
 
             SetDataGrid();
         }
@@ -182,12 +188,7 @@ namespace Manage_your_Life
         //Datagridの列非表示
         //see: http://ameblo.jp/shirokoma55/entry-11561024241.html
         //dataGrid1.ColumnFromDisplayIndex(0).Visibility = Visibility.Collapsed;
-
-        //Listviewへのバインディングで参考になりそう
-        //see: http://gushwell.ldblog.jp/archives/52333865.html
-
-
-
+        
 
 
         //---------------------------------------------------------------ListBoxのバインディングとか
@@ -206,42 +207,57 @@ namespace Manage_your_Life
             //コレクションに変更を加えると通知してくれる
             ListData = new ObservableCollection<AppListBoxBindingData>();
 
+            themeColor = new SolidColorBrush(AppearanceManager.Current.AccentColor);
+
             //項目の追加
-            //dynamicとかいう謎技術を使用
+            //dynamicとかいう動的解決を使用
             ListData.Add(new AppListBoxBindingData
             {
                 Title = "タイトル",
-                Text = row.Title
+                Text = row.Title,
+                Color = themeColor
+            });
+            ListData.Add(new AppListBoxBindingData
+            {
+                Title = "お気に入り",
+                Text = row.Favorite.ToString(),
+                Color = themeColor
             });
             ListData.Add(new AppListBoxBindingData
             {
                 Title = "プロセス名",
-                Text = row.ProcName
+                Text = row.ProcName,
+                Color = themeColor
             });
             ListData.Add(new AppListBoxBindingData
             {
                 Title = "場所",
-                Text = row.ProcPath
+                Text = row.ProcPath,
+                Color = themeColor
             });
             ListData.Add(new AppListBoxBindingData
             {
                 Title = "使用時間",
-                Text = row.UsageTime.ToString()
+                Text = row.UsageTime.ToString(),
+                Color = themeColor
             });
             ListData.Add(new AppListBoxBindingData
             {
                 Title = "追加日時",
-                Text = row.AddDate.ToString()
+                Text = row.AddDate.ToString(),
+                Color = themeColor
             });
             ListData.Add(new AppListBoxBindingData
             {
                 Title = "最終更新日時",
-                Text = row.LastDate.ToString()
+                Text = row.LastDate.ToString(),
+                Color = themeColor
             });
             ListData.Add(new AppListBoxBindingData
             {
                 Title = "メモ",
-                Text = row.Memo
+                Text = row.Memo,
+                Color = themeColor
             });
 
             return ListData;
@@ -263,6 +279,7 @@ namespace Manage_your_Life
     {
         public string Title { get; set; }
         public string Text { get; set; }
+        public Brush Color { get; set; }
     }
 
 

@@ -67,19 +67,16 @@ namespace Manage_your_Life
 
 
         /// <summary>
-        /// フォームの値でデータベースを更新
+        /// DataGridRowEditウィンドウの値をデータベースに反映させる
         /// </summary>
         /// <param name="appId">更新するレコードのID</param>
         private void UpdataDatabase(int appId)
         {
-            //データベース接続
-            string basePath = Directory.GetCurrentDirectory() + @"\ApplicationDatabase.mdf";
-            string connStr = @"Data Source=(LocalDB)\v11.0;AttachDbFilename=""" + basePath + @""";Integrated Security=True";
-            ApplicationDataClassesDataContext database = null;
-
             try
             {
-                database = new ApplicationDataClassesDataContext(connStr);
+                //データベース接続
+                DatabaseOperation dbOperator = DatabaseOperation.Instance;
+                var database = dbOperator.GetConnectionedDataContext;
 
                 var q =
                     from p in database.DatabaseApplication
@@ -102,11 +99,7 @@ namespace Manage_your_Life
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-            }
-            finally
-            {
-                database.Dispose();
-            }            
+            }          
         }
 
 
@@ -161,6 +154,24 @@ namespace Manage_your_Life
         }
 
 
+        //削除ボタン押下
+        private void button_Delete_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBoxResult result = MessageBox.Show("本当に削除しますか?", "確認",
+                                    MessageBoxButton.YesNo,
+                                    MessageBoxImage.Exclamation);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                int appId = (int)context["Id"];
+                DatabaseOperation dbOperotr = DatabaseOperation.Instance;
+                dbOperotr.Delete(appId);
+
+                DialogResult = true;
+                this.Close();
+            }
+        }
+
 
 //-----------------------------------------------------
 
@@ -176,6 +187,8 @@ namespace Manage_your_Life
             IntPtr hwnd = new System.Windows.Interop.WindowInteropHelper(this).Handle;            
             PostMessage(hwnd, 0xA1, (IntPtr)2, IntPtr.Zero);
         }
+
+        
 
        
     }
