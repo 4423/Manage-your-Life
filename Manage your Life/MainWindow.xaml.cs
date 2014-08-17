@@ -80,6 +80,8 @@ namespace Manage_your_Life
         /// </summary>
         Dictionary<int, TimeSpan> overuseWarningItems;
 
+        DataBanker dataBanker;
+
         #endregion
 
 
@@ -90,6 +92,8 @@ namespace Manage_your_Life
             pInfo = new ProcessInformation();
             dbOperator = DatabaseOperation.Instance;
             overuseWarningItems = dbOperator.GetOveruseWarningCollection();
+            dataBanker = DataBanker.GetInstance();
+            dataBanker["WarningNotAgain"] = new List<int>();
 
             //バルーン通知の設定
             notifyIcon = new NotifyIcon();
@@ -165,6 +169,10 @@ namespace Manage_your_Life
                 //最初にアクティブになった時間を取得
                 firstActiveDate = DateTime.Now;
 
+                int appId = dbOperator.GetCorrespondingAppId(activeProcess.MainModule.FileName);
+                //使用時間の警告
+                DoOveruseWarining(appId, activeProcess.ProcessName);
+
                 isRearApplication = true;
                 preTitleCheck = false;
             }
@@ -181,7 +189,7 @@ namespace Manage_your_Life
                     dbOperator.UpdateUsageTime(appId, activeInterval);
 
                     //使用時間の警告
-                    DoOveruseWarining(appId);
+                    //DoOveruseWarining(appId, previousProcess.ProcessName);
 
                     //バルーンで通知
                     ShowBalloonTip(activeInterval);
@@ -203,10 +211,11 @@ namespace Manage_your_Life
         /// 使用時間の警告を実行する
         /// </summary>
         /// <param name="appId"></param>
-        private void DoOveruseWarining(int appId)
+        private void DoOveruseWarining(int appId, string processName)
         {
             if (!Properties.Settings.Default.checkBox_IsOveruseWarining) return;
             if (!overuseWarningItems.ContainsKey(appId)) return;
+            if (((List<int>)dataBanker["WarningNotAgain"]).Contains(appId) == true) return;
 
             //今日の使用時間と警告時間を取得
             TimeSpan warningTime = overuseWarningItems[appId];
@@ -214,8 +223,9 @@ namespace Manage_your_Life
 
             //今日の使用時間が警告時間よりも大きい場合
             if (todayUsageTime > warningTime)
-            {
-                //TODO ウィンドウ作成して警告
+            {   
+                DoWarning window = new DoWarning(processName, appId, warningTime);
+                window.ShowDialog();                
             }           
         }
 

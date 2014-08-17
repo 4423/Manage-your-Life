@@ -141,6 +141,9 @@
     <Compile Include="Window\DataGridRowEdit.xaml.cs">
       <DependentUpon>DataGridRowEdit.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Window\DoWarning.xaml.cs">
+      <DependentUpon>DoWarning.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Window\OveruseWarning.xaml.cs">
       <DependentUpon>OveruseWarning.xaml</DependentUpon>
     </Compile>
@@ -205,6 +208,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Window\DataGridRowEdit.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Window\DoWarning.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

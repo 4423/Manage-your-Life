@@ -80,7 +80,8 @@ namespace Manage_your_Life
         /// 新規にデータベースへプロセスを登録
         /// </summary>
         /// <param name="proc">登録するプロセス</param>
-        internal void Register(Process proc)
+        /// <returns>登録したID</returns>
+        internal int Register(Process proc)
         {
             DatabaseApplication app = new DatabaseApplication();
             app.Title = proc.MainWindowTitle;
@@ -116,6 +117,8 @@ namespace Manage_your_Life
             {
                 NewRecord_Registered(this, EventArgs.Empty);
             }
+
+            return id;
         }
 
 
