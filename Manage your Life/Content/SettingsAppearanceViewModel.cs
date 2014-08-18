@@ -10,12 +10,13 @@ using System.Windows.Media;
 namespace Manage_your_Life
 {
     /// <summary>
-    /// A simple view model for configuring theme, font and accent colors.
+    /// 設定画面に表示するテーマカラーのViewModel
     /// </summary>
-    public class SettingsAppearanceViewModel
-        : NotifyPropertyChanged
+    public class SettingsAppearanceViewModel : NotifyPropertyChanged        
     {
+
         //WP8で使われているカラー
+        //see: http://www.creepyed.com/2012/11/windows-phone-8-theme-colors-hex-rgb/
         private Color[] accentColors = new Color[]{
             Color.FromRgb(0xa4, 0xc4, 0x00),   // lime
             Color.FromRgb(0x60, 0xa9, 0x17),   // green
@@ -39,25 +40,16 @@ namespace Manage_your_Life
             Color.FromRgb(0x87, 0x79, 0x4e),   // taupe
         };
 
-        private Color selectedAccentColor;
         
 
         public SettingsAppearanceViewModel()
         {
             SyncColor();
-
             AppearanceManager.Current.PropertyChanged += OnAppearanceManagerPropertyChanged;
         }
 
-        private void SyncColor()
-        {
-            this.SelectedAccentColor = AppearanceManager.Current.AccentColor;
 
-            //現在の色の保存
-            Properties.Settings.Default.ThemeColor = AppearanceManager.Current.AccentColor;
-            Properties.Settings.Default.Save();
-        }
-
+        //設定画面で色が変更されたとき
         private void OnAppearanceManagerPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "ThemeSource" || e.PropertyName == "AccentColor")
@@ -67,12 +59,24 @@ namespace Manage_your_Life
         }
 
 
+        //色の同期
+        private void SyncColor()
+        {
+            this.SelectedAccentColor = AppearanceManager.Current.AccentColor;
+
+            //現在の色の保存
+            Properties.Settings.Default.ThemeColor = AppearanceManager.Current.AccentColor;
+            Properties.Settings.Default.Save();
+        }
+        
+
         public Color[] AccentColors
         {
             get { return this.accentColors; }
         }
 
 
+        private Color selectedAccentColor;
         public Color SelectedAccentColor
         {
             get { return this.selectedAccentColor; }
@@ -81,8 +85,6 @@ namespace Manage_your_Life
                 if (this.selectedAccentColor != value)
                 {
                     this.selectedAccentColor = value;
-                    OnPropertyChanged("SelectedAccentColor");
-
                     AppearanceManager.Current.AccentColor = value;
                 }
             }

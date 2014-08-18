@@ -10,7 +10,6 @@ namespace Manage_your_Life
     public class CustomUsageTimeViewModel : ViewModel
     {
 
-        public ObservableCollection<ChartData> ChartData { get; set; }
         private ApplicationDataClassesDataContext database;
 
         private string chartSubTitle = "";
@@ -19,9 +18,6 @@ namespace Manage_your_Life
 
         public CustomUsageTimeViewModel()
         {
-            LoadPalettes();
-            Settings();
-
             //データベース接続
             DatabaseOperation dbOperator = DatabaseOperation.Instance;
             database = dbOperator.GetConnectionedDataContext;

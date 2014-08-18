@@ -31,8 +31,6 @@ namespace Manage_your_Life
         /// <param name="preHatenaKeywordCollections">今までのHatenaでカテゴライズされたコレクション</param>
         public HatenaKeywordViewModel(string windowTitle, Dictionary<string, int> preHatenaCategorizedCountData)
         {
-            //LoadPalettes();
-            Settings();
 
             HatenaKeyword = new ObservableCollection<ChartData>();
             Series = new ObservableCollection<SeriesData>();

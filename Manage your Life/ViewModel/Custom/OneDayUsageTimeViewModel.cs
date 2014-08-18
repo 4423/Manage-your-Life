@@ -21,8 +21,6 @@ namespace Manage_your_Life
         /// <param name="takeNumber">取得するアプリケーション数</param>
         public OneDayUsageTimeViewModel(DateTime oneDay, int takeNumber)
         {
-            LoadPalettes();
-            Settings();
 
             //データベース接続
             DatabaseOperation dbOperator = DatabaseOperation.Instance;

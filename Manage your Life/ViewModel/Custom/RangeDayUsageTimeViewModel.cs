@@ -33,10 +33,6 @@ namespace Manage_your_Life
         /// <param name="takeNumber">取得するアプリケーション数</param>
         public RangeDayUsageTimeViewModel(DateTime startDay, DateTime endDay, int takeNumber)
         {
-            LoadPalettes();
-            Settings();
-
-
             //データベース接続
             DatabaseOperation dbOperator = DatabaseOperation.Instance;
             var database = dbOperator.GetConnectionedDataContext;

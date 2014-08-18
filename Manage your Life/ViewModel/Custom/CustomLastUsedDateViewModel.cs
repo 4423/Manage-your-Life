@@ -10,7 +10,6 @@ namespace Manage_your_Life
     public class CustomLastUsedDateViewModel : ViewModel
     {
 
-        public ObservableCollection<ChartData> ChartData { get; set; }
         private ApplicationDataClassesDataContext database;
         private string chartSubTitle = "";
 
@@ -18,8 +17,6 @@ namespace Manage_your_Life
 
         public CustomLastUsedDateViewModel()
         {
-            LoadPalettes();
-            Settings();
 
             //データベース接続
             DatabaseOperation dbOperator = DatabaseOperation.Instance;
@@ -205,6 +202,13 @@ namespace Manage_your_Life
             }
         }
 
-        public string SeriesTitle { get { return "Time span [day]"; } }
+        public string SeriesTitle
+        {
+            get
+            {
+                return "Time span [day]";
+            }
+        }
+
     }
 }

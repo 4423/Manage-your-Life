@@ -127,13 +127,12 @@
     <Compile Include="ViewModel\Custom\CustomRegistrationDateViewModel.cs" />
     <Compile Include="ViewModel\Custom\CustomUsageTimeViewModel.cs" />
     <Compile Include="ViewModel\HomePage\HatenaKeywordViewModel.cs" />
-    <Compile Include="ViewModel\OneDayUsageTimeViewModel.cs" />
-    <Compile Include="ViewModel\RangeDayUsageTimeViewModel.cs" />
+    <Compile Include="ViewModel\Custom\OneDayUsageTimeViewModel.cs" />
+    <Compile Include="ViewModel\Custom\RangeDayUsageTimeViewModel.cs" />
     <Compile Include="ViewModel\ViewModel.cs" />
-    <Compile Include="ViewModel\HomePage\HomePageViewModel.cs" />
-    <Compile Include="ViewModel\Synthesis\ChartData.cs" />
-    <Compile Include="ViewModel\Synthesis\DelegateCommand.cs" />
-    <Compile Include="ViewModel\Synthesis\SeriesData.cs" />
+    <Compile Include="ViewModel\HomePage\SystemUptimeViewModel.cs" />
+    <Compile Include="ViewModel\ChartData.cs" />
+    <Compile Include="ViewModel\SeriesData.cs" />
     <Compile Include="Window\DataGridRowEdit.xaml.cs">
       <DependentUpon>DataGridRowEdit.xaml</DependentUpon>
     </Compile>

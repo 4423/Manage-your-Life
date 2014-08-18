@@ -31,9 +31,6 @@ namespace Manage_your_Life
         //コンストラクタ
         public SystemUptimeViewModel()
         {
-            LoadPalettes();
-            Settings();
-
             SystemUpTime = new ObservableCollection<ChartData>();            
             SystemUpTime.Add(new ChartData() { Category = "", Number = GetSystemUpTimePercentage() });
 

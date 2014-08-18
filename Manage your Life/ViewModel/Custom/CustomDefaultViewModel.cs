@@ -9,11 +9,7 @@ namespace Manage_your_Life
     public class CustomDefaultViewModel : ViewModel
     {
 
-        public CustomDefaultViewModel()
-        {
-            LoadPalettes();
-            Settings();
-        }
+        public CustomDefaultViewModel() { }
 
 
         public string ChartTitle { get { return "Custom Chart"; } }

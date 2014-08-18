@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Manage_your_Life
 {
     //Chatに表示するデータのクラス
-    public class ChartData : INotifyPropertyChanged
+    public class ChartData
     {
         //項目
         public string Category { get; set; }
@@ -24,14 +24,8 @@ namespace Manage_your_Life
             set
             {
                 _number = value;
-                if (PropertyChanged != null)
-                {
-                    this.PropertyChanged(this, new PropertyChangedEventArgs("Number"));
-                }
             }
-
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
     }
 }
