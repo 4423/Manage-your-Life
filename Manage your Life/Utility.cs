@@ -18,7 +18,7 @@ namespace Manage_your_Life
         
 
         /// <summary>
-        /// 指定した精度の数値に切り捨てします。
+        /// 指定した精度の数値に切り捨る
         /// </summary>
         /// <see cref="http://jeanne.wankuma.com/tips/csharp/math/rounddown.html"/>
         /// <param name="dValue">丸め対象の倍精度浮動小数点数</param>
@@ -26,10 +26,10 @@ namespace Manage_your_Life
         /// <returns>iDigits に等しい精度の数値に切り捨てられた数値</returns>
         public static double ToRoundDown(double dValue, int iDigits)
         {
-            double dCoef = System.Math.Pow(10, iDigits);
+            double dCoef = Math.Pow(10, iDigits);
 
-            return dValue > 0 ? System.Math.Floor(dValue * dCoef) / dCoef :
-                                System.Math.Ceiling(dValue * dCoef) / dCoef;
+            return dValue > 0 ? Math.Floor(dValue * dCoef) / dCoef :
+                                Math.Ceiling(dValue * dCoef) / dCoef;
         }
 
 
@@ -56,7 +56,6 @@ namespace Manage_your_Life
                 new DispatcherOperationCallback(ExitFrames), frame);
             Dispatcher.PushFrame(frame);
         }
-
         public static object ExitFrames(object f)
         {
             ((DispatcherFrame)f).Continue = false;
@@ -66,10 +65,10 @@ namespace Manage_your_Life
 
 
         /// <summary>
-        /// a と bの中身を入れ替える。
+        /// aとbの中身を入れ替える。
         /// </summary>
-        /// <param name="a">オペランドa</param>
-        /// <param name="b">オペランドb</param>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
         public static void Swap<T>(ref T a, ref T b)
         {
             T c = a; a = b; b = c;

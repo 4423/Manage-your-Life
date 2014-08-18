@@ -75,6 +75,7 @@ namespace Manage_your_Life
 
         //TODO プロセスが途中終了した時のために例外処理を実装した方がいい
 
+//---------------------------------------------------------登録/更新
 
         /// <summary>
         /// 新規にデータベースへプロセスを登録
@@ -123,6 +124,23 @@ namespace Manage_your_Life
 
 
         /// <summary>
+        /// 使いすぎ警告の使用時間を登録(更新)
+        /// </summary>
+        /// <param name="appId">警告の対象となるID</param>
+        internal void SetAlert(int appId, TimeSpan alertTime)
+        {
+            var q = (
+                from p in database.DatabaseDate
+                where p.AppId == appId
+                select p).First();
+
+            q.AlertTime = alertTime.ToString(timeSpanToStringFormat);
+
+            database.SubmitChanges();
+        }
+
+
+        /// <summary>
         /// IDに一致するレコードを削除
         /// </summary>
         /// <param name="appId">削除するレコードのID</param>
@@ -167,67 +185,6 @@ namespace Manage_your_Life
         }
 
 
-
-        /// <summary>
-        /// 使いすぎ警告の使用時間を設定
-        /// </summary>
-        /// <param name="appId">警告の対象となるID</param>
-        internal void SetAlert(int appId, TimeSpan alertTime)
-        {
-            var q = (
-                from p in database.DatabaseDate
-                where p.AppId == appId
-                select p).First();
-
-            q.AlertTime = alertTime.ToString(timeSpanToStringFormat);
-
-            database.SubmitChanges();
-        }
-
-
-
-        /// <summary>
-        /// Pathが既にデータベース内に存在するか
-        /// </summary>
-        /// <param name="proc">比較対象のProcess</param>
-        /// <returns>存在する：true　存在しない:false</returns>
-        /// <see cref="http://bit.ly/1jAFEn3"/>
-        internal bool IsExist(Process proc)
-        {
-            //TODO ここでは実行ファイルのパスで判別しているが…要検討
-            return database.DatabaseProcess.Any(
-                p => p.Path.Contains(proc.MainModule.FileName));
-        }
-
-
-
-        /// <summary>
-        /// DatabaseProcessの中から同じファイルパスを探索し
-        /// 対応するDatabaseApplicationのAppIDを取得
-        /// </summary>
-        /// <param name="previousProcess">検索対象の(前回の)Process</param>
-        /// <returns>プロセス名に対応するAppID</returns>
-        internal int GetCorrespondingAppId(string processModuleFileName)
-        {
-            int appId = -1;   
-                        
-            //クエリ発行
-            //CAUTION クエリ評価してる間にプロセス終了したらエラーになるっぽかったのでファイル名を引数にとるようにした
-            var q =
-                from p in database.DatabaseProcess
-                where p.Path == processModuleFileName
-                select p;
-            
-            foreach (var p in q)
-            {
-                appId = p.AppId;
-                break;
-            }
-
-            return appId;
-        }
-
-
         /// <summary>
         /// DBへの使用時間の更新を行う
         /// </summary>
@@ -265,13 +222,12 @@ namespace Manage_your_Life
             {
                 UsageTime_Updated(this, EventArgs.Empty);
             }
-            
+
             //Timelineの方にも新規レコードとしてロギング         
-            AddingTimeline(appId, activeInterval);            
+            AddingTimeline(appId, activeInterval);
 
             return usageSum;
         }
-
 
 
         /// <summary>
@@ -296,9 +252,10 @@ namespace Manage_your_Life
                 TimelineLog_Updated(this, EventArgs.Empty);
             }
         }
+        
 
 
-//--------------------------------------------------------データベース取得
+//--------------------------------------------------------取得
 
         /// <summary>
         /// Databases内の全てのデータを取得
@@ -365,11 +322,59 @@ namespace Manage_your_Life
                         Key = p.DatabaseProcess.Name,
                         Value = TimeSpan.Parse(p.DatabaseTimeline.UsageTime)
                     });
-            
+                        
+            var dict = new KeyValuePair<string, TimeSpan>();
+
             //断片的な使用時間をまとめる
-            var dict = Utility.DictionaryOrganizingValue(q).Single();
+            try
+            {
+                dict = Utility.DictionaryOrganizingValue(q).Single();
+            }
+            //シーケンスに要素が含まれていない場合
+            catch (Exception ex)
+            {
+                return TimeSpan.FromSeconds(0);
+            }
 
             return dict.Value;
+        }
+
+
+        /// <summary>
+        /// プロセスのPathが既にデータベース内に存在するか
+        /// </summary>
+        /// <param name="proc">比較対象のProcess</param>
+        /// <returns>存在する：true　存在しない:false</returns>
+        /// <see cref="http://bit.ly/1jAFEn3"/>
+        internal bool IsExist(string procPath)
+        {
+            return database.DatabaseProcess.Any(p => p.Path.Contains(procPath));
+        }
+        
+
+        /// <summary>
+        /// DatabaseProcessの中から同じファイルパスを探索し
+        /// 対応するDatabaseApplicationのAppIDを取得
+        /// </summary>
+        /// <param name="previousProcess">検索対象の(前回の)Process</param>
+        /// <returns>プロセス名に対応するAppID</returns>
+        internal int GetCorrespondingAppId(string procPath)
+        {
+            int appId = -1;
+
+            //クエリ発行            
+            var q =
+                from p in database.DatabaseProcess
+                where p.Path == procPath
+                select p;
+
+            foreach (var p in q)
+            {
+                appId = p.AppId;
+                break;
+            }
+
+            return appId;
         }
 
     }

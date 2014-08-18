@@ -6,9 +6,6 @@
     
     
     <Application.Resources>
-        
-        
-        
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/ModernUI.xaml" />
@@ -57,6 +54,7 @@
                 </ResourceDictionary>
             </chart:ResourceDictionaryCollection>
 
+            <!--
             <chart:ResourceDictionaryCollection x:Key="MonoChrome">
                 <ResourceDictionary>
                     <SolidColorBrush x:Key="Brush1" Color="#FFA9A9A9" />
@@ -177,7 +175,7 @@
                     </LinearGradientBrush>
                 </ResourceDictionary>
             </chart:ResourceDictionaryCollection>
-
+-->
         </ResourceDictionary>
     </Application.Resources>
 </Application>

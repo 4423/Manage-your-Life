@@ -7,10 +7,13 @@ using System.Threading.Tasks;
 
 namespace Manage_your_Life
 {
+    //Chatに表示するデータのクラス
     public class ChartData : INotifyPropertyChanged
     {
+        //項目
         public string Category { get; set; }
 
+        //項目の値
         private double _number = 0;
         public double Number
         {
@@ -28,12 +31,6 @@ namespace Manage_your_Life
             }
 
         }
-
-        public double TotalHours { get; set; }
-        public int Days { get; set; }
-        public int Hours { get; set; }
-        public int Minutes { get; set; }
-        public int Seconds { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
     }

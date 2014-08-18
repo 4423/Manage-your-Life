@@ -46,22 +46,23 @@ namespace Manage_your_Life
             try
             {
                 dbOperator = DatabaseOperation.Instance;
-                new StatisticalPageViewModel();
+                new OneDayUsageTimeViewModel(DateTime.Today, 5);
             }
             catch (Exception ex)
             {
-                label_working.Content = "Test connection failed..."; Thread.Sleep(1000);
+                label_working.Content = "Test connection failed...";
+                Utility.DoEvents(); Thread.Sleep(1000);
                 try
                 {
                     label_working.Content = "Reconnecting...";
                     Utility.DoEvents();
-                    new StatisticalPageViewModel();
+                    new OneDayUsageTimeViewModel(DateTime.Today, 5);
                     goto EX;
                 }
                 catch (Exception exx)
                 {
                     label_working.Content = "Error! Please retry.";
-                    //Utility.DoEvents(); Thread.Sleep(1000); Environment.Exit(1);
+                    Utility.DoEvents(); Thread.Sleep(1000); Environment.Exit(1);
                 }
             }
         EX:

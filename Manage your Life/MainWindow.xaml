@@ -12,7 +12,6 @@
                 <mui:Link DisplayName="home" Source="/Pages/HomePage.xaml" />
                 <mui:Link DisplayName="application" Source="/Pages/ApplicationPage.xaml"/>
                 <mui:Link DisplayName="statistics" Source="/Pages/StatisticalPage.xaml"/>
-                <mui:Link DisplayName="link 3" Source="/Pages/TestPage.xaml" />
             </mui:LinkGroup.Links>
         </mui:LinkGroup>
         <mui:LinkGroup DisplayName="settings" GroupName="settings">

@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Manage_your_Life.Pages.StatisticalPage"
+﻿<UserControl x:Class="Manage_your_Life.StatisticalPage"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -7,43 +7,96 @@
              xmlns:chart="clr-namespace:De.TorstenMandelkow.MetroChart;assembly=De.TorstenMandelkow.MetroChart"
              xmlns:chartingToolkist="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit"
              mc:Ignorable="d" 
-             d:DesignHeight="500" d:DesignWidth="900">
-             
-    <Grid Style="{StaticResource ContentRoot}">
-        <ScrollViewer>
-            <Grid>
-                <chart:PieChart
-                    ChartTitle="UsageTime"
-                    ChartSubTitle="Top 5"
-                    SelectedItem="{Binding Path=SelectedItem, Mode=TwoWay}"
-                    ToolTipFormat="{}ProcessName: {0}, UsageTime: {1} hour, Percentage: {3:P2}"
-                    >
-                    <chart:PieChart.Series>
-                        <chart:ChartSeries
-                            SeriesTitle="UsageTime"
-                            DisplayMember="Category"
-                            ValueMember="TotalHours"                            
-                            ItemsSource="{Binding Path=Points}"
-                            />
-                    </chart:PieChart.Series>
-                </chart:PieChart>
+             d:DesignHeight="440" d:DesignWidth="900">
 
-              
-                
-                
-                <!--
-            <Grid Background="#FFE5E5E5">
-                http://www.c-sharpcorner.com/uploadfile/mahesh/pie-chart-in-wpf/ 
-                <chartingToolkit:Chart LegendTitle="ProcessName" Name="piChart1" Title="UsageTime">
-                    <chartingToolkit:Chart.Series>
-                        <chartingToolkit:PieSeries 
-                                IndependentValueBinding="{Binding Path=Key}"
-                                DependentValueBinding="{Binding Path=Value}"
-                                >
-                        </chartingToolkit:PieSeries>
-                    </chartingToolkit:Chart.Series>
-                </chartingToolkit:Chart>
-            -->
+
+    <Grid Style="{StaticResource ContentRoot}">
+        <ScrollViewer Margin="0,-8,0,-3" Height="auto">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="416*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="190"/>
+                    <ColumnDefinition Width="20"/>
+                    <ColumnDefinition Width="659*"/>
+                </Grid.ColumnDefinitions>
+
+
+                <StackPanel Grid.Column="0">
+                    <Grid >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="55"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="242"/>
+                            <RowDefinition Height="25"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="40"/>
+                        </Grid.RowDefinitions>
+
+                        <Label Grid.Row="0" Grid.ColumnSpan="2" Content="Date range" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,6,0,0"/>
+                        <Calendar Grid.Column="0" Name="calendar" SelectionMode="SingleRange" Margin="0,28,0,0" 
+                                VerticalAlignment="Top" Visibility="{Binding IsChecked, ElementName=checkBox_isAllDate}"
+                                  Grid.ColumnSpan="2" HorizontalAlignment="Right"/>
+                        <CheckBox Grid.Row="0" Content="All date" Name="checkBox_isAllDate" Margin="0,225,0,0"
+                                HorizontalAlignment="Right" VerticalAlignment="Top" Grid.Column="1" />
+
+                        <Label Grid.Row="2" Content="Target" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,6"/>
+                        <ComboBox Grid.Row="2" Height="23" Name="comboBox_Item"  
+                                      VerticalAlignment="Center" VerticalContentAlignment="Center" 
+                                  Grid.Column="1" Margin="0" HorizontalContentAlignment="Stretch" >
+                            <ComboBoxItem>UsageTime</ComboBoxItem>
+                            <ComboBoxItem>LastUsedDate</ComboBoxItem>
+                            <ComboBoxItem>RegistrationDate</ComboBoxItem>
+                        </ComboBox>
+
+                        <Label Grid.Row="4" Grid.ColumnSpan="2" Content="Take number" ToolTip="Default: 10"
+                               VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,6"/>
+                        <TextBox Text="10" Grid.Row="4" Grid.Column="1" Name="textBox_takeNumber"
+                                 Height="23" HorizontalAlignment="Right" Width="100"/>
+
+
+                        <Label Grid.Row="3" Content="Order" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,6"/>
+                        <ComboBox Grid.Row="3" Height="23" Name="comboBox_Order" 
+                            VerticalAlignment="Center" VerticalContentAlignment="Stretch" Grid.Column="1" Margin="0" >
+                            <ComboBoxItem>Ascending</ComboBoxItem>
+                            <ComboBoxItem>Descending</ComboBoxItem>
+                        </ComboBox>
+
+                        <!--お気に入りのみの抽出-->
+                        <CheckBox Grid.Row="1" Content="Favorites only" Name="checkBox_isFavoritesOnly" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.ColumnSpan="2"/>
+
+                        <Button Grid.Row="5" Name="button1" Content="GetChart" Click="button1_Click" 
+                        Height="30" VerticalAlignment="Center" Margin="0,7,0,0" Grid.ColumnSpan="2"/>
+
+                    </Grid>
+                </StackPanel>
+
+
+                <!--使用時間トップ5-->
+
+                <chart:ClusteredBarChart
+                    Grid.Column="2" Grid.ColumnSpan="2" Grid.RowSpan="2"
+                        x:Name="chart_Custom"
+                        ChartTitle="{Binding Path=ChartTitle}"
+                        ChartSubTitle="{Binding Path=ChartSubTitle}"
+                        SelectedItem="{Binding SelectedItem.Name, Mode=TwoWay}"
+                        ToolTipFormat="{Binding Path=ToolTipFormat}"
+                        Background="Transparent" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch"
+                        Margin="0,-14,0,0">
+                    <chart:ClusteredBarChart.Series>
+                        <chart:ChartSeries
+                                SeriesTitle="{Binding Path=SeriesTitle}"
+                                DisplayMember="Category"
+                                ValueMember="Number"
+                                ItemsSource="{Binding ChartData}" />
+                    </chart:ClusteredBarChart.Series>
+                </chart:ClusteredBarChart>
+
             </Grid>
         </ScrollViewer>
     </Grid>

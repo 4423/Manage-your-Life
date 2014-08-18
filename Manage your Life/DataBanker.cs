@@ -43,7 +43,7 @@ namespace Manage_your_Life
             }
             set
             {
-                // 重複する場合は削除
+                //重複する場合は削除
                 if (_holder.Contains(key))
                 {
                     _holder.Remove(key);

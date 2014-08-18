@@ -116,9 +116,6 @@
     <Compile Include="Pages\StatisticalPage.xaml.cs">
       <DependentUpon>StatisticalPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\TestPage.xaml.cs">
-      <DependentUpon>TestPage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -134,7 +131,6 @@
     <Compile Include="ViewModel\RangeDayUsageTimeViewModel.cs" />
     <Compile Include="ViewModel\ViewModel.cs" />
     <Compile Include="ViewModel\HomePage\HomePageViewModel.cs" />
-    <Compile Include="ViewModel\StatisticalPageViewModel.cs" />
     <Compile Include="ViewModel\Synthesis\ChartData.cs" />
     <Compile Include="ViewModel\Synthesis\DelegateCommand.cs" />
     <Compile Include="ViewModel\Synthesis\SeriesData.cs" />
@@ -200,10 +196,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\StatisticalPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\TestPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

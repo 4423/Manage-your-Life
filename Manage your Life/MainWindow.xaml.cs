@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-//using System.Data.Objects;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -155,7 +154,7 @@ namespace Manage_your_Life
                 try
                 {
                     //DBに存在していなければ新規にデータ挿入
-                    if (!dbOperator.IsExist(activeProcess))
+                    if (!dbOperator.IsExist(activeProcess.MainModule.FileName))
                     {
                         dbOperator.Register(activeProcess);
                     }
@@ -169,8 +168,8 @@ namespace Manage_your_Life
                 //最初にアクティブになった時間を取得
                 firstActiveDate = DateTime.Now;
 
-                int appId = dbOperator.GetCorrespondingAppId(activeProcess.MainModule.FileName);
                 //使用時間の警告
+                int appId = dbOperator.GetCorrespondingAppId(activeProcess.MainModule.FileName);                
                 DoOveruseWarining(appId, activeProcess.ProcessName);
 
                 isRearApplication = true;
@@ -187,9 +186,6 @@ namespace Manage_your_Life
                     //DBから使用時間を取得し、今回の使用時間を加算してDB更新
                     var activeInterval = Utility.GetInterval(firstActiveDate);
                     dbOperator.UpdateUsageTime(appId, activeInterval);
-
-                    //使用時間の警告
-                    //DoOveruseWarining(appId, previousProcess.ProcessName);
 
                     //バルーンで通知
                     ShowBalloonTip(activeInterval);

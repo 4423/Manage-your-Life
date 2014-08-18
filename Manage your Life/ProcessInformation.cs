@@ -8,6 +8,9 @@ using System.Diagnostics;
 
 namespace Manage_your_Life
 {
+    /// <summary>
+    /// アクティブなウィンドウをもつプロセスの取得
+    /// </summary>
     class ProcessInformation
     {
         /// <seealso cref="http://mzs184.blogspot.jp/2009/03/c.html"/>
