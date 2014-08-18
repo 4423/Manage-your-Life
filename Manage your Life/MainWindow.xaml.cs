@@ -31,7 +31,7 @@ namespace Manage_your_Life
     /// </summary>
     public partial class MainWindow : ModernWindow
     {
-        #region メンバ
+        #region Field
         /// <summary>
         /// WPFでタイマーを使う
         /// </summary>
@@ -60,7 +60,7 @@ namespace Manage_your_Life
         /// <summary>
         /// 登録アプリ同士の計測スルーバグ回避用
         /// </summary>
-        bool preTitleCheck = false; //TODO 改名したいけど何やってるのか分からない
+        bool preTitleCheck = false;
 
         /// <summary>
         /// アプリケーションが最前面から外れた時の検出
@@ -158,19 +158,18 @@ namespace Manage_your_Life
                     {
                         dbOperator.Register(activeProcess);
                     }
+
+                    //使用時間の警告
+                    int appId = dbOperator.GetCorrespondingAppId(activeProcess.MainModule.FileName);
+                    DoOveruseWarining(appId, activeProcess.ProcessName);
                 }
                 catch (Exception ex)
                 {
-                    notifyIcon.ShowBalloonTip(500, "Error",
-                        ex.Message + "\n画面の遷移に処理が追いつきませんでした。", ToolTipIcon.Error);
+                    notifyIcon.ShowBalloonTip(500, "Error", ex.Message , ToolTipIcon.Error);
                 }
 
                 //最初にアクティブになった時間を取得
                 firstActiveDate = DateTime.Now;
-
-                //使用時間の警告
-                int appId = dbOperator.GetCorrespondingAppId(activeProcess.MainModule.FileName);                
-                DoOveruseWarining(appId, activeProcess.ProcessName);
 
                 isRearApplication = true;
                 preTitleCheck = false;
@@ -178,7 +177,6 @@ namespace Manage_your_Life
             else //最前面解除
             {
                 //計測時間追記の為にDBから該当Idを取得
-                //CAUTION プロセス終了の例外発生
                 try
                 {
                     int appId = dbOperator.GetCorrespondingAppId(previousProcess.MainModule.FileName);
@@ -193,8 +191,8 @@ namespace Manage_your_Life
                 }
                 catch (Exception ex)
                 {
-                    notifyIcon.ShowBalloonTip(500, "Error",
-                        ex.Message + "\n画面の遷移に処理が追いつきませんでした。", ToolTipIcon.Error);
+                    //画面の遷移に処理が追いつかなかった可能性があります
+                    notifyIcon.ShowBalloonTip(500, "Error", ex.Message, ToolTipIcon.Error);
                 }
 
                 isRearApplication = false;
@@ -209,8 +207,11 @@ namespace Manage_your_Life
         /// <param name="appId"></param>
         private void DoOveruseWarining(int appId, string processName)
         {
+            //警告機能がオフであれば
             if (!Properties.Settings.Default.checkBox_IsOveruseWarining) return;
+            //警告対象に現在のIDが含まれていなければ
             if (!overuseWarningItems.ContainsKey(appId)) return;
+            //もう警告しない対象に含まれていれば
             if (((List<int>)dataBanker["WarningNotAgain"]).Contains(appId) == true) return;
 
             //今日の使用時間と警告時間を取得
@@ -236,7 +237,7 @@ namespace Manage_your_Life
             {
                 notifyIcon.BalloonTipIcon = ToolTipIcon.Info;
                 notifyIcon.BalloonTipTitle = "\"" + previousProcess.ProcessName + "\"" + "の計測終了";
-                notifyIcon.BalloonTipText = "使用時間: " + activeInterval.ToString(@"hh\:mm\:ss");
+                notifyIcon.BalloonTipText = "使用時間: " + activeInterval.ToString(@"d\.hh\:mm\:ss");
                 notifyIcon.ShowBalloonTip(1000);
             }
         }

@@ -48,6 +48,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CookComputing.XmlRpcV2">
@@ -139,6 +140,9 @@
     <Compile Include="Window\DoWarning.xaml.cs">
       <DependentUpon>DoWarning.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Window\GetTwitterPin.xaml.cs">
+      <DependentUpon>GetTwitterPin.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Window\OveruseWarning.xaml.cs">
       <DependentUpon>OveruseWarning.xaml</DependentUpon>
     </Compile>
@@ -203,6 +207,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Window\DoWarning.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Window\GetTwitterPin.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

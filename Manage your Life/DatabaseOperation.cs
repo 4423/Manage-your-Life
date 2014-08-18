@@ -20,7 +20,7 @@ namespace Manage_your_Life
         private string basePath;
         private string connStr;
 
-        private string timeSpanToStringFormat = @"d\:hh\:mm\:ss";
+        private string timeSpanToStringFormat = @"d\.hh\:mm\:ss";
 
         /// <summary>
         /// TimelineDBに変更を加えた(追記)ときに発生
@@ -73,7 +73,6 @@ namespace Manage_your_Life
         }
 
 
-        //TODO プロセスが途中終了した時のために例外処理を実装した方がいい
 
 //---------------------------------------------------------登録/更新
 

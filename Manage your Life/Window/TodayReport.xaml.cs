@@ -163,12 +163,29 @@ namespace Manage_your_Life
         /// <param name="e"></param>
         private void button_Tweet_Click(object sender, RoutedEventArgs e)
         {
-            var tokens = Tokens.Create(
-                "nV7WUMvQV0WNoXaL2jxb47ydC",
-                "gAje4KL3JL9Y6Sfr2KnMNlrhxdX6Bf2xcgYMjnFyquxZ4z1aGw",
-                "634603423-msefji4BeiSoRMXJW96YXIXBrWTiN6IjScPCIArp",
-                "Sz1WGwB2nvMs9myblrOek7Qyc1mOFBs3SqAswRkIucMMJ"
-                );
+            Tokens tokens = new Tokens();
+
+            //トークンが取得できていなかったら新規取得
+            if (String.IsNullOrWhiteSpace(Properties.Settings.Default.AccessToken))
+            {
+                var session = OAuth.Authorize("nV7WUMvQV0WNoXaL2jxb47ydC",
+                        "gAje4KL3JL9Y6Sfr2KnMNlrhxdX6Bf2xcgYMjnFyquxZ4z1aGw");
+                var url = session.AuthorizeUri;
+                Process.Start(url.AbsoluteUri);
+                GetTwitterPin window = new GetTwitterPin();
+                window.ShowDialog();
+                string pin = (string)dataBanker["PIN"];
+                tokens = session.GetTokens(pin);
+                Properties.Settings.Default.AccessToken = tokens.AccessToken;
+                Properties.Settings.Default.AccessTokenSecret = tokens.AccessTokenSecret;
+            }
+            else
+            {
+                tokens = Tokens.Create("nV7WUMvQV0WNoXaL2jxb47ydC",
+                        "gAje4KL3JL9Y6Sfr2KnMNlrhxdX6Bf2xcgYMjnFyquxZ4z1aGw",
+                        Properties.Settings.Default.AccessToken,
+                        Properties.Settings.Default.AccessTokenSecret);
+            }
             
             string filename = "tweet.png";
             MediaUploadResult result = new MediaUploadResult();

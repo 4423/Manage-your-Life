@@ -143,5 +143,29 @@ namespace Manage_your_Life.Properties {
                 this["checkBox_IsOveruseWarining"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string AccessToken {
+            get {
+                return ((string)(this["AccessToken"]));
+            }
+            set {
+                this["AccessToken"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string AccessTokenSecret {
+            get {
+                return ((string)(this["AccessTokenSecret"]));
+            }
+            set {
+                this["AccessTokenSecret"] = value;
+            }
+        }
     }
 }

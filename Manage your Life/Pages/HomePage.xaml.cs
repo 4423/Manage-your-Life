@@ -68,7 +68,7 @@ namespace Manage_your_Life
             dataBanker = DataBanker.GetInstance();
 
             dbOperator = DatabaseOperation.Instance;
-            dbOperator.UsageTime_Updated += new EventHandler(this.UsageTime_Updated);
+            dbOperator.TimelineLog_Updated += new EventHandler(this.TimelineLog_Updated);
 
             this.chart_upTime.DataContext = new SystemUptimeViewModel();
             this.chart_Bar.DataContext = new OneDayUsageTimeViewModel(DateTime.Today, 5);
@@ -185,13 +185,12 @@ namespace Manage_your_Life
 //---------------------------------------------------------イベントハンドラ
         
         /// <summary>
-        /// データベースの使用時間が更新されたら、棒グラフを更新
+        /// データベースのTimelineの使用時間が更新されたら、棒グラフを更新
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void UsageTime_Updated(object sender, EventArgs e)
+        private void TimelineLog_Updated(object sender, EventArgs e)
         {
-            //this.chart_Bar.DataContext = new UsageTimeViewModel();
             this.chart_Bar.DataContext = new OneDayUsageTimeViewModel(DateTime.Today, 5);
         }
 
