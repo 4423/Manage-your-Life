@@ -117,6 +117,9 @@
     <Compile Include="Pages\StatisticalPage.xaml.cs">
       <DependentUpon>StatisticalPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Test.xaml.cs">
+      <DependentUpon>Test.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -126,6 +129,7 @@
     <Compile Include="ViewModel\Custom\CustomDefaultViewModel.cs" />
     <Compile Include="ViewModel\Custom\CustomLastUsedDateViewModel.cs" />
     <Compile Include="ViewModel\Custom\CustomRegistrationDateViewModel.cs" />
+    <Compile Include="ViewModel\Custom\TestViewModel.cs" />
     <Compile Include="ViewModel\Custom\CustomUsageTimeViewModel.cs" />
     <Compile Include="ViewModel\HomePage\HatenaKeywordViewModel.cs" />
     <Compile Include="ViewModel\Custom\OneDayUsageTimeViewModel.cs" />
@@ -199,6 +203,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\StatisticalPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Test.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -77,8 +77,6 @@
                 </StackPanel>
 
 
-                <!--使用時間トップ5-->
-
                 <chart:ClusteredBarChart
                     Grid.Column="2" Grid.ColumnSpan="2" Grid.RowSpan="2"
                         x:Name="chart_Custom"

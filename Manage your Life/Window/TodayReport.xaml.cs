@@ -26,6 +26,10 @@ namespace Manage_your_Life
         DataBanker dataBanker;
         string tweetString = "#TodayReport\n";
 
+        private string ck = "nV7WUMvQV0WNoXaL2jxb47ydC";
+        private string cks = "gAje4KL3JL9Y6Sfr2KnMNlrhxdX6Bf2xcgYMjnFyquxZ4z1aGw";
+           
+
         public TodayReport()
         {
             InitializeComponent();
@@ -168,8 +172,7 @@ namespace Manage_your_Life
             //トークンが取得できていなかったら新規取得
             if (String.IsNullOrWhiteSpace(Properties.Settings.Default.AccessToken))
             {
-                var session = OAuth.Authorize("nV7WUMvQV0WNoXaL2jxb47ydC",
-                        "gAje4KL3JL9Y6Sfr2KnMNlrhxdX6Bf2xcgYMjnFyquxZ4z1aGw");
+                var session = OAuth.Authorize(ck,cks);
                 var url = session.AuthorizeUri;
                 Process.Start(url.AbsoluteUri);
                 GetTwitterPin window = new GetTwitterPin();
@@ -181,8 +184,7 @@ namespace Manage_your_Life
             }
             else
             {
-                tokens = Tokens.Create("nV7WUMvQV0WNoXaL2jxb47ydC",
-                        "gAje4KL3JL9Y6Sfr2KnMNlrhxdX6Bf2xcgYMjnFyquxZ4z1aGw",
+                tokens = Tokens.Create(ck, cks,
                         Properties.Settings.Default.AccessToken,
                         Properties.Settings.Default.AccessTokenSecret);
             }
