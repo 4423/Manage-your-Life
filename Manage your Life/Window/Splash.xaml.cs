@@ -1,13 +1,9 @@
 ﻿using FirstFloor.ModernUI.Presentation;
 using System;
-using System.Linq;
-using System.Diagnostics;
 using System.Threading;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
-using System.Collections;
-using System.Collections.Generic;
 
 namespace Manage_your_Life
 {
@@ -24,8 +20,7 @@ namespace Manage_your_Life
             InitializeComponent();
 
             AppearanceManager.Current.AccentColor = Properties.Settings.Default.ThemeColor;
-            this.border.Background = 
-                new SolidColorBrush(FirstFloor.ModernUI.Presentation.AppearanceManager.Current.AccentColor);
+            this.border.Background = new SolidColorBrush(AppearanceManager.Current.AccentColor);
 
             timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromSeconds(2);
@@ -46,7 +41,7 @@ namespace Manage_your_Life
             try
             {
                 dbOperator = DatabaseOperation.Instance;
-                new OneDayUsageTimeViewModel(DateTime.Today, 5);
+                new UsageTimeViewModel(DateTime.Today, 5);
             }
             catch (Exception ex)
             {
@@ -56,7 +51,7 @@ namespace Manage_your_Life
                 {
                     label_working.Content = "Reconnecting...";
                     Utility.DoEvents();
-                    new OneDayUsageTimeViewModel(DateTime.Today, 5);
+                    new UsageTimeViewModel(DateTime.Today, 5);
                     goto EX;
                 }
                 catch (Exception exx)

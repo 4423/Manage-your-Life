@@ -101,10 +101,10 @@
     <Compile Include="Content\SettingsAppearance.xaml.cs">
       <DependentUpon>SettingsAppearance.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Content\SettingsAppearanceViewModel.cs" />
-    <Compile Include="DataBanker.cs" />
-    <Compile Include="DatabaseOperation.cs" />
-    <Compile Include="Hatena.cs" />
+    <Compile Include="ViewModel\FromOther\SettingsAppearanceViewModel.cs" />
+    <Compile Include="Class\DataBanker.cs" />
+    <Compile Include="Class\DatabaseOperation.cs" />
+    <Compile Include="Class\Hatena.cs" />
     <Compile Include="Pages\ApplicationPage.xaml.cs">
       <DependentUpon>ApplicationPage.xaml</DependentUpon>
     </Compile>
@@ -125,17 +125,15 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Utility.cs" />
-    <Compile Include="ViewModel\Custom\CustomDefaultViewModel.cs" />
-    <Compile Include="ViewModel\Custom\CustomLastUsedDateViewModel.cs" />
-    <Compile Include="ViewModel\Custom\CustomRegistrationDateViewModel.cs" />
-    <Compile Include="ViewModel\Custom\OneDayProcessStatus.cs" />
-    <Compile Include="ViewModel\Custom\CustomUsageTimeViewModel.cs" />
-    <Compile Include="ViewModel\HomePage\HatenaKeywordViewModel.cs" />
-    <Compile Include="ViewModel\Custom\OneDayUsageTimeViewModel.cs" />
-    <Compile Include="ViewModel\Custom\RangeDayUsageTimeViewModel.cs" />
+    <Compile Include="Class\Utility.cs" />
+    <Compile Include="ViewModel\FromDatabase\DefaultViewModel.cs" />
+    <Compile Include="ViewModel\FromDatabase\LastUsedDateViewModel.cs" />
+    <Compile Include="ViewModel\FromDatabase\RegistrationDateViewModel.cs" />
+    <Compile Include="ViewModel\FromDatabase\ProcessStatusViewModel.cs" />
+    <Compile Include="ViewModel\FromDatabase\UsageTimeViewModel.cs" />
+    <Compile Include="ViewModel\FromOther\HatenaKeywordViewModel.cs" />
     <Compile Include="ViewModel\ViewModel.cs" />
-    <Compile Include="ViewModel\HomePage\SystemUptimeViewModel.cs" />
+    <Compile Include="ViewModel\FromOther\SystemUptimeViewModel.cs" />
     <Compile Include="ViewModel\ChartData.cs" />
     <Compile Include="ViewModel\SeriesData.cs" />
     <Compile Include="Window\DataGridRowEdit.xaml.cs">
@@ -243,7 +241,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ProcessInformation.cs" />
+    <Compile Include="Class\ProcessInformation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -28,7 +28,7 @@ namespace Manage_your_Life
         public StatisticalPage()
         {
             InitializeComponent();
-            this.chart_Custom.DataContext = new CustomDefaultViewModel();
+            this.chart_Custom.DataContext = new DefaultViewModel();
         }
         
 
@@ -129,13 +129,13 @@ namespace Manage_your_Life
                     if (isAllDate)
                     {
                         this.chart_Custom.DataContext =
-                            new CustomUsageTimeViewModel(isFavoritesOnly, selectedOrder, takeNumber);
+                            new UsageTimeViewModel(isFavoritesOnly, selectedOrder, takeNumber);
                     }
                     //期間指定
                     else
                     {
                         this.chart_Custom.DataContext =
-                            new CustomUsageTimeViewModel(startDay, endDay, isFavoritesOnly, selectedOrder, takeNumber);
+                            new UsageTimeViewModel(startDay, endDay, isFavoritesOnly, selectedOrder, takeNumber);
                     }
                     break;
 
@@ -145,13 +145,13 @@ namespace Manage_your_Life
                     if (isAllDate)
                     {
                         this.chart_Custom.DataContext =
-                            new CustomLastUsedDateViewModel(isFavoritesOnly, selectedOrder, takeNumber);
+                            new LastUsedDateViewModel(isFavoritesOnly, selectedOrder, takeNumber);
                     }
                     //期間指定
                     else
                     {
                         this.chart_Custom.DataContext =
-                            new CustomLastUsedDateViewModel(startDay, endDay, isFavoritesOnly, selectedOrder, takeNumber);
+                            new LastUsedDateViewModel(startDay, endDay, isFavoritesOnly, selectedOrder, takeNumber);
                     }
                     break;
 
@@ -161,13 +161,13 @@ namespace Manage_your_Life
                     if (isAllDate)
                     {
                         this.chart_Custom.DataContext =
-                            new CustomRegistrationDateViewModel(isFavoritesOnly, selectedOrder, takeNumber);
+                            new RegistrationDateViewModel(isFavoritesOnly, selectedOrder, takeNumber);
                     }
                     //期間指定
                     else
                     {
                         this.chart_Custom.DataContext =
-                            new CustomRegistrationDateViewModel(startDay, endDay, isFavoritesOnly, selectedOrder, takeNumber);
+                            new RegistrationDateViewModel(startDay, endDay, isFavoritesOnly, selectedOrder, takeNumber);
                     }
                     break;
             }

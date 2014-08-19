@@ -1,17 +1,8 @@
-﻿using System;
+﻿using FirstFloor.ModernUI.Presentation;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using FirstFloor.ModernUI.Presentation;
 
 namespace Manage_your_Life
 {
@@ -40,7 +31,7 @@ namespace Manage_your_Life
             if (checkBox_NotAgain.IsChecked == true)
             {
                 //IDをセット
-                DataBanker banker = DataBanker.GetInstance();
+                DataBanker banker = DataBanker.Instance;
                 var noWarningId = (List<int>)banker["WarningNotAgain"] ?? new List<int>();
                 noWarningId.Add(appId);
                 banker["WarningNotAgain"] = noWarningId;

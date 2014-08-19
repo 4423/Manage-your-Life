@@ -4,11 +4,10 @@ using System.Linq;
 
 namespace Manage_your_Life
 {
-
     /// <summary>
-    /// 登録日のカスタムViewModel
+    /// 最終使用日のカスタムViewModel
     /// </summary>
-    public class CustomRegistrationDateViewModel : ViewModel
+    public class LastUsedDateViewModel : ViewModel
     {
 
         private ApplicationDataClassesDataContext database;
@@ -16,8 +15,9 @@ namespace Manage_your_Life
 
 
 
-        public CustomRegistrationDateViewModel()
+        public LastUsedDateViewModel()
         {
+
             //データベース接続
             DatabaseOperation dbOperator = DatabaseOperation.Instance;
             database = dbOperator.GetConnectionedDataContext;
@@ -33,20 +33,20 @@ namespace Manage_your_Life
         /// <param name="isFavoritesOnly">お気に入り</param>
         /// <param name="order">順序</param>
         /// <param name="takeNumber">取得するアプリケーション数</param>
-        public CustomRegistrationDateViewModel
+        public LastUsedDateViewModel
             (DateTime startDay, DateTime endDay, bool isFavoritesOnly, string order, int takeNumber)
             : this()
         {
-            //ある期間に登録したプロセスと、その登録日を得る
+            //ある期間に使用したプロセスと、その最終使用日を得る
             //Favo含むすべて
             var q = (
                     from p in database.DatabaseApplication
-                    where startDay <= ((DateTime)p.DatabaseDate.AddDate).Date
-                            && ((DateTime)p.DatabaseDate.AddDate).Date <= endDay
+                    where startDay <= ((DateTime)p.DatabaseDate.LastDate).Date
+                            && ((DateTime)p.DatabaseDate.LastDate).Date <= endDay
                     select new
                     {
                         Key = p.DatabaseProcess.Name,
-                        Value = p.DatabaseDate.AddDate
+                        Value = p.DatabaseDate.LastDate
                     });
 
             //Favoのみ
@@ -54,13 +54,13 @@ namespace Manage_your_Life
             {
                 q = (
                     from p in database.DatabaseApplication
-                    where startDay <= ((DateTime)p.DatabaseDate.AddDate).Date
-                            && ((DateTime)p.DatabaseDate.AddDate).Date <= endDay
+                    where startDay <= ((DateTime)p.DatabaseDate.LastDate).Date
+                            && ((DateTime)p.DatabaseDate.LastDate).Date <= endDay
                     where p.Favorite == true
                     select new
                     {
                         Key = p.DatabaseProcess.Name,
-                        Value = p.DatabaseDate.AddDate
+                        Value = p.DatabaseDate.LastDate
                     });
             }
 
@@ -79,12 +79,9 @@ namespace Manage_your_Life
 
             ChartData = new ObservableCollection<ChartData>();
 
-            int i = 0;
-            foreach (var r in q)
+            //取得数分だけforeach
+            foreach (var r in q.Take(takeNumber))
             {
-                //取得数になったら抜ける
-                if (i++ == takeNumber) break;
-
                 ChartData.Add(new ChartData()
                 {
                     Category = r.Key,
@@ -93,7 +90,7 @@ namespace Manage_your_Life
             }
 
             Series = new ObservableCollection<SeriesData>();
-            Series.Add(new SeriesData() { SeriesDisplayName = "RegistrationDate", Items = ChartData });
+            Series.Add(new SeriesData() { SeriesDisplayName = "LastUsedDate", Items = ChartData });
 
             //ChartのSubtitle設定
             chartSubTitle = String.Format("Date: {0} -> {1}, Favorites {2}, Order: {3}, Take number: {4}",
@@ -110,18 +107,18 @@ namespace Manage_your_Life
         /// <param name="isFavoritesOnly">お気に入り</param>
         /// <param name="order">順序</param>
         /// <param name="takeNumber">取得するアプリケーション数</param>
-        public CustomRegistrationDateViewModel
+        public LastUsedDateViewModel
             (bool isFavoritesOnly, string order, int takeNumber)
             : this()
         {
-            //プロセスとその登録日を得る
+            //プロセスとその使用時間を得る
             //Favo含むすべて
             var q = (
                     from p in database.DatabaseApplication
                     select new
                     {
                         Key = p.DatabaseProcess.Name,
-                        Value = p.DatabaseDate.AddDate
+                        Value = p.DatabaseDate.LastDate
                     });
 
             //Favoのみ
@@ -133,7 +130,7 @@ namespace Manage_your_Life
                     select new
                     {
                         Key = p.DatabaseProcess.Name,
-                        Value = p.DatabaseDate.AddDate
+                        Value = p.DatabaseDate.LastDate
                     });
             }
 
@@ -152,12 +149,8 @@ namespace Manage_your_Life
 
             ChartData = new ObservableCollection<ChartData>();
 
-            int i = 0;
-            foreach (dynamic r in q)
+            foreach (dynamic r in q.Take(takeNumber))
             {
-                //取得数になったら抜ける
-                if (i++ == takeNumber) break;
-
                 ChartData.Add(new ChartData()
                 {
                     Category = r.Key,
@@ -166,8 +159,8 @@ namespace Manage_your_Life
             }
 
             Series = new ObservableCollection<SeriesData>();
-            Series.Add(new SeriesData() { SeriesDisplayName = "RegistrationDate", Items = ChartData });
-
+            Series.Add(new SeriesData() { SeriesDisplayName = "LastUsedDate", Items = ChartData });
+            
             //ChartのSubtitle設定
             chartSubTitle = String.Format("Date: All date, Favorites {0}, Order: {1}, Take number: {2}",
                 isFavoritesOnly ? "only" : "not only", order, takeNumber.ToString());
@@ -175,10 +168,40 @@ namespace Manage_your_Life
 
 
 
-        public override string ToolTipFormat { get { return "'{0}' was registered on {1} day ago"; } }
 
-        public string ChartTitle { get { return "Application RegistrationDate"; } }
-        public string ChartSubTitle { get { return chartSubTitle; } }
-        public string SeriesTitle { get { return "Time span [day]"; } }
+        public override string ToolTipFormat
+        {
+            get
+            {
+                return "'{0}' has been used for {1} days ago";
+            }
+        }
+
+
+        public string ChartTitle
+        {
+            get
+            {
+                return "Application LastUsedDate";
+            }
+        }
+
+
+        public string ChartSubTitle
+        {
+            get
+            {
+                return chartSubTitle;
+            }
+        }
+
+        public string SeriesTitle
+        {
+            get
+            {
+                return "Time span [day]";
+            }
+        }
+
     }
 }

@@ -164,7 +164,7 @@ namespace Manage_your_Life
             dynamic selectedItems = GetSelectedItems(dataGrid1.SelectedIndex);
 
             //データを格納
-            DataBanker context = DataBanker.GetInstance();
+            DataBanker context = DataBanker.Instance;
             context["Id"] = selectedItems.Id;
             context["Favorite"] = selectedItems.Favorite;
             context["Title"] = selectedItems.Title;

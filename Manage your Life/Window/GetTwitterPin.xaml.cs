@@ -1,16 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+﻿using System.Windows;
 
 namespace Manage_your_Life
 {
@@ -26,7 +14,14 @@ namespace Manage_your_Life
 
         private void button_OK_Click(object sender, RoutedEventArgs e)
         {
-            DataBanker banker = DataBanker.GetInstance();
+            if (this.textBox_PIN.Text == "")
+            {
+                MessageBox.Show("PINが正しく入力されていません。", "エラー",
+                        MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            DataBanker banker = DataBanker.Instance;
             banker["PIN"] = this.textBox_PIN.Text;
             this.Close();
         }

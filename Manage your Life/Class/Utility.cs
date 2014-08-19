@@ -15,21 +15,20 @@ namespace Manage_your_Life
 {
     static public class Utility
     {
-        
 
         /// <summary>
         /// 指定した精度の数値に切り捨る
         /// </summary>
         /// <see cref="http://jeanne.wankuma.com/tips/csharp/math/rounddown.html"/>
-        /// <param name="dValue">丸め対象の倍精度浮動小数点数</param>
-        /// <param name="iDigits">戻り値の有効桁数の精度</param>
-        /// <returns>iDigits に等しい精度の数値に切り捨てられた数値</returns>
-        public static double ToRoundDown(double dValue, int iDigits)
+        /// <param name="value">切り捨てる対象の数字</param>
+        /// <param name="iDigits">切り捨てない小数点桁数</param>
+        /// <returns>切り捨てられた数値</returns>
+        public static double ToRoundDown(double value, int iDigits)
         {
-            double dCoef = Math.Pow(10, iDigits);
+            double coefficient = Math.Pow(10, iDigits);
 
-            return dValue > 0 ? Math.Floor(dValue * dCoef) / dCoef :
-                                Math.Ceiling(dValue * dCoef) / dCoef;
+            return value > 0 ? Math.Floor(value * coefficient) / coefficient : 
+                Math.Ceiling(value * coefficient) / coefficient;
         }
 
 
@@ -59,7 +58,6 @@ namespace Manage_your_Life
         public static object ExitFrames(object f)
         {
             ((DispatcherFrame)f).Continue = false;
-
             return null;
         }
 
@@ -71,7 +69,9 @@ namespace Manage_your_Life
         /// <param name="b"></param>
         public static void Swap<T>(ref T a, ref T b)
         {
-            T c = a; a = b; b = c;
+            T c = a; 
+            a = b;
+            b = c;
         }
 
 
@@ -90,6 +90,28 @@ namespace Manage_your_Life
 
             return true;
         }
+
+
+
+        /// <summary>
+        /// 文字列がTimeSpanに変換出来るか
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static Boolean IsTimeSpanFormat(string value)
+        {
+            try
+            {
+                TimeSpan.Parse(value);
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
 
 
         /// <summary>
@@ -193,8 +215,7 @@ namespace Manage_your_Life
                 {
                     if (data1.Key == data2.Key)
                     {
-                        mergeDict[data2.Key] += data1.Value;
-                        //mergeDict.Add(data1.Key, data1.Value + data2.Value);
+                        mergeDict[data2.Key] += data1.Value;                        
                     }
                 }
             }
@@ -222,19 +243,23 @@ namespace Manage_your_Life
         {
             Dictionary<string, TimeSpan> dict = new Dictionary<string, TimeSpan>();
 
-            foreach (var r in q)
+            try
             {
-                //Dictionaryに既にKeyが含まれていなければ
-                if (!dict.ContainsKey(r.Key))
+                foreach (var r in q)
                 {
-                    dict.Add(r.Key, r.Value);
-                }
-                //含まれていればそのKeyに対してValueを加算
-                else
-                {
-                    dict[r.Key] += r.Value;
+                    //DictionaryにKeyが含まれていればValueを加算
+                    if (dict.ContainsKey(r.Key))
+                    {
+                        dict[r.Key] += r.Value;
+                    }
+                    //含まれていなければ新規追加
+                    else
+                    {
+                        dict.Add(r.Key, r.Value);
+                    }
                 }
             }
+            catch (Exception ex) { }
 
             return dict;
         }

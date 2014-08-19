@@ -31,12 +31,13 @@ namespace Manage_your_Life
         {
             InitializeComponent();
 
-            dataBanker = DataBanker.GetInstance();
+            dataBanker = DataBanker.Instance;
 
             this.border.BorderBrush = new SolidColorBrush(FirstFloor.ModernUI.Presentation.AppearanceManager.Current.AccentColor);
         }
 
 
+        //画面に表示させる項目の設定
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
 
@@ -79,7 +80,7 @@ namespace Manage_your_Life
 
 
 
-            //何もデータがないとSplitで死ぬ            
+            //何もデータがないとSplitで例外発生           
             tweetString = tweetString.Replace("<UPTIME>", strUpTime);
             dataBanker["TweetConfirm"] = tweetString.Replace("<WARNING_COUNT>", warningCount);
             try
@@ -183,6 +184,7 @@ namespace Manage_your_Life
             }
 
             TweetConfirm window = new TweetConfirm();
+            this.Hide();
             window.Show();
             this.Close();
         }

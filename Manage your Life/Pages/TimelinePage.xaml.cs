@@ -28,7 +28,7 @@ namespace Manage_your_Life
         {
             InitializeComponent();
                         
-            this.chart_Line.DataContext = new OneDayProcessStatus();
+            this.chart_Line.DataContext = new ProcessStatusViewModel();
 
             dbOperator = DatabaseOperation.Instance;
             dbOperator.NewRecord_Registered += new EventHandler(this.NewRecord_Registered);
@@ -63,7 +63,7 @@ namespace Manage_your_Life
             DateTime selectedDay = this.calendar.SelectedDate.Value;
 
             //Chart描画            
-            this.chart_Line.DataContext = new OneDayProcessStatus(appId, selectedDay, (bool)checkBox_Stacked.IsChecked);
+            this.chart_Line.DataContext = new ProcessStatusViewModel(appId, selectedDay, (bool)checkBox_Stacked.IsChecked);
             this.chart_Line.Title = String.Format("Usage status of '{0}' ({1})", 
                     selectedItem.ProcName, selectedDay.ToShortDateString());
         }

@@ -91,7 +91,7 @@ namespace Manage_your_Life
             pInfo = new ProcessInformation();
             dbOperator = DatabaseOperation.Instance;
             overuseWarningItems = dbOperator.GetOveruseWarningCollection();
-            dataBanker = DataBanker.GetInstance();
+            dataBanker = DataBanker.Instance;
             dataBanker["WarningNotAgain"] = new List<int>();
             dataBanker["WarningCount"] = 0;
 

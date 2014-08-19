@@ -1,18 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using FirstFloor.ModernUI.Presentation;
+using System;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using FirstFloor.ModernUI.Presentation;
-using System.Runtime.InteropServices;
 
 namespace Manage_your_Life
 {
@@ -59,7 +51,8 @@ namespace Manage_your_Life
             if (!IsWindowLoaded) return;
             if (!Int32.TryParse(this.textBox_WarningTime.Text, out warningTimeNumber)) return;
 
-            this.label_Confirm.Content = String.Format("使用時間の限度：　　　　　　    {0} 分", warningTimeNumber.ToString());
+            this.label_Confirm.Content = 
+                String.Format("使用時間の限度：　　　　　　    {0} 分", warningTimeNumber.ToString());
         }
 
 
@@ -67,10 +60,11 @@ namespace Manage_your_Life
 //--------------------------------------------------------ボタン
         
         private void button_Ok_Click(object sender, RoutedEventArgs e)
-        {
+        {            
+            dynamic selectedItem = this.listBox_WariningTarget.SelectedItem;
+
             //チェック
             bool check = false;
-            dynamic selectedItem = this.listBox_WariningTarget.SelectedItem;
             if (selectedItem == null) check = true;
             if (!Int32.TryParse(this.textBox_WarningTime.Text, out warningTimeNumber)) check = true;
             if (warningTimeNumber < 0) check = true;
@@ -80,10 +74,18 @@ namespace Manage_your_Life
                 return;
             }
 
-            //OK
-            var message = String.Format("'{0}'の使用時間が'{1}'分になった時に警告を表示しますか？",
-                                ((dynamic)this.listBox_WariningTarget.SelectedItem).ProcName,
-                                this.textBox_WarningTime.Text);
+            dynamic message = null;
+            if (this.textBox_WarningTime.Text == "0")
+            {
+                message = String.Format("'{0}'の警告を消去しますか？",
+                                    ((dynamic)this.listBox_WariningTarget.SelectedItem).ProcName);
+            }
+            else
+            {
+                message = String.Format("'{0}'の使用時間が'{1}'分になった時に警告を表示しますか？",
+                                    ((dynamic)this.listBox_WariningTarget.SelectedItem).ProcName,
+                                    this.textBox_WarningTime.Text);
+            }
 
             if (MessageBoxResult.Yes == MessageBox.Show(message, "確認", MessageBoxButton.YesNo,MessageBoxImage.Question))
             {
@@ -92,7 +94,8 @@ namespace Manage_your_Life
                 //DBに警告時間を登録
                 dbOperator.SetAlert(appId, TimeSpan.FromMinutes(warningTimeNumber));
 
-                MessageBox.Show("登録しました。\nここで設定した情報は再起動後に反映されます。", "情報", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("登録しました。\nここで設定した情報は再起動後に反映されます。", "情報", 
+                    MessageBoxButton.OK, MessageBoxImage.Information);
                 this.Close();
             }
         }

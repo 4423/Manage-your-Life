@@ -5,22 +5,32 @@ using System.Linq;
 namespace Manage_your_Life
 {
     /// <summary>
-    /// 最終使用日のカスタムViewModel
+    /// 使用時間のカスタムViewModel
     /// </summary>
-    public class CustomLastUsedDateViewModel : ViewModel
+    public class UsageTimeViewModel : ViewModel
     {
 
         private ApplicationDataClassesDataContext database;
+
         private string chartSubTitle = "";
 
 
 
-        public CustomLastUsedDateViewModel()
+        public UsageTimeViewModel()
         {
-
             //データベース接続
             DatabaseOperation dbOperator = DatabaseOperation.Instance;
             database = dbOperator.GetConnectionedDataContext;
+        }
+
+
+
+        /// <summary>指定する１日での使用アプリと使用時間を取得数だけ降順で得る</summary>
+        /// <param name="day">ある日</param>
+        /// <param name="takeNumber">取得するアプリケーション数</param>
+        public UsageTimeViewModel(DateTime day, int takeNumber)
+            : this(day, day, false, "Descending", takeNumber)
+        {            
         }
 
 
@@ -33,67 +43,57 @@ namespace Manage_your_Life
         /// <param name="isFavoritesOnly">お気に入り</param>
         /// <param name="order">順序</param>
         /// <param name="takeNumber">取得するアプリケーション数</param>
-        public CustomLastUsedDateViewModel
+        public UsageTimeViewModel
             (DateTime startDay, DateTime endDay, bool isFavoritesOnly, string order, int takeNumber)
             : this()
         {
-            //ある期間に使用したプロセスと、その最終使用日を得る
-            //Favo含むすべて
-            var q = (
-                    from p in database.DatabaseApplication
-                    where startDay <= ((DateTime)p.DatabaseDate.LastDate).Date
-                            && ((DateTime)p.DatabaseDate.LastDate).Date <= endDay
-                    select new
-                    {
-                        Key = p.DatabaseProcess.Name,
-                        Value = p.DatabaseDate.LastDate
-                    });
+            IQueryable q;
 
+            //ある期間に使用したプロセスと、その使用時間を得る
             //Favoのみ
             if (isFavoritesOnly)
             {
                 q = (
                     from p in database.DatabaseApplication
-                    where startDay <= ((DateTime)p.DatabaseDate.LastDate).Date
-                            && ((DateTime)p.DatabaseDate.LastDate).Date <= endDay
+                    where startDay <= p.DatabaseTimeline.Today && p.DatabaseTimeline.Today.Value <= endDay
                     where p.Favorite == true
                     select new
                     {
                         Key = p.DatabaseProcess.Name,
-                        Value = p.DatabaseDate.LastDate
+                        Value = TimeSpan.Parse(p.DatabaseTimeline.UsageTime)
+                    });
+            }
+            //すべて
+            else
+            {
+                q = (
+                    from p in database.DatabaseApplication
+                    where startDay <= p.DatabaseTimeline.Today && p.DatabaseTimeline.Today.Value <= endDay
+                    select new
+                    {
+                        Key = p.DatabaseProcess.Name,
+                        Value = TimeSpan.Parse(p.DatabaseTimeline.UsageTime)
                     });
             }
 
 
-            //ソート
-            switch (order)
-            {
-                case "Ascending":
-                    q = q.OrderBy((x) => x.Value);
-                    break;
-                case "Descending":
-                    q = q.OrderByDescending((x) => x.Value);
-                    break;
-            }
+            //データベースから抽出したデータについて、重複したプロセス名を単一にまとめる
+            var dict = Utility.DictionaryOrganizingValue(q);
 
 
             ChartData = new ObservableCollection<ChartData>();
-
-            int i = 0;
-            foreach (var r in q)
+            foreach (var d in Utility.SortingDictionary(order, dict).Take(takeNumber))
             {
-                //取得数になったら抜ける
-                if (i++ == takeNumber) break;
-
                 ChartData.Add(new ChartData()
                 {
-                    Category = r.Key,
-                    Number = Utility.ToRoundDown((DateTime.Now - (DateTime)r.Value).TotalDays, 4)
+                    Category = d.Key,
+                    Number = Utility.ToRoundDown(d.Value.TotalHours, 3)
                 });
             }
 
+
             Series = new ObservableCollection<SeriesData>();
-            Series.Add(new SeriesData() { SeriesDisplayName = "LastUsedDate", Items = ChartData });
+            Series.Add(new SeriesData() { SeriesDisplayName = "UsageTime", Items = ChartData });
 
             //ChartのSubtitle設定
             chartSubTitle = String.Format("Date: {0} -> {1}, Favorites {2}, Order: {3}, Take number: {4}",
@@ -110,20 +110,11 @@ namespace Manage_your_Life
         /// <param name="isFavoritesOnly">お気に入り</param>
         /// <param name="order">順序</param>
         /// <param name="takeNumber">取得するアプリケーション数</param>
-        public CustomLastUsedDateViewModel
-            (bool isFavoritesOnly, string order, int takeNumber)
-            : this()
+        public UsageTimeViewModel(bool isFavoritesOnly, string order, int takeNumber) : this()
         {
-            //プロセスとその使用時間を得る
-            //Favo含むすべて
-            var q = (
-                    from p in database.DatabaseApplication
-                    select new
-                    {
-                        Key = p.DatabaseProcess.Name,
-                        Value = p.DatabaseDate.LastDate
-                    });
+            IQueryable q;
 
+            //プロセスと、その使用時間を得る
             //Favoのみ
             if (isFavoritesOnly)
             {
@@ -133,41 +124,41 @@ namespace Manage_your_Life
                     select new
                     {
                         Key = p.DatabaseProcess.Name,
-                        Value = p.DatabaseDate.LastDate
+                        Value = TimeSpan.Parse(p.DatabaseTimeline.UsageTime)
+                    });
+            }
+            //すべて
+            else
+            {
+                q = (
+                    from p in database.DatabaseApplication
+                    select new
+                    {
+                        Key = p.DatabaseProcess.Name,
+                        Value = TimeSpan.Parse(p.DatabaseTimeline.UsageTime)
                     });
             }
 
 
-            //ソート
-            switch (order)
-            {
-                case "Ascending":
-                    q = q.OrderBy((x) => x.Value);
-                    break;
-                case "Descending":
-                    q = q.OrderByDescending((x) => x.Value);
-                    break;
-            }
+            //重複したプロセス名を単一にまとめる
+            var dict = Utility.DictionaryOrganizingValue(q);
 
-
+            
+            //ソートしたものからtakeNumberだけChartDataに追加
             ChartData = new ObservableCollection<ChartData>();
-
-            int i = 0;
-            foreach (dynamic r in q)
+            foreach (var d in Utility.SortingDictionary(order, dict).Take(takeNumber))
             {
-                //取得数になったら抜ける
-                if (i++ == takeNumber) break;
-
                 ChartData.Add(new ChartData()
                 {
-                    Category = r.Key,
-                    Number = Utility.ToRoundDown((DateTime.Now - (DateTime)r.Value).TotalDays, 4)
+                    Category = d.Key,
+                    Number = Utility.ToRoundDown(d.Value.TotalHours, 3)
                 });
             }
 
+
             Series = new ObservableCollection<SeriesData>();
-            Series.Add(new SeriesData() { SeriesDisplayName = "LastUsedDate", Items = ChartData });
-            
+            Series.Add(new SeriesData() { SeriesDisplayName = "UsageTime", Items = ChartData });
+
             //ChartのSubtitle設定
             chartSubTitle = String.Format("Date: All date, Favorites {0}, Order: {1}, Take number: {2}",
                 isFavoritesOnly ? "only" : "not only", order, takeNumber.ToString());
@@ -175,21 +166,21 @@ namespace Manage_your_Life
 
 
 
-
         public override string ToolTipFormat
         {
             get
             {
-                return "'{0}' has been used for {1} days ago";
+                return "'{0}' has been used {1} hour ({3:P2})";
             }
         }
+
 
 
         public string ChartTitle
         {
             get
             {
-                return "Application LastUsedDate";
+                return "Application UsageTime";
             }
         }
 
@@ -202,13 +193,7 @@ namespace Manage_your_Life
             }
         }
 
-        public string SeriesTitle
-        {
-            get
-            {
-                return "Time span [day]";
-            }
-        }
+        public string SeriesTitle { get { return "Usage time [hour]"; } }
 
     }
 }

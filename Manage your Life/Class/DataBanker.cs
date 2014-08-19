@@ -14,19 +14,19 @@ namespace Manage_your_Life
     /// <see cref="http://architect360.apricot-jp.com/300/post_2.html"/>
     public sealed class DataBanker
     {
-        private static DataBanker _instance = new DataBanker();
+        private static readonly DataBanker _instance = new DataBanker();
         private IDictionary _holder = new Hashtable();
 
 
         private DataBanker() { }
 
-        /// <summary>
-        /// 自身のインスタンスを取得
-        /// </summary>
-        /// <returns></returns>
-        public static DataBanker GetInstance()
+        
+        public static DataBanker Instance
         {
-            return _instance;
+            get
+            {
+                return _instance;
+            }
         }
 
 
@@ -53,25 +53,6 @@ namespace Manage_your_Life
         }
 
 
-        /// <summary>  
-        /// keyの情報を削除する  
-        /// </summary>  
-        /// <param name="key"></param>  
-        public void Remove(string key)
-        {
-            _holder.Remove(key);
-        }
-
-
-        /// <summary>  
-        /// すべての情報を削除する  
-        /// </summary>  
-        public void RemoveAll()
-        {
-            _holder.Clear();
-        }
-
-
         /// <summary>
         /// キーの情報を返す
         /// </summary>
@@ -82,6 +63,15 @@ namespace Manage_your_Life
                 return _holder.Keys;
             }
         }  
-  
+
+
+        /// <summary>  
+        /// keyの情報を削除する  
+        /// </summary>  
+        /// <param name="key"></param>  
+        public void Remove(string key)
+        {
+            _holder.Remove(key);
+        }  
     }
 }

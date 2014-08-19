@@ -77,7 +77,7 @@
                                 SeriesTitle="UsageTime [hour]"
                                 DisplayMember="Category"
                                 ValueMember="Number"
-                                ItemsSource="{Binding UsageTime}" />
+                                ItemsSource="{Binding ChartData}" />
                         </chart:ClusteredBarChart.Series>
                     </chart:ClusteredBarChart>
 

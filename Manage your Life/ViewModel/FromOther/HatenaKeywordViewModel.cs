@@ -1,19 +1,6 @@
-﻿using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Diagnostics;
-using System.Windows.Threading;
-using System.ComponentModel;
-using De.TorstenMandelkow.MetroChart;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Linq;
+using System.Diagnostics;
 
 namespace Manage_your_Life
 {
@@ -26,6 +13,7 @@ namespace Manage_your_Life
 
 
         /// <summary>
+        /// HatenaChartのViewModelのコンストラクタ
         /// </summary>
         /// <param name="windowTitle">windowTitle: HatenaAPIに飛ばす文字列</param>
         /// <param name="preHatenaKeywordCollections">今までのHatenaでカテゴライズされたコレクション</param>
@@ -58,7 +46,6 @@ namespace Manage_your_Life
             }
             
         }
-
 
 
         public Dictionary<string, int> GetHatenaCategorizedCountData

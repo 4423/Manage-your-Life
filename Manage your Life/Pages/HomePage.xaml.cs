@@ -65,13 +65,13 @@ namespace Manage_your_Life
 
             pInfo = new ProcessInformation();
             preCategorizedCountData = new Dictionary<string, int>();
-            dataBanker = DataBanker.GetInstance();
+            dataBanker = DataBanker.Instance;
 
             dbOperator = DatabaseOperation.Instance;
             dbOperator.TimelineLog_Updated += new EventHandler(this.TimelineLog_Updated);
 
             this.chart_upTime.DataContext = new SystemUptimeViewModel();
-            this.chart_Bar.DataContext = new OneDayUsageTimeViewModel(DateTime.Today, 5);
+            this.chart_Bar.DataContext = new UsageTimeViewModel(DateTime.Today, 5);
 
             //起動時刻保存
             dataBanker["StartUpTime"] = DateTime.Now;
@@ -191,7 +191,7 @@ namespace Manage_your_Life
         /// <param name="e"></param>
         private void TimelineLog_Updated(object sender, EventArgs e)
         {
-            this.chart_Bar.DataContext = new OneDayUsageTimeViewModel(DateTime.Today, 5);
+            this.chart_Bar.DataContext = new UsageTimeViewModel(DateTime.Today, 5);
         }
 
 

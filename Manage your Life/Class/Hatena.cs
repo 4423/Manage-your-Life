@@ -1,19 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Runtime.InteropServices;
-using System.Diagnostics;
-using System.Threading.Tasks;
-using CookComputing.XmlRpc;
-using System.Net;
-using System.IO;
-using System.Web;
-using System.Xml;
+﻿using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.IO;
+using System.Net;
+using System.Text;
+using System.Xml;
 
 namespace Manage_your_Life
 {
@@ -122,13 +112,12 @@ namespace Manage_your_Life
                 if (cname == "") continue;
                 if (ngWords.Contains(word)) continue;
 
-                try
+                //wordが既に含まれていればディクショナリに追加
+                //同じwordで複数のcnameをもつ場合がある
+                if (!dic.ContainsKey(word))
                 {
-                    //ディクショナリに追加
                     dic.Add(word, cname);
                 }
-                //既に同じキーが使いされている場合にArgumentExceptionが発生する
-                catch (Exception ex) { /*何もしないんだよ*/ }
             }
 
             return dic;
@@ -167,11 +156,15 @@ namespace Manage_your_Life
 
 
             //xmlの受信
-            WebResponse res = req.GetResponse();
-            Stream stream = res.GetResponseStream();
-            using (StreamReader sr = new StreamReader(stream))
+            using (WebResponse res = req.GetResponse())
             {
-                xml.LoadXml(sr.ReadToEnd());
+                using (Stream stream = res.GetResponseStream())
+                {
+                    using (StreamReader sr = new StreamReader(stream))
+                    {
+                        xml.LoadXml(sr.ReadToEnd());
+                    }
+                }
             }
 
             return xml;

@@ -1,20 +1,10 @@
 ﻿using CoreTweet;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace Manage_your_Life
 {
@@ -24,7 +14,7 @@ namespace Manage_your_Life
     public partial class TweetConfirm : Window
     {
 
-        DataBanker dataBanker = DataBanker.GetInstance();
+        DataBanker dataBanker = DataBanker.Instance;
 
         private string ck = "nV7WUMvQV0WNoXaL2jxb47ydC";
         private string cks = "gAje4KL3JL9Y6Sfr2KnMNlrhxdX6Bf2xcgYMjnFyquxZ4z1aGw";
@@ -51,16 +41,13 @@ namespace Manage_your_Life
                 var session = OAuth.Authorize(ck, cks);
                 var url = session.AuthorizeUri;
                 Process.Start(url.AbsoluteUri);
+
                 GetTwitterPin window = new GetTwitterPin();
                 window.ShowDialog();
+
                 string pin = (string)dataBanker["PIN"];
-                if (pin == "")
-                {
-                    MessageBox.Show("PINが正しく入力されませんでした。", "エラー",
-                            MessageBoxButton.OK, MessageBoxImage.Error);
-                    return;
-                }
                 tokens = session.GetTokens(pin);
+
                 Properties.Settings.Default.AccessToken = tokens.AccessToken;
                 Properties.Settings.Default.AccessTokenSecret = tokens.AccessTokenSecret;
                 Properties.Settings.Default.Save();

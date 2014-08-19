@@ -6,12 +6,15 @@ using System.Linq;
 namespace Manage_your_Life
 {
     /// <summary>
-    /// 時間軸の使用時間ViewModel
+    /// ある日に使用したアプリケーションの使用時間ViewModel(時間軸ver)
     /// </summary>
-    public class OneDayProcessStatus : ViewModel
+    public class ProcessStatusViewModel : ViewModel
     {
 
-        public OneDayProcessStatus()
+        /// <summary>
+        /// デフォルト用
+        /// </summary>
+        public ProcessStatusViewModel()
         {
             Items = new List<MyItem>();
 
@@ -22,12 +25,14 @@ namespace Manage_your_Life
             });
         }
 
+
+
         /// <summary>
         /// ある１日の中のプロセスの使用タイミングと使用時間をもつListを作成
         /// </summary>
         /// <param name="appId">取得したいプロセスのID</param>
         /// <param name="day">取得したい日付</param>
-        public OneDayProcessStatus(int appId, DateTime day, bool isStacked)
+        public ProcessStatusViewModel(int appId, DateTime day, bool isStacked)
         {
             DatabaseOperation dbOperator = DatabaseOperation.Instance;
             var database = dbOperator.GetConnectionedDataContext;
