@@ -27,7 +27,7 @@ namespace Manage_your_Life
         /// </summary>
         /// <param name="appId">取得したいプロセスのID</param>
         /// <param name="day">取得したい日付</param>
-        public OneDayProcessStatus(int appId, DateTime day)
+        public OneDayProcessStatus(int appId, DateTime day, bool isStacked)
         {
             DatabaseOperation dbOperator = DatabaseOperation.Instance;
             var database = dbOperator.GetConnectionedDataContext;
@@ -42,15 +42,28 @@ namespace Manage_your_Life
                         Value = Utility.ToRoundDown((TimeSpan.Parse(p.DatabaseTimeline.UsageTime)).TotalMinutes, 3)
                     });
 
-
+            double stack = 0;
             Items = new List<MyItem>();
             foreach (var r in q)
             {
-                Items.Add(new MyItem()
+                //積み上げグラフの場合
+                if (isStacked)
                 {
-                    Key = (DateTime)r.Key,
-                    Value = r.Value
-                });
+                    stack += r.Value;
+                    Items.Add(new MyItem()
+                    {
+                        Key = (DateTime)r.Key,
+                        Value = stack
+                    });
+                }
+                else
+                {
+                    Items.Add(new MyItem()
+                    {
+                        Key = (DateTime)r.Key,
+                        Value = r.Value
+                    });
+                }
             }
         }
 

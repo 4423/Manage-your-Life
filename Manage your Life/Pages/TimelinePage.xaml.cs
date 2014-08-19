@@ -19,15 +19,25 @@ namespace Manage_your_Life
     /// <summary>
     /// Interaction logic for Test.xaml
     /// </summary>
-    public partial class Test : UserControl
+    public partial class TimelinePage : UserControl
     {
-        public Test()
+
+        DatabaseOperation dbOperator;
+
+        public TimelinePage()
         {
             InitializeComponent();
                         
             this.chart_Line.DataContext = new OneDayProcessStatus();
 
-            DatabaseOperation dbOperator = DatabaseOperation.Instance;
+            dbOperator = DatabaseOperation.Instance;
+            dbOperator.NewRecord_Registered += new EventHandler(this.NewRecord_Registered);
+            this.listBox_ProcName.DataContext = dbOperator.GetAllData();
+        }
+
+
+        void NewRecord_Registered(object sender, EventArgs e)
+        {
             this.listBox_ProcName.DataContext = dbOperator.GetAllData();
         }
 
@@ -52,11 +62,12 @@ namespace Manage_your_Life
             int appId = selectedItem.Id;
             DateTime selectedDay = this.calendar.SelectedDate.Value;
 
-            //Chart描画
-            this.chart_Line.DataContext = new OneDayProcessStatus(appId, selectedDay);
+            //Chart描画            
+            this.chart_Line.DataContext = new OneDayProcessStatus(appId, selectedDay, (bool)checkBox_Stacked.IsChecked);
             this.chart_Line.Title = String.Format("Usage status of '{0}' ({1})", 
                     selectedItem.ProcName, selectedDay.ToShortDateString());
         }
+
     }
 
 

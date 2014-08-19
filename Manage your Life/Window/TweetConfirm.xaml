@@ -22,7 +22,7 @@
             <TabControl Grid.Row="1" >
                 <TabItem Header="Tweet内容の確認">
                     <StackPanel Orientation="Vertical">
-                        <TextBox Margin="5" Height="200" Name="textBox_Confi"/>
+                        <TextBox Margin="5" Height="200" Name="textBox_Confi" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap"/>
                         <StackPanel Orientation="Horizontal" Margin="0,5">
                             <Button Content="Cancel" Margin="5,0" Width="124" Name="button_Cancel" Click="button_Cancel_Click" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             <Button Content="Tweet" Margin="5,0" Width="124" Name="button_Tweet" Click="button_Tweet_Click" HorizontalAlignment="Center" VerticalAlignment="Center"/>                            
@@ -31,7 +31,7 @@
                 </TabItem>
                 <TabItem Header="フォーマットの編集">
                     <StackPanel Orientation="Vertical">
-                        <TextBox Margin="5" Height="200" Name="textBox_Format"/>
+                        <TextBox Margin="5" Height="200" Name="textBox_Format" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap"/>
                         <Button Content="保存(次回から有効)" Margin="5" HorizontalAlignment="Stretch" Name="button_Save" Click="button_Save_Click"/>
                     </StackPanel>
                 </TabItem>

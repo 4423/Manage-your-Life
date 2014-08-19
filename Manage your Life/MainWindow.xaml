@@ -11,8 +11,8 @@
             <mui:LinkGroup.Links>
                 <mui:Link DisplayName="home" Source="/Pages/HomePage.xaml" />
                 <mui:Link DisplayName="application" Source="/Pages/ApplicationPage.xaml"/>
-                <mui:Link DisplayName="statistics" Source="/Pages/StatisticalPage.xaml"/>
-                <mui:Link DisplayName="test" Source="/Pages/Test.xaml"/>
+                <mui:Link DisplayName="timeline" Source="/Pages/TimelinePage.xaml"/>
+                <mui:Link DisplayName="statistics" Source="/Pages/StatisticalPage.xaml"/>                
             </mui:LinkGroup.Links>
         </mui:LinkGroup>
         <mui:LinkGroup DisplayName="settings" GroupName="settings">
