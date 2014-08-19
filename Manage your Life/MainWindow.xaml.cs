@@ -72,18 +72,8 @@ namespace Manage_your_Life
         #endregion
 
         
-        static void Application_ThreadException(object sender, System.Threading.ThreadExceptionEventArgs e)
-        {
-            MessageBox.Show("致命的な例外が発生しました。\nプログラムを終了します。", "エラー",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-            Application.Exit();
-        }
-
-
         public MainWindow()
         {
-            Application.ThreadException += new System.Threading.ThreadExceptionEventHandler(Application_ThreadException);
-
             InitializeComponent();
 
             pInfo = new ProcessInformation();
