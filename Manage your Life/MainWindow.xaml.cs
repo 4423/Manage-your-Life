@@ -1,27 +1,9 @@
-﻿using System;
+﻿using FirstFloor.ModernUI.Windows.Controls;
+using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Forms;
-using System.Drawing;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Diagnostics;
+using System.Windows.Forms;
 using System.Windows.Threading;
-using System.IO;
-using System.Windows.Interop;
-using System.Windows.Controls.DataVisualization;
-using System.Windows.Controls.DataVisualization.Charting;
-using FirstFloor.ModernUI.Windows.Controls;
 
 namespace Manage_your_Life
 {
@@ -100,6 +82,21 @@ namespace Manage_your_Life
             notifyIcon.Text = "Manage your Life";
             notifyIcon.Icon = Properties.Resources.taskTrayIcon;
             notifyIcon.Visible = true;
+            //コンテキストメニュー追加
+            ContextMenuStrip menuStrip = new ContextMenuStrip();
+            ToolStripMenuItem exitItem = new ToolStripMenuItem();
+            ToolStripMenuItem openItem = new ToolStripMenuItem();
+            exitItem.Text = "終了(&E)";
+            openItem.Text = "開く(&O)";
+            menuStrip.Items.Add(openItem);
+            menuStrip.Items.Add(new ToolStripSeparator());
+            menuStrip.Items.Add(exitItem);
+            exitItem.Click += new EventHandler(exitItem_Click);
+            openItem.Click += new EventHandler(openItem_Click);
+
+            notifyIcon.ContextMenuStrip = menuStrip;            
+            notifyIcon.MouseDoubleClick += new MouseEventHandler(notifyIcon_MouseDoubleClick);
+
 
             //タイマーの作成
             timer = new DispatcherTimer(DispatcherPriority.Normal, this.Dispatcher);
@@ -164,6 +161,7 @@ namespace Manage_your_Life
                     int appId = dbOperator.GetCorrespondingAppId(activeProcess.MainModule.FileName);
                     DoOveruseWarining(appId, activeProcess.ProcessName);
                 }
+                //プロセス モジュールを列挙できません。 (Win32Exception)
                 catch (Exception ex)
                 {
                     notifyIcon.ShowBalloonTip(500, "Error", ex.Message , ToolTipIcon.Error);
@@ -246,10 +244,46 @@ namespace Manage_your_Life
 
 
 
+//-----------------------------------------------ウィンドウボタン
+
+        //最小化ボタン押下
+        private void ModernWindow_StateChanged(object sender, EventArgs e)
+        {
+            if (this.WindowState == System.Windows.WindowState.Minimized)
+            {
+                this.Visibility = System.Windows.Visibility.Collapsed;
+                notifyIcon.Visible = true;
+            }
+        }
+
+        //閉じるボタン押下
         private void ModernWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            WindowClosingProcess();
+        }
+
+        
+        /// <summary>
+        /// ウィンドウを復元する
+        /// </summary>
+        private void WindowOpen()
+        {
+            if (!this.IsVisible) this.Show();
+
+            this.WindowState = System.Windows.WindowState.Normal;
+            this.Activate();
+            this.Focus();
+        }
+
+
+        /// <summary>
+        /// ウィンドウを閉じる時の処理
+        /// </summary>
+        private void WindowClosingProcess()
         {
             timer.Stop();
             this.Hide();
+            notifyIcon.Dispose();
 
             Properties.Settings.Default.Save();
 
@@ -260,7 +294,35 @@ namespace Manage_your_Life
                 window.ShowDialog();
             }
         }
-        
+
+//-----------------------------------------------通知領域
+
+        //アイコンダブルクリックで復元
+        void notifyIcon_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                WindowOpen();
+            }
+        }
+
+
+        //メニューの終了を選択
+        private void exitItem_Click(object sender, EventArgs e)
+        {
+            this.Visibility = System.Windows.Visibility.Visible;
+            WindowClosingProcess();
+
+            System.Windows.Application.Current.Shutdown();
+        }
+
+
+        //メニューの開くを選択
+        private void openItem_Click(object sender, EventArgs e)
+        {
+            WindowOpen();
+        }
+
 
     }      
 }
