@@ -46,5 +46,16 @@
     <Setting Name="AccessTokenSecret" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="TweetFormat" Type="System.String" Scope="User">
+      <Value Profile="(Default)">#TodayReport
+SystemUpTime: &lt;UPTIME&gt;
+WarningCount: &lt;WARNING_COUNT&gt;
+ApplicationUsageTime:
+&lt;USAGE_TIME1&gt;
+&lt;USAGE_TIME2&gt;
+CategoriesCount:
+&lt;CATEGORI_COUNT1&gt;
+&lt;CATEGORI_COUNT2&gt;</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

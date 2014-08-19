@@ -41,7 +41,7 @@
                         <Calendar Grid.Column="0" Grid.ColumnSpan="2" Name="calendar" SelectionMode="SingleDate"  
                             Margin="0,28,0,0" VerticalAlignment="Top" HorizontalAlignment="Right"/>
 
-                        <Label Grid.Row="1" Grid.ColumnSpan="2" Content="Process" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                        <Label Grid.Row="1" Grid.ColumnSpan="2" Content="Process" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,-3"/>
                         
                         <Border Name="border_ListBox" BorderBrush="LightGray" BorderThickness="1" Grid.ColumnSpan="2" Grid.Row="2">
                             <ListBox Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{Binding}" Name="listBox_ProcName">
@@ -93,7 +93,19 @@
                         </Style>
                     </chartingToolkit:Chart.TitleStyle>
                     <chartingToolkit:Chart.Axes>
-                        <chartingToolkit:LinearAxis Orientation="Y" Title="UsageTime [minutes]" Foreground="#FF3A3A3A"/>
+                        <chartingToolkit:LinearAxis Orientation="Y" Title="UsageTime [minutes]" Foreground="#FF3A3A3A">
+                            <chartingToolkit:LinearAxis.AxisLabelStyle>
+                                <Style TargetType="chartingToolkit:AxisLabel">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="chartingToolkit:AxisLabel">
+                                                <TextBlock Text="{TemplateBinding FormattedContent}" Margin="0,0,7,0"/>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </chartingToolkit:LinearAxis.AxisLabelStyle>
+                        </chartingToolkit:LinearAxis>                      
                     </chartingToolkit:Chart.Axes>
                     
                     <chartingToolkit:Chart.Series>
@@ -104,28 +116,7 @@
                             DependentValuePath="Value"
                             IndependentValuePath="Key"/>
                     </chartingToolkit:Chart.Series>                    
-                </chartingToolkit:Chart>
-                
-
-                <!--
-                <chart:StackedBarChart
-                Grid.Column="2" Grid.ColumnSpan="2" Grid.RowSpan="2"
-                    x:Name="chart_Custom"
-                    ChartTitle="{Binding Path=ChartTitle}"
-                    ChartSubTitle="{Binding Path=ChartSubTitle}"
-                    SelectedItem="{Binding SelectedItem.Name, Mode=TwoWay}"
-                    ToolTipFormat="{Binding Path=ToolTipFormat}"
-                    Background="Transparent" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch"
-                    Margin="0,-14,0,0">
-                    <chart:StackedBarChart.Series>
-                        <chart:ChartSeries
-                            SeriesTitle="{Binding Path=SeriesTitle}"
-                            DisplayMember="Category"
-                            ValueMember="Number"
-                            ItemsSource="{Binding ChartData}" />
-                    </chart:StackedBarChart.Series>
-                </chart:StackedBarChart>
-                -->
+                </chartingToolkit:Chart>                
 
             </Grid>
         </ScrollViewer>

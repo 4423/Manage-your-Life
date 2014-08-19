@@ -89,8 +89,8 @@
                             <StackPanel Margin="5,0">
                                 <Grid HorizontalAlignment="Left">
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="350" />
-                                        <ColumnDefinition MinWidth="80"/>
+                                        <ColumnDefinition Width="230" />
+                                        <ColumnDefinition MinWidth="200"/>
                                     </Grid.ColumnDefinitions>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="30"/>
@@ -100,9 +100,9 @@
 
                                     <CheckBox Grid.Row="0" Content="文字数オーバー時は省略して投稿" 
                                       HorizontalAlignment="Left" VerticalAlignment="Center" Name="checkBox_IsOver" 
-                                              Checked="checkBox_IsOver_Checked" Unchecked="checkBox_IsOver_Unchecked"/>
+                                              Checked="checkBox_IsOver_Checked" Unchecked="checkBox_IsOver_Unchecked"/>                                    
 
-                                    <CheckBox Grid.Row="1"  Content="TweetにTodayReportのスクリーンショットを含める" 
+                                    <CheckBox Grid.Row="1" Grid.ColumnSpan="2" Content="TweetにTodayReportのスクリーンショットを含める" 
                                       HorizontalAlignment="Left" VerticalAlignment="Center" IsChecked="False" Name="checkBox_IsImage" 
                                               Checked="checkBox_IsImage_Checked" Unchecked="checkBox_IsImage_Unchecked" />
                                 </Grid>

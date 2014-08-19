@@ -24,35 +24,11 @@ namespace Manage_your_Life
         public Test()
         {
             InitializeComponent();
+                        
+            this.chart_Line.DataContext = new OneDayProcessStatus();
 
             DatabaseOperation dbOperator = DatabaseOperation.Instance;
-            this.chart_Line.DataContext = new TestViewModel();
-            
-            //this.piChart1.DataContext = new TestViewModel();
-            //this.piChart1.DataContext = test();
-
             this.listBox_ProcName.DataContext = dbOperator.GetAllData();
-        }
-
-        private void test()
-        {
-            //データベース接続
-            DatabaseOperation dbOperator = DatabaseOperation.Instance;
-            var database = dbOperator.GetConnectionedDataContext;
-
-            var q = (
-                    from p in database.DatabaseTimeline
-                    where p.Today == DateTime.Today
-                    select new
-                    {
-                        Key = p.Now.ToString(),
-                        Value = Utility.ToRoundDown((TimeSpan.Parse(p.UsageTime)).TotalMinutes, 3)
-                    });
-
-            foreach (var r in q)
-            {
-                
-            }
         }
 
 
@@ -77,7 +53,7 @@ namespace Manage_your_Life
             DateTime selectedDay = this.calendar.SelectedDate.Value;
 
             //Chart描画
-            this.chart_Line.DataContext = new TestViewModel(appId, selectedDay);
+            this.chart_Line.DataContext = new OneDayProcessStatus(appId, selectedDay);
             this.chart_Line.Title = String.Format("Usage status of '{0}' ({1})", 
                     selectedItem.ProcName, selectedDay.ToShortDateString());
         }

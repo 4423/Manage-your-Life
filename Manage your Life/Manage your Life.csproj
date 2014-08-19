@@ -129,7 +129,7 @@
     <Compile Include="ViewModel\Custom\CustomDefaultViewModel.cs" />
     <Compile Include="ViewModel\Custom\CustomLastUsedDateViewModel.cs" />
     <Compile Include="ViewModel\Custom\CustomRegistrationDateViewModel.cs" />
-    <Compile Include="ViewModel\Custom\TestViewModel.cs" />
+    <Compile Include="ViewModel\Custom\OneDayProcessStatus.cs" />
     <Compile Include="ViewModel\Custom\CustomUsageTimeViewModel.cs" />
     <Compile Include="ViewModel\HomePage\HatenaKeywordViewModel.cs" />
     <Compile Include="ViewModel\Custom\OneDayUsageTimeViewModel.cs" />
@@ -155,6 +155,9 @@
     </Compile>
     <Compile Include="Window\TodayReport.xaml.cs">
       <DependentUpon>TodayReport.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Window\TweetConfirm.xaml.cs">
+      <DependentUpon>TweetConfirm.xaml</DependentUpon>
     </Compile>
     <Page Include="Content\About.xaml">
       <SubType>Designer</SubType>
@@ -231,6 +234,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Window\TodayReport.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Window\TweetConfirm.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

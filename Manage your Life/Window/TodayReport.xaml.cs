@@ -24,10 +24,7 @@ namespace Manage_your_Life
     public partial class TodayReport : Window
     {
         DataBanker dataBanker;
-        string tweetString = "#TodayReport\n";
-
-        private string ck = "nV7WUMvQV0WNoXaL2jxb47ydC";
-        private string cks = "gAje4KL3JL9Y6Sfr2KnMNlrhxdX6Bf2xcgYMjnFyquxZ4z1aGw";
+        string tweetString = Properties.Settings.Default.TweetFormat;
            
 
         public TodayReport()
@@ -52,42 +49,49 @@ namespace Manage_your_Life
             //システムの稼働時間
             PerformanceCounter upTime = new PerformanceCounter("System", "System Up Time");
             upTime.NextValue();
-            string upTimeString = (TimeSpan.FromSeconds((int)upTime.NextValue())).ToString(@"d\:hh\:mm\:ss");
-            this.textBox_SystemUpTime.Text = upTimeString;
-            tweetString += String.Format("SystemUpTime: {0}\n", upTimeString);
+            string strUpTime = (TimeSpan.FromSeconds((int)upTime.NextValue())).ToString(@"hh\:mm\:ss");
+            this.textBox_SystemUpTime.Text = strUpTime;
+
+
+            //警告ウィンドウ表示回数
+            string warningCount = ((int)dataBanker["WarningCount"]).ToString();
+            this.textBox_WarningCount.Text = warningCount;
 
 
             //アプリケーション使用時間Top5
-            string printApplicationUsageTime = "";
+            string usageTime = "";
             foreach (var d in GetTodayUsageTime(startDate))
             {
-                printApplicationUsageTime += String.Format("{0} ({1})\n", d.Key, d.Value.ToString(@"hh\:mm\:ss"));                
+                usageTime += String.Format("{0} ({1})\n", d.Key, d.Value.ToString(@"hh\:mm\:ss"));                
             }
-            this.textBox_Application.Text = printApplicationUsageTime.TrimEnd('\n');            
+            this.textBox_Application.Text = usageTime.TrimEnd('\n');            
 
             
-            //null合体演算子
-            var CategorizedCountData =
-                (Dictionary<string, int>)dataBanker["CategorizedCountData"] ?? new Dictionary<string, int>();
-            string printCategorizedCountData = "";
-
             //カテゴリTop5
+            var CategorizedCountData =
+                    (Dictionary<string, int>)dataBanker["CategorizedCountData"] ?? new Dictionary<string, int>();
+            string categoriCount = "";
             foreach (var d in CategorizedCountData.OrderByDescending((x) => x.Value).Take(5))
             {
-                printCategorizedCountData += String.Format("{0}\t: {1}\n", d.Key, d.Value);
+                categoriCount += String.Format("{0}\t: {1}\n", d.Key, d.Value);
             }
-            this.textBox_Categories.Text = printCategorizedCountData.TrimEnd('\n');
+            this.textBox_Categories.Text = categoriCount.TrimEnd('\n');
 
 
-            //何もカテゴリデータがないとSplitで死ぬ
+
+            //何もデータがないとSplitで死ぬ            
+            tweetString = tweetString.Replace("<UPTIME>", strUpTime);
+            dataBanker["TweetConfirm"] = tweetString.Replace("<WARNING_COUNT>", warningCount);
             try
             {
-                tweetString += "\nApplicationUsageTime:\n";
-                var tweetUsageTime = printApplicationUsageTime.Split('\n');
-                tweetString += String.Format("{0}\n{1}\n", tweetUsageTime[0], tweetUsageTime[1]);
-                tweetString += "\nCategoriesCount:\n";
-                var tweetCategories = printCategorizedCountData.Split('\n');
-                tweetString += String.Format("{0}\n{1}", tweetCategories[0], tweetCategories[1]);
+                dataBanker["TweetConfirm"] = ((string)dataBanker["TweetConfirm"]).Replace("<USAGE_TIME1>", usageTime.Split('\n')[0]);
+                dataBanker["TweetConfirm"] = ((string)dataBanker["TweetConfirm"]).Replace("<USAGE_TIME2>", usageTime.Split('\n')[1]);
+            }
+            catch (Exception ex) { }
+            try
+            {
+                dataBanker["TweetConfirm"] = ((string)dataBanker["TweetConfirm"]).Replace("<CATEGORI_COUNT1>", categoriCount.Split('\n')[0]);
+                dataBanker["TweetConfirm"] = ((string)dataBanker["TweetConfirm"]).Replace("<CATEGORI_COUNT2>", categoriCount.Split('\n')[1]);
             }
             catch (Exception ex) { }
         }
@@ -167,34 +171,8 @@ namespace Manage_your_Life
         /// <param name="e"></param>
         private void button_Tweet_Click(object sender, RoutedEventArgs e)
         {
-            Tokens tokens = new Tokens();
-
-            //トークンが取得できていなかったら新規取得
-            if (String.IsNullOrWhiteSpace(Properties.Settings.Default.AccessToken))
-            {
-                var session = OAuth.Authorize(ck,cks);
-                var url = session.AuthorizeUri;
-                Process.Start(url.AbsoluteUri);
-                GetTwitterPin window = new GetTwitterPin();
-                window.ShowDialog();
-                string pin = (string)dataBanker["PIN"];
-                tokens = session.GetTokens(pin);
-                Properties.Settings.Default.AccessToken = tokens.AccessToken;
-                Properties.Settings.Default.AccessTokenSecret = tokens.AccessTokenSecret;
-            }
-            else
-            {
-                tokens = Tokens.Create(ck, cks,
-                        Properties.Settings.Default.AccessToken,
-                        Properties.Settings.Default.AccessTokenSecret);
-            }
-            
             string filename = "tweet.png";
-            MediaUploadResult result = new MediaUploadResult();
-
-
-            //画像ツイート機能
-            if(Properties.Settings.Default.checkBox_IsTweetImage)
+            if (Properties.Settings.Default.checkBox_IsTweetImage)
             {
                 //画像の取得
                 var bitmapEncoder = Utility.RenderingVisual(this);
@@ -202,43 +180,11 @@ namespace Manage_your_Life
                 {
                     bitmapEncoder.Save(stram);
                 }
-                //画像の投稿
-                result = tokens.Media.Upload(media => new FileInfo(filename));
             }
 
-
-            //文字数オーバー
-            if (Properties.Settings.Default.checkBox_IsTweetOver)
-            {
-                switch (Properties.Settings.Default.checkBox_IsTweetImage)
-                {
-                    case true:
-                        tweetString = tweetString.Substring(0, 110);
-                        tokens.Statuses.Update(status => tweetString + "...", media_ids => new long[] { result.MediaId });
-                        break;
-
-                    case false:
-                        tweetString = tweetString.Substring(0, 135);
-                        tokens.Statuses.Update(new { status = tweetString + "..." });
-                        break;
-                }
-            }
-            else
-            {
-                if (tweetString.Length >= 140)
-                {
-                    MessageBox.Show(String.Format("文字数がオーバーしました。 ({0})", tweetString.Length), "エラー",
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-                    return;
-                }
-                else
-                {
-                    tokens.Statuses.Update(new { status = tweetString });
-                }
-            }
-
-            MessageBox.Show("Tweetしました。\n" + tweetString, "情報", MessageBoxButton.OK, MessageBoxImage.Information);
-            tweetString = "";
+            TweetConfirm window = new TweetConfirm();
+            window.Show();
+            this.Close();
         }
     }
 }

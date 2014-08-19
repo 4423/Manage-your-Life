@@ -6,15 +6,12 @@ using System.Linq;
 namespace Manage_your_Life
 {
     /// <summary>
-    /// 使用時間のカスタムViewModel
+    /// 時間軸の使用時間ViewModel
     /// </summary>
-    public class TestViewModel : ViewModel
+    public class OneDayProcessStatus : ViewModel
     {
 
-        private ApplicationDataClassesDataContext database;
-
-
-        public TestViewModel()
+        public OneDayProcessStatus()
         {
             Items = new List<MyItem>();
 
@@ -25,12 +22,15 @@ namespace Manage_your_Life
             });
         }
 
-        public TestViewModel(int appId, DateTime day)
+        /// <summary>
+        /// ある１日の中のプロセスの使用タイミングと使用時間をもつListを作成
+        /// </summary>
+        /// <param name="appId">取得したいプロセスのID</param>
+        /// <param name="day">取得したい日付</param>
+        public OneDayProcessStatus(int appId, DateTime day)
         {
-
-            //データベース接続
             DatabaseOperation dbOperator = DatabaseOperation.Instance;
-            database = dbOperator.GetConnectionedDataContext;
+            var database = dbOperator.GetConnectionedDataContext;
 
             var q = (
                     from p in database.DatabaseApplication
@@ -44,44 +44,23 @@ namespace Manage_your_Life
 
 
             Items = new List<MyItem>();
-
-            //Items.Add(new MyItem()
-            //{
-            //    Key = DateTime.Today,
-            //    Value = 0
-            //});
-
-            double stack = 0;
             foreach (var r in q)
             {
-                stack += r.Value;
-
                 Items.Add(new MyItem()
-                    {
-                        Key = (DateTime)r.Key,
-                        Value = r.Value
-                    });
+                {
+                    Key = (DateTime)r.Key,
+                    Value = r.Value
+                });
             }
-
-            //Items.Add(new MyItem()
-            //{
-            //    Key = (DateTime.Today.AddDays(1).AddMinutes(-1)),
-            //    Value = stack
-            //});
-            //Series = new ObservableCollection<SeriesData>();
-            //Series.Add(new SeriesData() { SeriesDisplayName = "ChartData", Items = ChartData });            
         }
 
+
         public List<MyItem> Items { get; set; }
-
-
         public class MyItem
         {
             public DateTime Key { get; set; }
             public double Value { get; set; }
         }
-
-
 
     }
 }

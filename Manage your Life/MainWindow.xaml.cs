@@ -93,6 +93,7 @@ namespace Manage_your_Life
             overuseWarningItems = dbOperator.GetOveruseWarningCollection();
             dataBanker = DataBanker.GetInstance();
             dataBanker["WarningNotAgain"] = new List<int>();
+            dataBanker["WarningCount"] = 0;
 
             //バルーン通知の設定
             notifyIcon = new NotifyIcon();
@@ -222,7 +223,8 @@ namespace Manage_your_Life
             if (todayUsageTime > warningTime)
             {   
                 DoWarning window = new DoWarning(processName, appId, warningTime);
-                window.ShowDialog();                
+                window.ShowDialog();
+                dataBanker["WarningCount"] = (int)dataBanker["WarningCount"] + 1;
             }           
         }
 
