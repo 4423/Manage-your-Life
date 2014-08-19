@@ -47,7 +47,11 @@ namespace Manage_your_Life
             connStr = @"Data Source=(LocalDB)\v11.0;AttachDbFilename=""" + basePath + @""";Integrated Security=True";
 
             //データベース接続
-            database = new ApplicationDataClassesDataContext(connStr);
+            try
+            {
+                database = new ApplicationDataClassesDataContext(connStr);
+            }
+            catch (SqlException ex) { throw; }
         }
 
 
@@ -87,7 +91,11 @@ namespace Manage_your_Life
             app.Title = proc.MainWindowTitle;
             app.Favorite = false;
             database.DatabaseApplication.InsertOnSubmit(app);
-            database.SubmitChanges();
+            try
+            {
+                database.SubmitChanges();
+            }
+            catch (SqlException ex) { throw; }
 
             //SubmitChanges()すると挿入したIDが取得できるようになる
             //see: http://bluestick.jp/tech/index.php/archives/50
@@ -110,7 +118,11 @@ namespace Manage_your_Life
             database.DatabaseDate.InsertOnSubmit(date);
             #endregion
 
-            database.SubmitChanges();
+            try
+            {
+                database.SubmitChanges();
+            }
+            catch (SqlException ex) { throw; }
 
             //レコード新規登録のイベント発生
             if (NewRecord_Registered != null)
@@ -133,9 +145,12 @@ namespace Manage_your_Life
                 where p.AppId == appId
                 select p).First();
 
-            q.AlertTime = alertTime.ToString(timeSpanToStringFormat);
-
-            database.SubmitChanges();
+            try
+            {
+                q.AlertTime = alertTime.ToString(timeSpanToStringFormat);
+                database.SubmitChanges();
+            }
+            catch (SqlException ex) { throw; }
         }
 
 
@@ -179,8 +194,11 @@ namespace Manage_your_Life
 
             database.DatabaseApplication.DeleteOnSubmit(appQuery);
 
-
-            database.SubmitChanges();
+            try
+            {
+                database.SubmitChanges();
+            }
+            catch (SqlException ex) { throw; }
         }
 
 
@@ -200,30 +218,41 @@ namespace Manage_your_Life
                 where p.AppId == appId
                 select p;
 
-            foreach (var p in q)
+            //怪しい情報がTimelineに記録されてしまう
+            bool isLooped = false;
+            try
             {
-                //DB内の使用時間を取得しTimeSpanにキャスト
-                usageSum = TimeSpan.Parse(p.UsageTime);
-                //今回の測定の時間を加算
-                usageSum += activeInterval;
-                //DBに上書き
-                p.UsageTime = usageSum.ToString(timeSpanToStringFormat);
+                foreach (var p in q)
+                {
+                    //DB内の使用時間を取得しTimeSpanにキャスト
+                    usageSum = TimeSpan.Parse(p.UsageTime);
+                    //今回の測定の時間を加算
+                    usageSum += activeInterval;
+                    //DBに上書き
+                    p.UsageTime = usageSum.ToString(timeSpanToStringFormat);
 
+                    //最終使用日の更新
+                    p.LastDate = DateTime.Now;
 
-                //最終使用日の更新
-                p.LastDate = DateTime.Now;
+                    isLooped = true;
+                }
             }
+            catch (SqlException ex) { throw; }
 
-            //DBの更新
-            database.SubmitChanges();
-            //UsageTime更新のイベント発生
-            if (UsageTime_Updated != null)
+            //何らかのデータが変更された時のみ
+            if (isLooped)
             {
-                UsageTime_Updated(this, EventArgs.Empty);
-            }
+                //DBの更新
+                database.SubmitChanges();
+                //UsageTime更新のイベント発生
+                if (UsageTime_Updated != null)
+                {
+                    UsageTime_Updated(this, EventArgs.Empty);
+                }
 
-            //Timelineの方にも新規レコードとしてロギング         
-            AddingTimeline(appId, activeInterval);
+                //Timelineの方にも新規レコードとしてロギング         
+                AddingTimeline(appId, activeInterval);
+            }
 
             return usageSum;
         }
@@ -242,8 +271,12 @@ namespace Manage_your_Life
             log.Now = DateTime.Now;
             log.UsageTime = activeInterval.ToString();
 
-            database.DatabaseTimeline.InsertOnSubmit(log);
-            database.SubmitChanges();
+            try
+            {
+                database.DatabaseTimeline.InsertOnSubmit(log);
+                database.SubmitChanges();
+            }
+            catch (SqlException ex) { throw; }
 
             //Timeline更新のイベント発生
             if (TimelineLog_Updated != null)
@@ -296,10 +329,15 @@ namespace Manage_your_Life
                 };
 
             var dict = new Dictionary<int, TimeSpan>();
-            foreach (var r in q)
+
+            try
             {
-                dict.Add(r.Id, TimeSpan.Parse(r.AlertTime));
+                foreach (var r in q)
+                {
+                    dict.Add(r.Id, TimeSpan.Parse(r.AlertTime));
+                }
             }
+            catch (SqlException ex) { throw; }
 
             return dict;
         }
@@ -367,11 +405,14 @@ namespace Manage_your_Life
                 where p.Path == procPath
                 select p;
 
-            foreach (var p in q)
+            try
             {
-                appId = p.AppId;
-                break;
+                foreach (var r in q)
+                {
+                    appId = r.AppId;
+                }
             }
+            catch (SqlException ex) { throw; }
 
             return appId;
         }

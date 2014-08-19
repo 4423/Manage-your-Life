@@ -264,7 +264,7 @@ namespace Manage_your_Life
             return dict;
         }
 
-
+        
 
         /// <summary>
         /// orderの指定によってDictionaryを昇順または降順にソートする

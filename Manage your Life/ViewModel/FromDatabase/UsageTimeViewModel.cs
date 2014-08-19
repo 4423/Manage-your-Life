@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
@@ -103,7 +104,6 @@ namespace Manage_your_Life
 
 
 
-
         /// <summary>
         /// すべての日付
         /// </summary>
@@ -163,7 +163,6 @@ namespace Manage_your_Life
             chartSubTitle = String.Format("Date: All date, Favorites {0}, Order: {1}, Take number: {2}",
                 isFavoritesOnly ? "only" : "not only", order, takeNumber.ToString());
         }
-
 
 
         public override string ToolTipFormat

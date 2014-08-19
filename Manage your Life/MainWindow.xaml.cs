@@ -63,11 +63,27 @@ namespace Manage_your_Life
 
         DataBanker dataBanker;
 
+        /// <summary>
+        /// プロセスが死ぬ前に予め今回のFileNameをとっておく
+        /// </summary>
+        string previousProcessFileName = "";
+        string previousProcessName = "";
+
         #endregion
+
+        
+        static void Application_ThreadException(object sender, System.Threading.ThreadExceptionEventArgs e)
+        {
+            MessageBox.Show("致命的な例外が発生しました。\nプログラムを終了します。", "エラー",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            Application.Exit();
+        }
 
 
         public MainWindow()
         {
+            Application.ThreadException += new System.Threading.ThreadExceptionEventHandler(Application_ThreadException);
+
             InitializeComponent();
 
             pInfo = new ProcessInformation();
@@ -149,50 +165,49 @@ namespace Manage_your_Life
             //最初に最前面になった時
             if (!isRearApplication)
             {
+                string activeProcessFileName = "";
                 try
                 {
-                    //DBに存在していなければ新規にデータ挿入
-                    if (!dbOperator.IsExist(activeProcess.MainModule.FileName))
-                    {
-                        dbOperator.Register(activeProcess);
-                    }
+                    activeProcessFileName = activeProcess.MainModule.FileName;
+                }
+                catch (System.ComponentModel.Win32Exception ex) { }
+                catch (Exception ex) { }
 
-                    //使用時間の警告
-                    int appId = dbOperator.GetCorrespondingAppId(activeProcess.MainModule.FileName);
-                    DoOveruseWarining(appId, activeProcess.ProcessName);
-                }
-                //プロセス モジュールを列挙できません。 (Win32Exception)
-                catch (Exception ex)
+                //フラグが変わらないので、新しいプロセスが前面になった時から正常に時間計算可能
+                if (activeProcessFileName == "") return;
+
+
+                //DBに存在していなければ新規にデータ挿入
+                if (!dbOperator.IsExist(activeProcessFileName))
                 {
-                    notifyIcon.ShowBalloonTip(500, "Error", ex.Message , ToolTipIcon.Error);
+                    dbOperator.Register(activeProcess);
                 }
+
+                //使用時間の警告
+                int appId = dbOperator.GetCorrespondingAppId(activeProcessFileName);
+                DoOveruseWarining(appId, activeProcess.ProcessName);
+                
 
                 //最初にアクティブになった時間を取得
                 firstActiveDate = DateTime.Now;
 
+                previousProcessFileName = activeProcess.MainModule.FileName;
+                previousProcessName = activeProcess.ProcessName;
                 isRearApplication = true;
                 preTitleCheck = false;
             }
-            else //最前面解除
+            //最前面解除
+            else 
             {
                 //計測時間追記の為にDBから該当Idを取得
-                try
-                {
-                    int appId = dbOperator.GetCorrespondingAppId(previousProcess.MainModule.FileName);
+                int appId = dbOperator.GetCorrespondingAppId(previousProcessFileName);
 
-                    //DBから使用時間を取得し、今回の使用時間を加算してDB更新
-                    var activeInterval = Utility.GetInterval(firstActiveDate);
-                    dbOperator.UpdateUsageTime(appId, activeInterval);
+                //DBから使用時間を取得し、今回の使用時間を加算してDB更新
+                var activeInterval = Utility.GetInterval(firstActiveDate);
+                dbOperator.UpdateUsageTime(appId, activeInterval);
 
-                    //バルーンで通知
-                    ShowBalloonTip(activeInterval);
-
-                }
-                catch (Exception ex)
-                {
-                    //画面の遷移に処理が追いつかなかった可能性があります
-                    notifyIcon.ShowBalloonTip(500, "Error", ex.Message, ToolTipIcon.Error);
-                }
+                //バルーンで通知
+                ShowBalloonTip(activeInterval, previousProcessName);                
 
                 isRearApplication = false;
                 preTitleCheck = true;
@@ -231,12 +246,12 @@ namespace Manage_your_Life
         /// 今まで最前面にあったプロセスの使用時間を通知する
         /// </summary>
         /// <param name="activeInterval">今回の使用時間</param>
-        private void ShowBalloonTip(TimeSpan activeInterval)
+        private void ShowBalloonTip(TimeSpan activeInterval, string procName)
         {
             if (Properties.Settings.Default.checkBox_IsBalloonEnable)
             {
                 notifyIcon.BalloonTipIcon = ToolTipIcon.Info;
-                notifyIcon.BalloonTipTitle = "\"" + previousProcess.ProcessName + "\"" + "の計測終了";
+                notifyIcon.BalloonTipTitle = "\"" + procName + "\"" + "の計測終了";
                 notifyIcon.BalloonTipText = "使用時間: " + activeInterval.ToString(@"d\.hh\:mm\:ss");
                 notifyIcon.ShowBalloonTip(1000);
             }
