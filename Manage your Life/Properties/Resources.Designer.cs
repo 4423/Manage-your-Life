@@ -63,19 +63,20 @@ namespace Manage_your_Life.Properties {
         /// <summary>
         ///   (アイコン) に類似した型 System.Drawing.Icon のローカライズされたリソースを検索します。
         /// </summary>
-        internal static System.Drawing.Icon taskTrayIcon {
+        internal static System.Drawing.Icon originalIcon {
             get {
-                object obj = ResourceManager.GetObject("taskTrayIcon", resourceCulture);
+                object obj = ResourceManager.GetObject("originalIcon", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
             }
         }
         
         /// <summary>
-        ///    に類似しているローカライズされた文字列を検索します。
+        ///   (アイコン) に類似した型 System.Drawing.Icon のローカライズされたリソースを検索します。
         /// </summary>
-        internal static string ThemeColor {
+        internal static System.Drawing.Icon originalIconTray {
             get {
-                return ResourceManager.GetString("ThemeColor", resourceCulture);
+                object obj = ResourceManager.GetObject("originalIconTray", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
             }
         }
     }

@@ -139,6 +139,11 @@ namespace Manage_your_Life
             IntPtr hwnd = new System.Windows.Interop.WindowInteropHelper(this).Handle;
             PostMessage(hwnd, 0xA1, (IntPtr)2, IntPtr.Zero);
         }
+
+        private void textBox_Confi_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            this.label_TextBoxLength.Content = this.textBox_Confi.Text.Length;
+        }
                 
     }
 }

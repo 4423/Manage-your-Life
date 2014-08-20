@@ -171,8 +171,8 @@ namespace Manage_your_Life.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("#TodayReport\r\nSystemUpTime: <UPTIME>\r\nWarningCount: <WARNING_COUNT>\r\nApplicationU" +
-            "sageTime:\r\n<USAGE_TIME1>\r\n<USAGE_TIME2>\r\nCategoriesCount:\r\n<CATEGORI_COUNT1>\r\n<C" +
-            "ATEGORI_COUNT2>")]
+            "sageTime:\r\n<USAGE_TIME1>\r\n<USAGE_TIME2>\r\nCategoryCount:\r\n<CATEGORI_COUNT1>\r\n<CAT" +
+            "EGORI_COUNT2>")]
         public string TweetFormat {
             get {
                 return ((string)(this["TweetFormat"]));

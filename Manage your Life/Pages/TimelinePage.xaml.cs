@@ -32,14 +32,22 @@ namespace Manage_your_Life
 
             dbOperator = DatabaseOperation.Instance;
             dbOperator.NewRecord_Registered += new EventHandler(this.NewRecord_Registered);
+            dbOperator.Record_Deleted += new EventHandler(this.Record_Deleted);
             this.listBox_ProcName.DataContext = dbOperator.GetAllData();
         }
 
 
+        //データベースに登録されているプロセスに変更があったとき再読み込み
         void NewRecord_Registered(object sender, EventArgs e)
         {
             this.listBox_ProcName.DataContext = dbOperator.GetAllData();
         }
+
+        void Record_Deleted(object sender, EventArgs e)
+        {
+            this.listBox_ProcName.DataContext = dbOperator.GetAllData();
+        }
+
 
 
         private void button1_Click(object sender, RoutedEventArgs e)

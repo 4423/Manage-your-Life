@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows;
@@ -85,7 +86,16 @@ namespace Manage_your_Life
             {
                 int appId = (int)context["Id"];
                 DatabaseOperation dbOperotr = DatabaseOperation.Instance;
-                dbOperotr.Delete(appId);
+
+                try
+                {
+                    dbOperotr.Delete(appId);
+                }
+                catch (SqlException ex)
+                {
+                    MessageBox.Show("データベースからの削除に失敗しました。", "エラー",
+                        MessageBoxButton.OK, MessageBoxImage.Error);
+                }
 
                 DialogResult = true;
                 this.Close();
@@ -128,7 +138,8 @@ namespace Manage_your_Life
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show("データベースの更新に失敗しました。", "エラー",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 

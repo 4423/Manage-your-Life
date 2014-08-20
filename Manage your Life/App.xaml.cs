@@ -25,7 +25,14 @@ namespace Manage_your_Life
         void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             MessageBox.Show("致命的な例外が発生しました。\nプログラムを終了します。", "エラー",
-                   MessageBoxButton.OK, MessageBoxImage.Error);            
+                   MessageBoxButton.OK, MessageBoxImage.Error);
+
+            Exception ex = e.ExceptionObject as Exception;
+            if (ex != null)
+            {
+                WriteErrorLog(ex, "UnhandledException");
+            }
+
             this.Shutdown();
         }
 
@@ -35,9 +42,24 @@ namespace Manage_your_Life
         {
             MessageBox.Show("致命的な例外が発生しました。\nプログラムを終了します。", "エラー",
                     MessageBoxButton.OK, MessageBoxImage.Error);
+
+            WriteErrorLog(e.Exception, "ThreadException");
+
             e.Handled = true;
             this.Shutdown();
         }
 
+
+        private void WriteErrorLog(Exception ex, string title)
+        {
+            using (System.IO.StreamWriter stream = new System.IO.StreamWriter("error.txt", true))
+            {
+                stream.WriteLine("[" + title + "]");
+                stream.WriteLine("[message]\r\n" + ex.Message);
+                stream.WriteLine("[source]\r\n" + ex.Source);
+                stream.WriteLine("[stacktrace]\r\n" + ex.StackTrace);
+                stream.WriteLine("\n");
+            }
+        }
     }
 }

@@ -18,13 +18,15 @@
 
             <Label Grid.Row="0" Content="Tweet" HorizontalAlignment="Left" Margin="10,8,0,0" 
                     VerticalAlignment="Top" Foreground="#FFEEEEEE" FontSize="22"/>
+            <Label Grid.Row="0" Content="140" HorizontalAlignment="Right" Margin="0,10,10,0" 
+                   Name="label_TextBoxLength" VerticalAlignment="Top" Foreground="#FFB6B6B6" FontSize="20"/>
 
             <TabControl Grid.Row="1" >
                 <TabItem Header="Tweet内容の確認">
                     <StackPanel Orientation="Vertical">
-                        <TextBox Margin="5" Height="200" Name="textBox_Confi" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap"/>
+                        <TextBox Margin="5" Height="200" Name="textBox_Confi" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap" TextChanged="textBox_Confi_TextChanged"/>
                         <StackPanel Orientation="Horizontal" Margin="0,5">
-                            <Button Content="Cancel" Margin="5,0" Width="124" Name="button_Cancel" Click="button_Cancel_Click" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <Button Content="キャンセル" Margin="5,0" Width="124" Name="button_Cancel" Click="button_Cancel_Click" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             <Button Content="Tweet" Margin="5,0" Width="124" Name="button_Tweet" Click="button_Tweet_Click" HorizontalAlignment="Center" VerticalAlignment="Center"/>                            
                         </StackPanel>
                     </StackPanel>

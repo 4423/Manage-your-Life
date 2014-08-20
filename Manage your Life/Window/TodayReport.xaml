@@ -47,7 +47,7 @@
                 <TextBlock  Name="textBox_Application" Text="chrome (01:10:10)&#10;a&#10;a&#10;a&#10;a" Foreground="#FFE2E2E2" FontSize="15"/>
             </ScrollViewer>
 
-            <Label Grid.Row="4" Grid.Column="1" Content="Top 5 categories" Foreground="#FFE2E2E2" FontSize="17"
+            <Label Grid.Row="4" Grid.Column="1" Content="Top 5 category" Foreground="#FFE2E2E2" FontSize="17"
                    HorizontalAlignment="Left" Margin="0,5"/>
             <ScrollViewer Grid.Row="4" Grid.Column="2" Margin="0,7,10,0" HorizontalScrollBarVisibility="Auto">
                 <TextBlock Name="textBox_Categories" Text="science (13)&#10;a&#10;a&#10;a&#10;a" Foreground="#FFE2E2E2" FontSize="15" />

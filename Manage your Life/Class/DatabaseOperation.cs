@@ -36,6 +36,11 @@ namespace Manage_your_Life
         /// 使用時間を更新したときに発生
         /// </summary>
         public event EventHandler UsageTime_Updated;
+                
+        /// <summary>
+        /// レコードが削除されたときに発生
+        /// </summary>
+        public event EventHandler Record_Deleted;
 
 
 
@@ -197,6 +202,11 @@ namespace Manage_your_Life
             try
             {
                 database.SubmitChanges();
+
+                if (Record_Deleted != null)
+                {
+                    Record_Deleted(this, EventArgs.Empty);
+                }
             }
             catch (SqlException ex) { throw; }
         }

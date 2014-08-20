@@ -75,7 +75,7 @@ namespace Manage_your_Life
         public MainWindow()
         {
             InitializeComponent();
-
+            
             pInfo = new ProcessInformation();
             dbOperator = DatabaseOperation.Instance;
             overuseWarningItems = dbOperator.GetOveruseWarningCollection();
@@ -86,7 +86,7 @@ namespace Manage_your_Life
             //バルーン通知の設定
             notifyIcon = new NotifyIcon();
             notifyIcon.Text = "Manage your Life";
-            notifyIcon.Icon = Properties.Resources.taskTrayIcon;
+            notifyIcon.Icon = Properties.Resources.originalIconTray;
             notifyIcon.Visible = true;
             //コンテキストメニュー追加
             ContextMenuStrip menuStrip = new ContextMenuStrip();
@@ -242,7 +242,7 @@ namespace Manage_your_Life
             {
                 notifyIcon.BalloonTipIcon = ToolTipIcon.Info;
                 notifyIcon.BalloonTipTitle = "\"" + procName + "\"" + "の計測終了";
-                notifyIcon.BalloonTipText = "使用時間: " + activeInterval.ToString(@"d\.hh\:mm\:ss");
+                notifyIcon.BalloonTipText = "使用時間: " + activeInterval.ToString(@"hh\:mm\:ss");
                 notifyIcon.ShowBalloonTip(1000);
             }
         }
