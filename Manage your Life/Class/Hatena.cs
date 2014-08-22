@@ -44,6 +44,7 @@ namespace Manage_your_Life
                     + "    </param>\n"
                     + "  </params>\n"
                     + "</methodCall>\n";
+
         string xPath = "/methodResponse/params/param/value/struct/member"
                      + "/value/array/data/value/struct";
 
@@ -86,27 +87,26 @@ namespace Manage_your_Life
         /// </summary>
         /// <param name="xml">解析させたいXML</param>
         /// <returns>"word", "cname"なディクショナリ</returns>
-        /// <see cref="http://p.tl/v38X"/>
         private Dictionary<string, string> GetXmlData(XmlDocument xml)
         {
             //<"word", "cname">なディクショナリ
             Dictionary<string, string> dic = new Dictionary<string, string>();
 
             //xPathに一致するノード
-            XmlNodeList nodeList = xml.SelectNodes(xPath);
+            XmlNodeList node = xml.SelectNodes(xPath);
 
             //XMLにキーワードがない状態
-            if (nodeList.Count == 0) return null;
+            if (node.Count == 0) return null;
 
             //キーワードの数だけディクショナリ作成
-            for (int i = 0; i < nodeList.Count; i++)
+            for (int i = 0; i < node.Count; i++)
             {
                 //wordを取得
-                XmlElement element = (XmlElement)nodeList[i].ChildNodes.Item(0);
+                XmlElement element = (XmlElement)node[i].ChildNodes.Item(0);
                 string word = element.GetElementsByTagName("value")[0].InnerText;
 
                 //cnameを取得
-                element = (XmlElement)nodeList[i].ChildNodes.Item(3);
+                element = (XmlElement)node[i].ChildNodes.Item(3);
                 string cname = element.GetElementsByTagName("value")[0].InnerText;
 
                 if (cname == "") continue;
@@ -129,8 +129,7 @@ namespace Manage_your_Life
         /// </summary>
         /// <param name="body">キーワードを抽出させたい任意のテキスト
         /// (ウィンドウタイトル)</param>
-        /// <returns>レスポンスのXML</returns>
-        /// <see cref="http://p.tl/20DA"/>
+        /// <returns>API叩いて帰ってきたXML</returns>
         private XmlDocument AccessToAPI(string body)
         {
             XmlDocument xml = new XmlDocument();

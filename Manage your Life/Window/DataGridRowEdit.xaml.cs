@@ -1,9 +1,11 @@
-﻿using System;
+﻿using FirstFloor.ModernUI.Presentation;
+using System;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace Manage_your_Life
 {
@@ -24,6 +26,7 @@ namespace Manage_your_Life
             InitializeComponent();
 
             context = DataBanker.Instance;
+            this.border.BorderBrush = new SolidColorBrush(AppearanceManager.Current.AccentColor);
         }
 
 

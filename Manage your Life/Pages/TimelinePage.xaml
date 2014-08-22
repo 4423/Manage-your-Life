@@ -63,8 +63,6 @@
                 </StackPanel>
 
 
-                <!--使用時間トップ5-->
-
                 <chartingToolkit:Chart
                     Grid.Column="2" Grid.ColumnSpan="2" Grid.RowSpan="2" Margin="0,-13,0,0"
                     Name="chart_Line" Title="Please select the date and process">

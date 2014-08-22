@@ -19,13 +19,13 @@ namespace Manage_your_Life
         /// <summary>
         /// 指定した精度の数値に切り捨る
         /// </summary>
-        /// <see cref="http://jeanne.wankuma.com/tips/csharp/math/rounddown.html"/>
         /// <param name="value">切り捨てる対象の数字</param>
-        /// <param name="iDigits">切り捨てない小数点桁数</param>
+        /// <param name="digits">切り捨てない小数点桁数</param>
         /// <returns>切り捨てられた数値</returns>
-        public static double ToRoundDown(double value, int iDigits)
+        public static double ToRoundDown(double value, int digits)
         {
-            double coefficient = Math.Pow(10, iDigits);
+            //指定された桁数までを整数にする
+            double coefficient = Math.Pow(10, digits);
 
             return value > 0 ? Math.Floor(value * coefficient) / coefficient : 
                 Math.Ceiling(value * coefficient) / coefficient;
@@ -50,7 +50,8 @@ namespace Manage_your_Life
         /// </summary>
         public static void DoEvents()
         {
-            DispatcherFrame frame = new DispatcherFrame();
+            //作業項目のキューを処理する
+            var frame = new DispatcherFrame();
             Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Background,
                 new DispatcherOperationCallback(ExitFrames), frame);
             Dispatcher.PushFrame(frame);
@@ -117,12 +118,13 @@ namespace Manage_your_Life
         /// <summary>
         /// 自身のスクリーンショットをレンダリングする
         /// </summary>
-        /// <see cref="http://urx.nu/b0Bh"/>
         /// <param name="target">pngイメージ</param>
         public static PngBitmapEncoder RenderingVisual(Visual target)
         {
+            //自身の座標を定義
             Rect bounds = VisualTreeHelper.GetDescendantBounds(target);
 
+            //dpi96のビットマップに変換
             var renderTarget = new RenderTargetBitmap((Int32)bounds.Width,
                                 (Int32)bounds.Height, 96, 96, PixelFormats.Pbgra32);
 
@@ -130,10 +132,12 @@ namespace Manage_your_Life
 
             using (DrawingContext context = visual.RenderOpen())
             {
+                //ターゲットの四角形を描画
                 VisualBrush visualBrush = new VisualBrush(target);
                 context.DrawRectangle(visualBrush, null, new Rect(new Point(), bounds.Size));
             }
 
+            //レンダリングしてpngイメージにする
             renderTarget.Render(visual);
             PngBitmapEncoder bitmapEncoder = new PngBitmapEncoder();
             bitmapEncoder.Frames.Add(BitmapFrame.Create(renderTarget));

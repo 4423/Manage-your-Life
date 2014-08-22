@@ -103,7 +103,6 @@ namespace Manage_your_Life
             catch (SqlException ex) { throw; }
 
             //SubmitChanges()すると挿入したIDが取得できるようになる
-            //see: http://bluestick.jp/tech/index.php/archives/50
             var id = app.Id;
 
             #region 取得したIDを元にProcessDBに登録
@@ -392,7 +391,6 @@ namespace Manage_your_Life
         /// </summary>
         /// <param name="proc">比較対象のProcess</param>
         /// <returns>存在する：true　存在しない:false</returns>
-        /// <see cref="http://bit.ly/1jAFEn3"/>
         internal bool IsExist(string procPath)
         {
             return database.DatabaseProcess.Any(p => p.Path.Contains(procPath));

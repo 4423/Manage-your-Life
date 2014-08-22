@@ -16,7 +16,6 @@ namespace Manage_your_Life
     {
 
         //WP8で使われているカラー
-        //see: http://www.creepyed.com/2012/11/windows-phone-8-theme-colors-hex-rgb/
         private Color[] accentColors = new Color[]{
             Color.FromRgb(0xa4, 0xc4, 0x00),   // lime
             Color.FromRgb(0x60, 0xa9, 0x17),   // green
@@ -42,6 +41,7 @@ namespace Manage_your_Life
 
         
 
+        //コンストラクタ
         public SettingsAppearanceViewModel()
         {
             SyncColor();
@@ -70,11 +70,12 @@ namespace Manage_your_Life
         }
         
 
+
+        //選択されているアクセントカラーの設定・取得
         public Color[] AccentColors
         {
             get { return this.accentColors; }
         }
-
 
         private Color selectedAccentColor;
         public Color SelectedAccentColor

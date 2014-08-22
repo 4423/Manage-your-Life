@@ -9,13 +9,11 @@ using System.Diagnostics;
 namespace Manage_your_Life
 {
     /// <summary>
-    /// アクティブなウィンドウをもつプロセスの取得
+    /// アクティブウィンドウなプロセス取得クラス
     /// </summary>
     class ProcessInformation
     {
-        /// <seealso cref="http://mzs184.blogspot.jp/2009/03/c.html"/>
-        /// <seealso cref="http://d.hatena.ne.jp/int128/20080110/1199975050"/>
-
+                
         [DllImport("user32.dll")]
         private static extern IntPtr GetForegroundWindow();
 
@@ -34,7 +32,10 @@ namespace Manage_your_Life
         /// </returns>
         internal string GetWindowTitle()
         {
+            //アクティブウィンドウを取得
             IntPtr hWnd = GetForegroundWindow();
+
+            //ウィンドウタイトルを取得する
             StringBuilder title = new StringBuilder(1048);
             GetWindowText(hWnd, title, 1024);
 
@@ -46,17 +47,19 @@ namespace Manage_your_Life
         /// アクティブなプロセスを取得
         /// </summary>
         /// <returns>
-        /// Process プロセスID
+        /// Process
         /// </returns>
         internal Process GetActiveProcess()
         {
+            //アクティブウィンドウを取得
             IntPtr hWnd = GetForegroundWindow();
 
-            int id;
-            GetWindowThreadProcessId(hWnd, out id);
-            Process procId = Process.GetProcessById(id);
+            //アクティブウィンドウのハンドルからプロセスIDを取得
+            int procId;
+            GetWindowThreadProcessId(hWnd, out procId);
 
-            return procId;
+            //プロセスIDからプロセスを取得
+            return Process.GetProcessById(procId);
         }
     }
 }

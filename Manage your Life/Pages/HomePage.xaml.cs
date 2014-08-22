@@ -137,8 +137,17 @@ namespace Manage_your_Life
             Utility.DoEvents();
 
             //Hatena系は時間が掛かるので非同期処理にした
-            var context = await Task.Run(() => 
-                GetHatenaKeywordViewModel(windowTitle, preCategorizedCountData));
+            HatenaKeywordViewModel context = null;
+            try
+            {
+                context = await Task.Run(() =>
+                    GetHatenaKeywordViewModel(windowTitle, preCategorizedCountData));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("カテゴライズの過程で例外が発生しました。", "エラー",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
 
             if (context.HatenaKeyword.Count != 0)
             {

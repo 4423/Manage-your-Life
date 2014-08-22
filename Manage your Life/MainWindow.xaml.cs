@@ -116,7 +116,6 @@ namespace Manage_your_Life
         /// <summary>
         /// タイマー指定時間が経過すると呼び出される
         /// </summary>
-        /// <see cref="http://ari-it.doorblog.jp/archives/28684231.html"/>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void DispatcherTimer_Tick(object sender, EventArgs e)

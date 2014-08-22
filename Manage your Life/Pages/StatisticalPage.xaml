@@ -67,7 +67,6 @@
                             <ComboBoxItem>Descending</ComboBoxItem>
                         </ComboBox>
 
-                        <!--お気に入りのみの抽出-->
                         <CheckBox Grid.Row="1" Content="Favorites only" Name="checkBox_isFavoritesOnly" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.ColumnSpan="2"/>
 
                         <Button Grid.Row="5" Name="button1" Content="GetChart" Click="button1_Click" 

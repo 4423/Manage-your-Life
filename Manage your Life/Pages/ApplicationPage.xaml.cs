@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-//using System.Data.Objects;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -273,7 +272,6 @@ namespace Manage_your_Life
 
     /// <summary>
     /// AppListBoxへのバインディング用クラス
-    /// <see cref="http://gushwell.ldblog.jp/archives/52306210.html"/>
     /// </summary>
     public class AppListBoxBindingData
     {

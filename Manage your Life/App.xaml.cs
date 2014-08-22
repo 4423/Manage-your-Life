@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -30,7 +31,7 @@ namespace Manage_your_Life
             Exception ex = e.ExceptionObject as Exception;
             if (ex != null)
             {
-                WriteErrorLog(ex, "UnhandledException");
+                //WriteErrorLog(ex, "UnhandledException");
             }
 
             this.Shutdown();
@@ -43,7 +44,7 @@ namespace Manage_your_Life
             MessageBox.Show("致命的な例外が発生しました。\nプログラムを終了します。", "エラー",
                     MessageBoxButton.OK, MessageBoxImage.Error);
 
-            WriteErrorLog(e.Exception, "ThreadException");
+            //WriteErrorLog(e.Exception, "ThreadException");
 
             e.Handled = true;
             this.Shutdown();
@@ -52,7 +53,7 @@ namespace Manage_your_Life
 
         private void WriteErrorLog(Exception ex, string title)
         {
-            using (System.IO.StreamWriter stream = new System.IO.StreamWriter("error.txt", true))
+            using (StreamWriter stream = new StreamWriter("error.txt", true))
             {
                 stream.WriteLine("[" + title + "]");
                 stream.WriteLine("[message]\r\n" + ex.Message);

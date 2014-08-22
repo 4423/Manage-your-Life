@@ -11,11 +11,10 @@ namespace Manage_your_Life
     /// <summary>
     /// Window間でデータをやり取りするシングルトンなクラス
     /// </summary>
-    /// <see cref="http://architect360.apricot-jp.com/300/post_2.html"/>
     public sealed class DataBanker
     {
-        private static readonly DataBanker _instance = new DataBanker();
-        private IDictionary _holder = new Hashtable();
+        private static readonly DataBanker instance = new DataBanker();
+        private IDictionary holder = new Hashtable();
 
 
         private DataBanker() { }
@@ -25,30 +24,27 @@ namespace Manage_your_Life
         {
             get
             {
-                return _instance;
+                return instance;
             }
         }
 
 
         /// <summary>
-        /// キーを元にデータを取得
+        /// キーに対応する保持しているデータを返す
         /// </summary>
-        /// <param name="key"></param>
-        /// <returns></returns>
+        /// <param name="key">欲しいオブジェクトのキー</param>
+        /// <returns>キーに対応するオブジェクト</returns>
         public object this[object key]
         {
             get
             {
-                return _holder[key];
+                return holder[key];
             }
             set
             {
-                //重複する場合は削除
-                if (_holder.Contains(key))
-                {
-                    _holder.Remove(key);
-                }
-                _holder[key] = value;
+                //キーが重複する場合は元のデータを削除してから登録
+                if (holder.Contains(key)) holder.Remove(key);
+                holder[key] = value;
             }
         }
 
@@ -60,18 +56,18 @@ namespace Manage_your_Life
         {
             get
             {
-                return _holder.Keys;
+                return holder.Keys;
             }
         }  
 
 
         /// <summary>  
-        /// keyの情報を削除する  
+        /// キーに対応するデータを削除する
         /// </summary>  
-        /// <param name="key"></param>  
+        /// <param name="key">削除したいオブジェクトのキー</param>  
         public void Remove(string key)
         {
-            _holder.Remove(key);
+            holder.Remove(key);
         }  
     }
 }
