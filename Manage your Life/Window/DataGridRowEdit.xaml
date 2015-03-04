@@ -53,12 +53,12 @@
             <ScrollViewer Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" VerticalScrollBarVisibility="Auto">
                 <TextBlock Name="textbox_Path"  Foreground="#FFE2E2E2" TextWrapping="Wrap" />
             </ScrollViewer>
+            <Label Name="label_UsageTime" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Left" Margin="0,10,0,0" VerticalAlignment="Top"  Foreground="#FFE2E2E2"/>
             <Label Name="label_AddDate" Grid.Row="5" Grid.Column="1" HorizontalAlignment="Left" Margin="0,10,0,0" VerticalAlignment="Top"  Foreground="#FFE2E2E2"/>
             <Label Name="label_LastDate" Grid.Row="6" Grid.Column="1"  HorizontalAlignment="Left" Margin="0,10,0,0" VerticalAlignment="Top"  Foreground="#FFE2E2E2"/>
 
 
             <TextBox Name="textBox_Title" TextWrapping="Wrap" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" VerticalScrollBarVisibility="Auto"/>
-            <TextBox Name="textBox_UsageTime" TextWrapping="Wrap" Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" />
             <TextBox Name="textBox_Memo" Grid.Row="8" Grid.ColumnSpan="2" Margin="0,5,0,10" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap" />
 
 

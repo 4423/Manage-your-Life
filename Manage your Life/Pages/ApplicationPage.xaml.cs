@@ -131,7 +131,7 @@ namespace Manage_your_Life
                 //パスからアイコン生成
                 var icon = System.Drawing.Icon.ExtractAssociatedIcon(procPath);
 
-                //see: http://bit.ly/1i44IJo Icon を ImageSource に変換する 
+                //Icon を ImageSource に変換する 
                 iconImage.Source = Imaging.CreateBitmapSourceFromHIcon(
                     icon.Handle, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
                 #endregion
@@ -184,12 +184,6 @@ namespace Manage_your_Life
         }
 
 
-        //Datagridの列非表示
-        //see: http://ameblo.jp/shirokoma55/entry-11561024241.html
-        //dataGrid1.ColumnFromDisplayIndex(0).Visibility = Visibility.Collapsed;
-        
-
-
         //---------------------------------------------------------------ListBoxのバインディングとか
 
         public ObservableCollection<AppListBoxBindingData> ListData { get; set; }
@@ -200,7 +194,6 @@ namespace Manage_your_Life
         /// </summary>
         /// <param name="row">gridView選択行のデータ</param>
         /// <returns>選択行のobjectをコレクションにしたもの?</returns>
-        /// <see cref="http://ufcpp.net/study/csharp/misc_dynamic.html"/>
         private ObservableCollection<AppListBoxBindingData> BindingListBox(dynamic row)
         {
             //コレクションに変更を加えると通知してくれる

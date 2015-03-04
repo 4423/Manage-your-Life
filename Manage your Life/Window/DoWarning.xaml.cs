@@ -22,6 +22,8 @@ namespace Manage_your_Life
             this.border.Background = new SolidColorBrush(AppearanceManager.Current.AccentColor);
             this.textBlock_warning.Text = 
                 String.Format("'{0}'の使用時間が{1}分を超えています",procName, (int)warningTime.TotalMinutes);
+            this.checkBox_NotAgain.Content =
+                String.Format("これ以上'{0}'に対する警告を表示しない", procName);
         }
 
 

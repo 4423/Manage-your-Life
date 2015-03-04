@@ -285,11 +285,11 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="ApplicationDatabase.mdf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="ApplicationDatabase_log.ldf">
       <DependentUpon>ApplicationDatabase.mdf</DependentUpon>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="Resources\originalIcon.ico" />
     <None Include="Resources\originalIconTray.ico" />

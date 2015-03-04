@@ -88,13 +88,19 @@ namespace Manage_your_Life
                 dataBanker["TweetConfirm"] = ((string)dataBanker["TweetConfirm"]).Replace("<USAGE_TIME1>", usageTime.Split('\n')[0]);
                 dataBanker["TweetConfirm"] = ((string)dataBanker["TweetConfirm"]).Replace("<USAGE_TIME2>", usageTime.Split('\n')[1]);
             }
-            catch (Exception ex) { }
+            catch (IndexOutOfRangeException ex) 
+            {
+                dataBanker["TweetConfirm"] = ((string)dataBanker["TweetConfirm"]).Replace("<USAGE_TIME2>", "");
+            }
             try
             {
                 dataBanker["TweetConfirm"] = ((string)dataBanker["TweetConfirm"]).Replace("<CATEGORI_COUNT1>", categoriCount.Split('\n')[0]);
                 dataBanker["TweetConfirm"] = ((string)dataBanker["TweetConfirm"]).Replace("<CATEGORI_COUNT2>", categoriCount.Split('\n')[1]);
             }
-            catch (Exception ex) { }
+            catch (IndexOutOfRangeException ex) 
+            {
+                dataBanker["TweetConfirm"] = ((string)dataBanker["TweetConfirm"]).Replace("<CATEGORI_COUNT2>", "");
+            }
         }
 
 

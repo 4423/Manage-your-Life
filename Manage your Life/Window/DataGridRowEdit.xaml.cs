@@ -41,33 +41,24 @@ namespace Manage_your_Life
             this.textBox_Memo.Text = (string)context["Memo"];
             this.label_AddDate.Content = (DateTime)context["AddDate"];
             this.label_LastDate.Content = (DateTime)context["LastDate"];            
-            this.textBox_UsageTime.Text = (string)context["UsageTime"];            
+            this.label_UsageTime.Content = (string)context["UsageTime"];            
         }
 
 
         //保存ボタン押下
         private void button_Save_Click(object sender, RoutedEventArgs e)
         {
-            //使用時間の構文チェック
-            if (Utility.IsTimeSpanFormat(this.textBox_UsageTime.Text))
-            {
-                MessageBoxResult result = MessageBox.Show("本当に保存しますか?", "確認",
+            MessageBoxResult result = MessageBox.Show("本当に保存しますか?", "確認",
                                     MessageBoxButton.YesNo, MessageBoxImage.Exclamation);
 
-                if (result == MessageBoxResult.Yes)
-                {
-                    int appId = (int)context["Id"];
-                    UpdataDatabase(appId);
-
-                    DialogResult = true;
-                    this.Close();
-                }
-            }
-            else
+            if (result == MessageBoxResult.Yes)
             {
-                MessageBox.Show("使用時間の構文エラーです。", "エラー", 
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-            }         
+                int appId = (int)context["Id"];
+                UpdataDatabase(appId);
+
+                DialogResult = true;
+                this.Close();
+            }     
         }
 
 
@@ -130,7 +121,6 @@ namespace Manage_your_Life
                 {
                     r.Favorite = this.checkBox_Favorite.IsChecked;
                     r.Title = this.textBox_Title.Text;
-                    r.DatabaseDate.UsageTime = this.textBox_UsageTime.Text;
                     r.Memo = this.textBox_Memo.Text;
                 }
 
