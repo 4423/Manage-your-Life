@@ -1,6 +1,10 @@
 ﻿using FirstFloor.ModernUI.Presentation;
 using System;
+using System.Data.SqlClient;
+using System.Diagnostics;
+using System.Runtime.ExceptionServices;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
@@ -13,7 +17,6 @@ namespace Manage_your_Life
     public partial class Splash : Window
     {
         DispatcherTimer timer;
-        DatabaseOperation dbOperator;
 
         public Splash()
         {
@@ -22,6 +25,9 @@ namespace Manage_your_Life
             AppearanceManager.Current.AccentColor = Properties.Settings.Default.ThemeColor;
             this.border.Background = new SolidColorBrush(AppearanceManager.Current.AccentColor);
 
+            //TODO スプラッシュウィンドウを表示させてから処理を始めたいけど、タイミングが上手く合わないのでtimer使ってる…
+            //AsyncEntry();
+            
             timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromSeconds(2);
             timer.Tick += new EventHandler(DispatcherTimer_Tick);
@@ -33,44 +39,49 @@ namespace Manage_your_Life
             timer.Stop();
             timer.Tick -= new EventHandler(DispatcherTimer_Tick);
 
+            Entry();
+        }
+        
 
-            //データベース接続
-            label_working.Content = "Connecting to database...";
-            Utility.DoEvents();
+        private async void AsyncEntry()
+        {
+            await Task.Run(() => {
+                Thread.Sleep(2000);
+                Entry();
+            });
+        }
 
-            try
-            {
-                dbOperator = DatabaseOperation.Instance;
-                new UsageTimeViewModel(DateTime.Today, 5);
-            }
-            catch (Exception ex)
-            {
-                label_working.Content = "Test connection failed...";
-                Utility.DoEvents(); Thread.Sleep(1000);
-                try
-                {
-                    label_working.Content = "Reconnecting...";
-                    Utility.DoEvents();
+        private void Entry()
+        {
+            //DB接続テスト
+            UIAction(() => label_working.Content = "Connecting to database...");
+            RetryHelper.Retry(
+                () => { 
+                    var db = DatabaseOperation.Instance;
                     new UsageTimeViewModel(DateTime.Today, 5);
-                    goto EX;
-                }
-                catch (Exception exx)
-                {
-                    label_working.Content = "Error! Please retry.";
-                    Utility.DoEvents(); Thread.Sleep(1000); Environment.Exit(1);
-                }
-            }
-        EX:
-            //MainWindow作成
-            label_working.Content = "Initializing window...";
+                },
+                ex => { ExceptionDispatchInfo.Capture(ex).Throw(); },
+                ex => ex is SqlException,
+                5
+            );
+            
+            //MainWindow初期化
+            UIAction(() => label_working.Content = "Initializing window...");
+            UIAction(() =>
+            {
+                var main = new MainWindow();
+                App.Current.MainWindow = main;
+
+                this.Hide();
+                main.Show();
+                this.Close();
+            });
+        }
+
+        private void UIAction(Action onAction)
+        {
+            Application.Current.Dispatcher.BeginInvoke(onAction);
             Utility.DoEvents();
-
-            MainWindow main = new MainWindow();
-            App.Current.MainWindow = main;
-
-            this.Hide();
-            main.Show();
-            this.Close();
         }
     }
 }

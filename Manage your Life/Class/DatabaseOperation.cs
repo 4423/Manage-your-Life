@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using System.IO;
 using System.Data.SqlClient;
+using System.Runtime.ExceptionServices;
 
 namespace Manage_your_Life
 {
@@ -49,14 +50,14 @@ namespace Manage_your_Life
         {
             //接続文字列の生成
             basePath = Directory.GetCurrentDirectory() + @"\ApplicationDatabase.mdf";
-            connStr = @"Data Source=(LocalDB)\v11.0;AttachDbFilename=""" + basePath + @""";Integrated Security=True";
+            connStr = @"Data Source=(LocalDB)\v11.0;Integrated Security=True;Connection Timeout=30;AttachDbFilename=""" + basePath + @""";";
 
             //データベース接続
-            try
-            {
+            RetryHelper.Retry(() => {
                 database = new ApplicationDataClassesDataContext(connStr);
-            }
-            catch (SqlException ex) { throw; }
+            },
+            ex => ExceptionDispatchInfo.Capture(ex).Throw(),
+            ex => ex is SqlException);
         }
 
 
@@ -69,10 +70,7 @@ namespace Manage_your_Life
 
         public static DatabaseOperation Instance
         {
-            get
-            {
-                return instance;
-            }
+            get { return instance; }
         }
 
 
@@ -96,11 +94,12 @@ namespace Manage_your_Life
             app.Title = proc.MainWindowTitle;
             app.Favorite = false;
             database.DatabaseApplication.InsertOnSubmit(app);
-            try
+            RetryHelper.Retry(() =>
             {
                 database.SubmitChanges();
-            }
-            catch (SqlException ex) { throw; }
+            },
+            ex => ExceptionDispatchInfo.Capture(ex).Throw(),
+            ex => ex is SqlException);
 
             //SubmitChanges()すると挿入したIDが取得できるようになる
             var id = app.Id;
@@ -122,11 +121,12 @@ namespace Manage_your_Life
             database.DatabaseDate.InsertOnSubmit(date);
             #endregion
 
-            try
+            RetryHelper.Retry(() =>
             {
                 database.SubmitChanges();
-            }
-            catch (SqlException ex) { throw; }
+            },
+            ex => ExceptionDispatchInfo.Capture(ex).Throw(),
+            ex => ex is SqlException);
 
             //レコード新規登録のイベント発生
             if (NewRecord_Registered != null)
@@ -149,12 +149,13 @@ namespace Manage_your_Life
                 where p.AppId == appId
                 select p).First();
 
-            try
+            RetryHelper.Retry(() =>
             {
                 q.AlertTime = alertTime.ToString(timeSpanToStringFormat);
                 database.SubmitChanges();
-            }
-            catch (SqlException ex) { throw; }
+            }, 
+            ex => ExceptionDispatchInfo.Capture(ex).Throw(),
+            ex => ex is SqlException);
         }
 
 
@@ -198,7 +199,7 @@ namespace Manage_your_Life
 
             database.DatabaseApplication.DeleteOnSubmit(appQuery);
 
-            try
+            RetryHelper.Retry(() =>
             {
                 database.SubmitChanges();
 
@@ -206,8 +207,9 @@ namespace Manage_your_Life
                 {
                     Record_Deleted(this, EventArgs.Empty);
                 }
-            }
-            catch (SqlException ex) { throw; }
+            }, 
+            ex => ExceptionDispatchInfo.Capture(ex).Throw(),
+            ex => ex is SqlException);
         }
 
 
@@ -228,8 +230,8 @@ namespace Manage_your_Life
                 select p;
 
             //怪しい情報がTimelineに記録されてしまう
-            bool isLooped = false;
-            try
+            bool isUpdated = false;
+            RetryHelper.Retry(() =>
             {
                 foreach (var p in q)
                 {
@@ -243,13 +245,14 @@ namespace Manage_your_Life
                     //最終使用日の更新
                     p.LastDate = DateTime.Now;
 
-                    isLooped = true;
+                    isUpdated = true;
                 }
-            }
-            catch (SqlException ex) { throw; }
+            },
+            ex => { ExceptionDispatchInfo.Capture(ex).Throw(); },
+            ex => ex is SqlException);
 
             //何らかのデータが変更された時のみ
-            if (isLooped)
+            if (isUpdated)
             {
                 //DBの更新
                 database.SubmitChanges();
@@ -280,12 +283,13 @@ namespace Manage_your_Life
             log.Now = DateTime.Now;
             log.UsageTime = activeInterval.ToString();
 
-            try
+            RetryHelper.Retry(() =>
             {
                 database.DatabaseTimeline.InsertOnSubmit(log);
                 database.SubmitChanges();
-            }
-            catch (SqlException ex) { throw; }
+            },
+            ex => ExceptionDispatchInfo.Capture(ex).Throw(),
+            ex => ex is SqlException);
 
             //Timeline更新のイベント発生
             if (TimelineLog_Updated != null)
@@ -303,22 +307,27 @@ namespace Manage_your_Life
         /// </summary>
         /// <returns>全てのレコード</returns>
         internal IQueryable GetAllData(){
-            var r =
-                from p in database.DatabaseApplication
-                select new { 
-                    Id = p.Id, 
-                    Favorite = p.Favorite, 
-                    Title = p.Title, 
-                    ProcName = p.DatabaseProcess.Name,
-                    ProcPath = p.DatabaseProcess.Path,
-                    UsageTime = p.DatabaseDate.UsageTime, 
-                    AlertTime = p.DatabaseDate.AlertTime,
-                    AddDate = p.DatabaseDate.AddDate, 
-                    LastDate = p.DatabaseDate.LastDate,
-                    Memo = p.Memo 
-                };
-
-            return r;
+            return RetryHelper.Retry(() => 
+                {
+                    return  from p in database.DatabaseApplication
+                            select new 
+                            { 
+                                Id = p.Id, 
+                                Favorite = p.Favorite, 
+                                Title = p.Title, 
+                                ProcName = p.DatabaseProcess.Name,
+                                ProcPath = p.DatabaseProcess.Path,
+                                UsageTime = p.DatabaseDate.UsageTime, 
+                                AlertTime = p.DatabaseDate.AlertTime,
+                                AddDate = p.DatabaseDate.AddDate, 
+                                LastDate = p.DatabaseDate.LastDate,
+                                Memo = p.Memo 
+                            };
+                },
+                ex => ExceptionDispatchInfo.Capture(ex).Throw(),
+                ex => ex is SqlException,
+                maxRetryCount: 5
+            );
         }
 
 
@@ -328,17 +337,15 @@ namespace Manage_your_Life
         /// <returns>IDと警告時間のDictionary</returns>
         internal Dictionary<int, TimeSpan> GetOveruseWarningCollection()
         {            
-            var q =
-                from p in database.DatabaseApplication
-                where p.DatabaseDate.AlertTime != "0.00:00:00"
-                select new
-                {
-                    Id = p.Id,
-                    AlertTime = p.DatabaseDate.AlertTime
-                };
+            var q = from p in database.DatabaseApplication
+                    where p.DatabaseDate.AlertTime != "0.00:00:00"
+                    select new
+                    {
+                        Id = p.Id,
+                        AlertTime = p.DatabaseDate.AlertTime
+                    };
 
             var dict = new Dictionary<int, TimeSpan>();
-
             try
             {
                 foreach (var r in q)
@@ -346,7 +353,7 @@ namespace Manage_your_Life
                     dict.Add(r.Id, TimeSpan.Parse(r.AlertTime));
                 }
             }
-            catch (SqlException ex) { throw; }
+            catch (SqlException) { throw; }
 
             return dict;
         }
@@ -377,7 +384,7 @@ namespace Manage_your_Life
                 dict = Utility.DictionaryOrganizingValue(q).Single();
             }
             //シーケンスに要素が含まれていない場合
-            catch (Exception ex)
+            catch (Exception)
             {
                 return TimeSpan.FromSeconds(0);
             }
@@ -393,7 +400,12 @@ namespace Manage_your_Life
         /// <returns>存在する：true　存在しない:false</returns>
         internal bool IsExist(string procPath)
         {
-            return database.DatabaseProcess.Any(p => p.Path.Contains(procPath));
+            return RetryHelper.Retry(() => {
+                    return database.DatabaseProcess.Any(p => p.Path.Contains(procPath));
+                },
+                ex => { ExceptionDispatchInfo.Capture(ex).Throw(); },
+                ex => ex is SqlException
+            );
         }
         
 
@@ -413,14 +425,10 @@ namespace Manage_your_Life
                 where p.Path == procPath
                 select p;
 
-            try
+            foreach (var r in q)
             {
-                foreach (var r in q)
-                {
-                    appId = r.AppId;
-                }
+                appId = r.AppId;
             }
-            catch (SqlException ex) { throw; }
 
             return appId;
         }

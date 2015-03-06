@@ -9,7 +9,7 @@ namespace Manage_your_Life
         
         public ObservableCollection<ChartData> HatenaKeyword { get; set; }
 
-        private Dictionary<string, int> hatenaCategorizedCountData;
+        public Dictionary<string, int> CategorizedCountData { get; set; }
 
 
         /// <summary>
@@ -17,13 +17,11 @@ namespace Manage_your_Life
         /// </summary>
         /// <param name="windowTitle">windowTitle: HatenaAPIに飛ばす文字列</param>
         /// <param name="preHatenaKeywordCollections">今までのHatenaでカテゴライズされたコレクション</param>
-        public HatenaKeywordViewModel(string windowTitle, Dictionary<string, int> preHatenaCategorizedCountData)
+        public HatenaKeywordViewModel(string windowTitle, Dictionary<string, int> preCategorizedCountData)
         {
-
             HatenaKeyword = new ObservableCollection<ChartData>();
             Series = new ObservableCollection<SeriesData>();
 
-            Debug.WriteLine("Hatena");
             Hatena hatena = new Hatena(0);
             Dictionary<string, string> hatenaCategorizedData = hatena.Categorizing(windowTitle);
 
@@ -31,27 +29,19 @@ namespace Manage_your_Life
             if (hatenaCategorizedData != null)
             {
                 //重複したカテゴリーの数をカウント
-                hatenaCategorizedCountData = Utility.KeysCount(hatenaCategorizedData);
+                CategorizedCountData = Utility.KeysCount(hatenaCategorizedData);
 
                 //いままでのカウント分と結合
-                hatenaCategorizedCountData = 
-                    Utility.MergeDictionaryValue(hatenaCategorizedCountData, preHatenaCategorizedCountData);
+                CategorizedCountData = 
+                    Utility.MergeDictionaryValue(CategorizedCountData, preCategorizedCountData);
 
-                foreach (var data in hatenaCategorizedCountData)
+                foreach (var data in CategorizedCountData)
                 {
                     HatenaKeyword.Add(new ChartData() { Category = data.Key, Number = data.Value });
                 }
 
                 Series.Add(new SeriesData() { SeriesDisplayName = "HatenaKeyword", Items = HatenaKeyword });    
-            }
-            
+            }            
         }
-
-
-        public Dictionary<string, int> GetHatenaCategorizedCountData
-        {
-            get { return hatenaCategorizedCountData; }
-        }
-
     }
 }

@@ -62,7 +62,7 @@ namespace Manage_your_Life
         public HomePage()
         {
             InitializeComponent();
-
+            
             pInfo = new ProcessInformation();
             preCategorizedCountData = new Dictionary<string, int>();
             dataBanker = DataBanker.Instance;
@@ -141,9 +141,11 @@ namespace Manage_your_Life
             try
             {
                 context = await Task.Run(() =>
-                    GetHatenaKeywordViewModel(windowTitle, preCategorizedCountData));
+                {
+                    return new HatenaKeywordViewModel(windowTitle, preCategorizedCountData);
+                });
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 MessageBox.Show("カテゴライズの過程で例外が発生しました。", "エラー",
                     MessageBoxButton.OK, MessageBoxImage.Error);
@@ -155,13 +157,13 @@ namespace Manage_your_Life
             }
 
             //今回Chartに設定したカウントDictionaryがnullではないとき
-            if (context.GetHatenaCategorizedCountData != null)
+            if (context.CategorizedCountData != null)
             {
                 //今回の値を保持する
-                preCategorizedCountData = context.GetHatenaCategorizedCountData;
+                preCategorizedCountData = context.CategorizedCountData;
                 dataBanker["CategorizedCountData"] = preCategorizedCountData;
             }
-
+            throw new ArgumentNullException();
             preWindowTitle = windowTitle;
             hatenaTimer.Start();
         }
@@ -174,20 +176,6 @@ namespace Manage_your_Life
             //稼働時間Chartの値を更新させる
             this.chart_upTime.DataContext = new SystemUptimeViewModel();
             updateUpTimeTimer.Start();
-        }
-
-
-
-        /// <summary>
-        /// HatenaKeywordViewModelのインスタンスを生成
-        /// </summary>
-        /// <param name="windowTitle"></param>
-        /// <param name="preCategorizedCountData"></param>
-        /// <returns></returns>
-        private HatenaKeywordViewModel 
-            GetHatenaKeywordViewModel(string windowTitle, Dictionary<string, int> preCategorizedCountData)
-        {
-            return new HatenaKeywordViewModel(windowTitle, preCategorizedCountData);
         }
 
 
