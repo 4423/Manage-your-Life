@@ -287,6 +287,7 @@ namespace Manage_your_Life
         {
             timer.Stop();
             this.Hide();
+            notifyIcon.Visible = false;
             notifyIcon.Dispose();
 
             Properties.Settings.Default.Save();
