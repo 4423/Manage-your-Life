@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.Net;
+using System.Runtime.ExceptionServices;
 using System.Text;
 using System.Xml;
 
@@ -74,10 +76,19 @@ namespace Manage_your_Life
         /// <returns>抽出された単語とカテゴリーのDictionary</returns>
         internal Dictionary<string, string> Categorizing(string windowTitle)
         {
-            XmlDocument xml = AccessToAPI(windowTitle);
-            var data = GetXmlData(xml);
+            XmlDocument xml = null;
+            RetryHelper.Retry(() => 
+                {
+                    xml = AccessToAPI(windowTitle);
+                },
+                ex => 
+                {
+                    throw new Exception("はてなAPIとの通信に失敗したため、カテゴライズが出来ません。\nネットワーク接続を確認して下さい。", ex);
+                },
+                ex => ex is Exception, 5
+            );
 
-            return data;
+            return GetXmlData(xml);
         }
 
 

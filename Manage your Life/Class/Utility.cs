@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -15,6 +16,22 @@ namespace Manage_your_Life
 {
     static public class Utility
     {
+        /// <summary>
+        /// 自分自身を再起動します。
+        /// </summary>
+        public static void Restart()
+        {
+            Process.Start(Application.ResourceAssembly.Location);
+            Environment.Exit(1);
+        }
+
+
+        public static void UIAction(Action onAction)
+        {
+            Application.Current.Dispatcher.BeginInvoke(onAction);
+            Utility.DoEvents();
+        }
+
 
         /// <summary>
         /// 指定した精度の数値に切り捨る

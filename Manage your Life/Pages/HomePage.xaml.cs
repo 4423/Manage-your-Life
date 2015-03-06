@@ -19,6 +19,7 @@ using De.TorstenMandelkow.MetroChart;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading;
+using Microsoft.WindowsAPICodePack.Dialogs;
 
 
 namespace Manage_your_Life
@@ -87,17 +88,13 @@ namespace Manage_your_Life
             updateUpTimeTimer.Tick += UpdateUpTimeDispatcherTimer_Tick;
             updateUpTimeTimer.Start();
 
-            //カテゴライズを停止しない!
-            if (!Properties.Settings.Default.checkBox_IsCategorizeStop)
-            {
-                int sec = Properties.Settings.Default.label_TimeSpan / 1000;
-                int milliSec = Properties.Settings.Default.label_TimeSpan % 1000;
-
-                hatenaTimer = new DispatcherTimer();
-                hatenaTimer.Interval = new TimeSpan(0, 0, 0, sec, milliSec);
-                hatenaTimer.Tick += HatenaDispatcherTimer_Tick;
-                hatenaTimer.Start();
-            }
+            //カテゴライズ
+            int sec = Properties.Settings.Default.label_TimeSpan / 1000;
+            int milliSec = Properties.Settings.Default.label_TimeSpan % 1000;
+            hatenaTimer = new DispatcherTimer();
+            hatenaTimer.Interval = new TimeSpan(0, 0, 0, sec, milliSec);
+            hatenaTimer.Tick += HatenaDispatcherTimer_Tick;
+            hatenaTimer.Start();
         }
 
 
@@ -120,7 +117,7 @@ namespace Manage_your_Life
 
 
 
-        private async void HatenaDispatcherTimer_Tick(object sender, EventArgs e)
+        private void HatenaDispatcherTimer_Tick(object sender, EventArgs e)
         {
             hatenaTimer.Stop();
 
@@ -130,13 +127,27 @@ namespace Manage_your_Life
             {
                 hatenaTimer.Start();
                 return;
+            }            
+
+            Utility.UIAction(() => label_ForegroundWindow.Content = pInfo.GetWindowTitle());
+
+            //カテゴライズ停止チェックの有無
+            if (!Properties.Settings.Default.checkBox_IsCategorizeStop)
+            {
+                DoCategorize(windowTitle);
             }
 
-            //labelの値を更新
-            this.label_ForegroundWindow.Content = pInfo.GetWindowTitle();
-            Utility.DoEvents();
+            preWindowTitle = windowTitle;
+            hatenaTimer.Start();
+        }
 
-            //Hatena系は時間が掛かるので非同期処理にした
+
+        /// <summary>
+        /// カテゴライズを実行します。
+        /// </summary>
+        /// <param name="windowTitle"></param>
+        private async void DoCategorize(string windowTitle)
+        {
             HatenaKeywordViewModel context = null;
             try
             {
@@ -145,10 +156,11 @@ namespace Manage_your_Life
                     return new HatenaKeywordViewModel(windowTitle, preCategorizedCountData);
                 });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                MessageBox.Show("カテゴライズの過程で例外が発生しました。", "エラー",
-                    MessageBoxButton.OK, MessageBoxImage.Error);
+                ErrorManagement(ex);
+                hatenaTimer.Start();
+                return;
             }
 
             if (context.HatenaKeyword.Count != 0)
@@ -163,9 +175,6 @@ namespace Manage_your_Life
                 preCategorizedCountData = context.CategorizedCountData;
                 dataBanker["CategorizedCountData"] = preCategorizedCountData;
             }
-            throw new ArgumentNullException();
-            preWindowTitle = windowTitle;
-            hatenaTimer.Start();
         }
 
 
@@ -192,5 +201,67 @@ namespace Manage_your_Life
         }
 
 
+
+        private void ErrorManagement(Exception ex)
+        {
+            if (ex.InnerException != null)
+            {
+                Utility.UIAction(() =>
+                {
+                    var result = TaskDialogShow(ex, false);
+                    //if (result == TaskDialogResult.Ok) Utility.Restart();//再起動
+                    //else if (result == TaskDialogResult.Cancel) Environment.Exit(1); //終了
+                    //else hatenaTimer.Start();
+                });
+            }
+            else
+            {
+                //ネットワーク例外以外とは…
+            }
+        }
+
+
+        //タスクダイアログ
+        private TaskDialogResult TaskDialogShow(Exception ex, bool isUnhandledException)
+        {
+            var dialog = new TaskDialog();
+            dialog.Caption = "Manage your Life";
+            dialog.InstructionText = "エラーが発生しました";
+            dialog.Text = ex.Message;
+            dialog.DetailsCollapsedLabel = "エラー情報";
+            dialog.DetailsExpandedLabel = "エラー情報を非表示";
+            dialog.DetailsExpandedText = ex.InnerException.GetType().ToString() + "\n" + ex.InnerException.Message;
+            dialog.ExpansionMode = TaskDialogExpandedDetailsLocation.ExpandContent;
+            dialog.DetailsExpanded = false;
+            dialog.Opened += dialog_Opened;
+            dialog.StandardButtons = TaskDialogStandardButtons.Ok;
+
+            //var shutButton = new TaskDialogButton();
+            //shutButton.Text = "終了";
+            //shutButton.Default = true;
+            //shutButton.Click += (sender, e) => dialog.Close(TaskDialogResult.Cancel);
+            //dialog.Controls.Add(shutButton);
+
+            //var rebootButton = new TaskDialogButton();
+            //rebootButton.Text = "再起動";
+            //rebootButton.Click += (sender, e) => dialog.Close(TaskDialogResult.Ok);
+            //dialog.Controls.Add(rebootButton);
+
+            //if (!isUnhandledException)
+            //{
+            //    var continueButton = new TaskDialogButton();
+            //    continueButton.Text = "続行";
+            //    continueButton.Click += (sender, e) => dialog.Close(TaskDialogResult.None);
+            //    dialog.Controls.Add(continueButton);
+            //}
+
+            return dialog.Show();
+        }
+
+        void dialog_Opened(object sender, EventArgs e)
+        {
+            TaskDialog dialog = sender as TaskDialog;
+            dialog.Icon = TaskDialogStandardIcon.Error;
+        }
     }
 }
