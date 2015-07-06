@@ -101,6 +101,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Class\ActiveProcessMonitor.cs" />
+    <Compile Include="Class\ActiveProcessUtils.cs" />
     <Compile Include="Class\RetryHelper.cs" />
     <Compile Include="Content\About.xaml.cs">
       <DependentUpon>About.xaml</DependentUpon>

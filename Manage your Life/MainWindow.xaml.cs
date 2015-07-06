@@ -1,4 +1,5 @@
 ﻿using FirstFloor.ModernUI.Windows.Controls;
+using Manage_your_Life.Properties;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -14,20 +15,13 @@ namespace Manage_your_Life
     public partial class MainWindow : ModernWindow
     {
         #region Field
-        /// <summary>
-        /// WPFでタイマーを使う
-        /// </summary>
-        DispatcherTimer timer;
+
+        ActiveProcessMonitor procMonitor;
 
         /// <summary>
         /// 前回のProcess
         /// </summary>
         Process previousProcess;
-
-        /// <summary>
-        /// WinAPIを叩くProcessInformationクラスのインスタンス
-        /// </summary>
-        ProcessInformation pInfo;
 
         /// <summary>
         /// 最初に最前面になった時の日時
@@ -38,19 +32,7 @@ namespace Manage_your_Life
         /// データベースを操作
         /// </summary>
         DatabaseOperation dbOperator;
-
-        /// <summary>
-        /// 登録アプリ同士の計測スルーバグ回避用
-        /// </summary>
-        bool preTitleCheck = false;
-
-        /// <summary>
-        /// アプリケーションが最前面から外れた時の検出
-        /// false: 最前面
-        /// true: 背面(最前面から外れた初回)
-        /// </summary>
-        bool isRearApplication = false;
-
+        
         /// <summary>
         /// バルーン通知
         /// </summary>
@@ -63,11 +45,7 @@ namespace Manage_your_Life
 
         DataBanker dataBanker;
 
-        /// <summary>
-        /// プロセスが死ぬ前に予め今回のFileNameをとっておく
-        /// </summary>
-        string previousProcessFileName = "";
-        string previousProcessName = "";
+        private bool isFrontWindow = true;
 
         #endregion
 
@@ -76,133 +54,110 @@ namespace Manage_your_Life
         {
             InitializeComponent();
             
-            pInfo = new ProcessInformation();
             dbOperator = DatabaseOperation.Instance;
             overuseWarningItems = dbOperator.GetOveruseWarningCollection();
             dataBanker = DataBanker.Instance;
             dataBanker["WarningNotAgain"] = new List<int>();
             dataBanker["WarningCount"] = 0;
 
-            //バルーン通知の設定
-            notifyIcon = new NotifyIcon();
-            notifyIcon.Text = "Manage your Life";
-            notifyIcon.Icon = Properties.Resources.originalIconTray;
-            notifyIcon.Visible = true;
-            //コンテキストメニュー追加
-            ContextMenuStrip menuStrip = new ContextMenuStrip();
-            ToolStripMenuItem exitItem = new ToolStripMenuItem();
-            ToolStripMenuItem openItem = new ToolStripMenuItem();
-            exitItem.Text = "終了(&E)";
-            openItem.Text = "開く(&O)";
-            menuStrip.Items.Add(openItem);
-            menuStrip.Items.Add(new ToolStripSeparator());
-            menuStrip.Items.Add(exitItem);
+            //コンテキストメニュー追加            
+            ToolStripMenuItem exitItem = new ToolStripMenuItem() { Text = "終了(&E)" };
+            ToolStripMenuItem openItem = new ToolStripMenuItem() { Text = "開く(&O)" };
             exitItem.Click += new EventHandler(exitItem_Click);
             openItem.Click += new EventHandler(openItem_Click);
 
-            notifyIcon.ContextMenuStrip = menuStrip;            
+            ContextMenuStrip menuStrip = new ContextMenuStrip();
+            menuStrip.Items.Add(openItem);
+            menuStrip.Items.Add(new ToolStripSeparator());
+            menuStrip.Items.Add(exitItem);            
+
+            //バルーン通知の設定
+            notifyIcon = new NotifyIcon()
+            {
+                Text = "Manage your Life",
+                Icon = Properties.Resources.originalIconTray,
+                Visible = true,
+                BalloonTipIcon = ToolTipIcon.Info,
+                ContextMenuStrip = menuStrip
+            };         
             notifyIcon.MouseDoubleClick += new MouseEventHandler(notifyIcon_MouseDoubleClick);
 
-
-            //タイマーの作成
-            timer = new DispatcherTimer(DispatcherPriority.Normal, this.Dispatcher);
-            timer.Interval = TimeSpan.FromSeconds(1);
-            timer.Tick += new EventHandler(DispatcherTimer_Tick);
-            //タイマーの実行開始
-            timer.Start();
+            this.procMonitor = new ActiveProcessMonitor();
+            this.procMonitor.OnActiveProcessChanged += OnActiveProcessChanged;
+            this.procMonitor.Start();
         }
 
 
-        /// <summary>
-        /// タイマー指定時間が経過すると呼び出される
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void DispatcherTimer_Tick(object sender, EventArgs e)
+        private void OnActiveProcessChanged(Process activeProcess)
         {
-            timer.Stop();
-
-            //アクティブプロセス取得
-            Process activeProcess = pInfo.GetActiveProcess();
-
             //初回起動などnullだったら現在のプロセスを代入
             if (previousProcess == null) previousProcess = activeProcess;
 
-            //前回と同じプロセス名だったら何もしない
-            if ((activeProcess.ProcessName == previousProcess.ProcessName) && !preTitleCheck)
+
+            if (this.isFrontWindow)
             {
-                timer.Start();
-                return;
+                if (activeProcess != null)
+                {
+                    this.isFrontWindow = false;
+                    WindowActivated(activeProcess);
+                }
+            }
+            else
+            {
+                this.isFrontWindow = true; 
+                WindowDeactivated();
             }
 
-            //最前面のアプリケーションが変わった時にしたい処理
-            ApplicationChanged(activeProcess);
-            
             //キャッシュ
             previousProcess = activeProcess;
-            timer.Start();
         }
-
 
 
         /// <summary>
-        /// 最前面のアプリケーションが変わった時にする処理
+        /// ウィンドウが最前面になったとき
         /// </summary>
-        /// <param name="activeProcess">新たな最前面のProcess</param>
-        private void ApplicationChanged(Process activeProcess)
+        /// <param name="activeProcess"></param>
+        private void WindowActivated(Process activeProcess)
         {
-            //最初に最前面になった時
-            if (!isRearApplication)
+            string activeProcessFileName = "";
+            try
             {
-                string activeProcessFileName = "";
-                try
-                {
-                    activeProcessFileName = activeProcess.MainModule.FileName;
-                }
-                catch (System.ComponentModel.Win32Exception ex) { }
-                catch (Exception ex) { }
-
-                //フラグが変わらないので、新しいプロセスが前面になった時から正常に時間計算可能
-                if (activeProcessFileName == "") return;
-
-
-                //DBに存在していなければ新規にデータ挿入
-                if (!dbOperator.IsExist(activeProcessFileName))
-                {
-                    dbOperator.Register(activeProcess);
-                }
-
-                //使用時間の警告
-                int appId = dbOperator.GetCorrespondingAppId(activeProcessFileName);
-                DoOveruseWarining(appId, activeProcess.ProcessName);
-                
-
-                //最初にアクティブになった時間を取得
-                firstActiveDate = DateTime.Now;
-
-                previousProcessFileName = activeProcess.MainModule.FileName;
-                previousProcessName = activeProcess.ProcessName;
-                isRearApplication = true;
-                preTitleCheck = false;
+                activeProcessFileName = activeProcess.MainModule.FileName;
             }
-            //最前面解除
-            else 
+            catch (System.ComponentModel.Win32Exception ex) { return; }
+
+
+            //DBに存在していなければ新規にデータ挿入
+            if (!dbOperator.IsExist(activeProcessFileName))
             {
-                //計測時間追記の為にDBから該当Idを取得
-                int appId = dbOperator.GetCorrespondingAppId(previousProcessFileName);
+                dbOperator.Register(activeProcess);
+            }
 
-                //DBから使用時間を取得し、今回の使用時間を加算してDB更新
-                var activeInterval = Utility.GetInterval(firstActiveDate);
-                dbOperator.UpdateUsageTime(appId, activeInterval);
-
-                //バルーンで通知
-                ShowBalloonTip(activeInterval, previousProcessName);                
-
-                isRearApplication = false;
-                preTitleCheck = true;
-            }            
+            //使用時間の警告
+            int appId = dbOperator.GetCorrespondingAppId(activeProcessFileName);
+            DoOveruseWarining(appId, activeProcess.ProcessName);
+            
+            //最初にアクティブになった時間を取得
+            firstActiveDate = DateTime.Now;
         }
 
+
+        /// <summary>
+        /// 今まで最前面だったウィンドウが最前面でなくなったとき
+        /// </summary>
+        private void WindowDeactivated()
+        {
+            //計測時間追記の為にDBから該当Idを取得
+            int appId = dbOperator.GetCorrespondingAppId(previousProcess.MainModule.FileName);
+
+            //DBから使用時間を取得し、今回の使用時間を加算してDB更新
+            var activeInterval = Utility.GetInterval(firstActiveDate);
+            dbOperator.UpdateUsageTime(appId, activeInterval);
+
+            //バルーンで通知
+            ShowBalloonTip(activeInterval, previousProcess.ProcessName);
+        }
+        
 
         /// <summary>
         /// 使用時間の警告を実行する
@@ -210,12 +165,7 @@ namespace Manage_your_Life
         /// <param name="appId"></param>
         private void DoOveruseWarining(int appId, string processName)
         {
-            //警告機能がオフであれば
-            if (!Properties.Settings.Default.checkBox_IsOveruseWarining) return;
-            //警告対象に現在のIDが含まれていなければ
-            if (!overuseWarningItems.ContainsKey(appId)) return;
-            //もう警告しない対象に含まれていれば
-            if (((List<int>)dataBanker["WarningNotAgain"]).Contains(appId) == true) return;
+            if (!CanExecuteOveruseWarining(appId)) return;
 
             //今日の使用時間と警告時間を取得
             TimeSpan warningTime = overuseWarningItems[appId];
@@ -232,6 +182,22 @@ namespace Manage_your_Life
 
 
         /// <summary>
+        /// 以下の条件で真を返します。
+        /// ・警告機能がユーザ設定で有効
+        /// ・警告対象に現在のAppIDが含まれている
+        /// ・もう警告しない対象に含まれていない
+        /// </summary>
+        /// <param name="appId"></param>
+        /// <returns></returns>
+        private bool CanExecuteOveruseWarining(int appId)
+        {
+            return Settings.Default.checkBox_IsOveruseWarining == true
+                && overuseWarningItems.ContainsKey(appId) == true
+                && (dataBanker["WarningNotAgain"] as List<int>).Contains(appId) == false;
+        }
+
+
+        /// <summary>
         /// 今まで最前面にあったプロセスの使用時間を通知する
         /// </summary>
         /// <param name="activeInterval">今回の使用時間</param>
@@ -239,7 +205,6 @@ namespace Manage_your_Life
         {
             if (Properties.Settings.Default.checkBox_IsBalloonEnable)
             {
-                notifyIcon.BalloonTipIcon = ToolTipIcon.Info;
                 notifyIcon.BalloonTipTitle = "\"" + procName + "\"" + "の計測終了";
                 notifyIcon.BalloonTipText = "使用時間: " + activeInterval.ToString(@"hh\:mm\:ss");
                 notifyIcon.ShowBalloonTip(1000);
@@ -285,7 +250,7 @@ namespace Manage_your_Life
         /// </summary>
         private void WindowClosingProcess()
         {
-            timer.Stop();
+            this.procMonitor.Stop();
             this.Hide();
             notifyIcon.Visible = false;
             notifyIcon.Dispose();

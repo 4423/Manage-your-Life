@@ -22,7 +22,10 @@ namespace Manage_your_Life
         //スタートアップ時
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;           
+#if !DEBUG
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+            this.DispatcherUnhandledException += Application_DispatcherUnhandledException;
+#endif
         }
 
 
