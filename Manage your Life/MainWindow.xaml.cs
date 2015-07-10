@@ -45,8 +45,6 @@ namespace Manage_your_Life
 
         DataBanker dataBanker;
 
-        private bool isFrontWindow = true;
-
         #endregion
 
         
@@ -90,24 +88,13 @@ namespace Manage_your_Life
 
         private void OnActiveProcessChanged(Process activeProcess)
         {
-            //初回起動などnullだったら現在のプロセスを代入
-            if (previousProcess == null) previousProcess = activeProcess;
-
-
-            if (this.isFrontWindow)
+            if (previousProcess != null)
             {
-                if (activeProcess != null)
-                {
-                    this.isFrontWindow = false;
-                    WindowActivated(activeProcess);
-                }
-            }
-            else
-            {
-                this.isFrontWindow = true; 
                 WindowDeactivated();
             }
 
+            WindowActivated(activeProcess);
+            
             //キャッシュ
             previousProcess = activeProcess;
         }
