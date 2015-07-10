@@ -113,6 +113,7 @@
     <Compile Include="Content\SettingsAppearance.xaml.cs">
       <DependentUpon>SettingsAppearance.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Models\ProcessCache.cs" />
     <Compile Include="ViewModel\FromOther\SettingsAppearanceViewModel.cs" />
     <Compile Include="Class\DataBanker.cs" />
     <Compile Include="Class\DatabaseOperation.cs" />

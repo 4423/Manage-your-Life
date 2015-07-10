@@ -1,4 +1,5 @@
 ﻿using FirstFloor.ModernUI.Windows.Controls;
+using Manage_your_Life.Models;
 using Manage_your_Life.Properties;
 using System;
 using System.Collections.Generic;
@@ -16,12 +17,8 @@ namespace Manage_your_Life
     {
         #region Field
 
-        ActiveProcessMonitor procMonitor;
-
-        /// <summary>
-        /// 前回のProcess
-        /// </summary>
-        Process previousProcess;
+        private ActiveProcessMonitor procMonitor;
+        private ProcessCache previousProcess = new ProcessCache();
 
         /// <summary>
         /// 最初に最前面になった時の日時
@@ -88,7 +85,7 @@ namespace Manage_your_Life
 
         private void OnActiveProcessChanged(Process activeProcess)
         {
-            if (previousProcess != null)
+            if (previousProcess.Process != null)
             {
                 WindowDeactivated();
             }
@@ -96,7 +93,7 @@ namespace Manage_your_Life
             WindowActivated(activeProcess);
             
             //キャッシュ
-            previousProcess = activeProcess;
+            this.previousProcess.Register(activeProcess);
         }
 
 
@@ -106,23 +103,15 @@ namespace Manage_your_Life
         /// <param name="activeProcess"></param>
         private void WindowActivated(Process activeProcess)
         {
-            string activeProcessFileName = "";
-            try
-            {
-                activeProcessFileName = activeProcess.MainModule.FileName;
-            }
-            catch (System.ComponentModel.Win32Exception ex) { return; }
-
-
             //DBに存在していなければ新規にデータ挿入
-            if (!dbOperator.IsExist(activeProcessFileName))
+            if (!dbOperator.IsExist(activeProcess.MainModule.FileName))
             {
                 dbOperator.Register(activeProcess);
             }
 
             //使用時間の警告
-            int appId = dbOperator.GetCorrespondingAppId(activeProcessFileName);
-            DoOveruseWarining(appId, activeProcess.ProcessName);
+            int appId = dbOperator.GetMatchedId(activeProcess.MainModule.FileName);
+            ShowOveruseWarining(appId, activeProcess.ProcessName);
             
             //最初にアクティブになった時間を取得
             firstActiveDate = DateTime.Now;
@@ -135,14 +124,14 @@ namespace Manage_your_Life
         private void WindowDeactivated()
         {
             //計測時間追記の為にDBから該当Idを取得
-            int appId = dbOperator.GetCorrespondingAppId(previousProcess.MainModule.FileName);
+            int appId = dbOperator.GetMatchedId(this.previousProcess.FileName);
 
             //DBから使用時間を取得し、今回の使用時間を加算してDB更新
             var activeInterval = Utility.GetInterval(firstActiveDate);
             dbOperator.UpdateUsageTime(appId, activeInterval);
 
             //バルーンで通知
-            ShowBalloonTip(activeInterval, previousProcess.ProcessName);
+            ShowBalloonTip(activeInterval, this.previousProcess.ProcessName);
         }
         
 
@@ -150,7 +139,7 @@ namespace Manage_your_Life
         /// 使用時間の警告を実行する
         /// </summary>
         /// <param name="appId"></param>
-        private void DoOveruseWarining(int appId, string processName)
+        private void ShowOveruseWarining(int appId, string processName)
         {
             if (!CanExecuteOveruseWarining(appId)) return;
 

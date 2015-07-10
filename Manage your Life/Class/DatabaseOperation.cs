@@ -415,7 +415,7 @@ namespace Manage_your_Life
         /// </summary>
         /// <param name="previousProcess">検索対象の(前回の)Process</param>
         /// <returns>プロセス名に対応するAppID</returns>
-        internal int GetCorrespondingAppId(string procPath)
+        internal int GetMatchedId(string procPath)
         {
             int appId = -1;
 
