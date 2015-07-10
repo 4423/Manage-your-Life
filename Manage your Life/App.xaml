@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:chart="clr-namespace:De.TorstenMandelkow.MetroChart;assembly=De.TorstenMandelkow.MetroChart"
              Startup="Application_Startup"
-             StartupUri="/Window/Splash.xaml">
+             StartupUri="/Views/Splash.xaml">
     
     <Application.Resources>
         <ResourceDictionary>

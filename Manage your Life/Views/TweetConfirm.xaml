@@ -1,0 +1,43 @@
+﻿<Window x:Class="Manage_your_Life.Views.TweetConfirm"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="TweetConfirm" Height="350" AllowsTransparency="True" Width="300" 
+        WindowStyle="None" Background="Transparent" WindowStartupLocation="CenterScreen" Topmost="True" MouseLeftButtonDown="Window_MouseLeftButtonDown">
+
+
+    <Border Name="border" BorderBrush="#FF555555" Background="#FF2D2D30" BorderThickness="0.5" Margin="10">
+        <Border.Effect>
+            <DropShadowEffect ShadowDepth="0" BlurRadius="8" Color="#FF7E7E7E" />
+        </Border.Effect>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="45"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Label Grid.Row="0" Content="Tweet" HorizontalAlignment="Left" Margin="10,8,0,0" 
+                    VerticalAlignment="Top" Foreground="#FFEEEEEE" FontSize="22"/>
+            <Label Grid.Row="0" Content="140" HorizontalAlignment="Right" Margin="0,10,10,0" 
+                   Name="label_TextBoxLength" VerticalAlignment="Top" Foreground="#FFB6B6B6" FontSize="20"/>
+
+            <TabControl Grid.Row="1" >
+                <TabItem Header="Tweet内容の確認">
+                    <StackPanel Orientation="Vertical">
+                        <TextBox Margin="5" Height="200" Name="textBox_Confi" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap" TextChanged="textBox_Confi_TextChanged"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,5">
+                            <Button Content="キャンセル" Margin="5,0" Width="124" Name="button_Cancel" Click="button_Cancel_Click" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <Button Content="Tweet" Margin="5,0" Width="124" Name="button_Tweet" Click="button_Tweet_Click" HorizontalAlignment="Center" VerticalAlignment="Center"/>                            
+                        </StackPanel>
+                    </StackPanel>
+                </TabItem>
+                <TabItem Header="フォーマットの編集">
+                    <StackPanel Orientation="Vertical">
+                        <TextBox Margin="5" Height="200" Name="textBox_Format" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap"/>
+                        <Button Content="保存(次回から有効)" Margin="5" HorizontalAlignment="Stretch" Name="button_Save" Click="button_Save_Click"/>
+                    </StackPanel>
+                </TabItem>
+            </TabControl>
+        </Grid>
+    </Border>
+</Window>

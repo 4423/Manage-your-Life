@@ -101,36 +101,36 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Class\ActiveProcessMonitor.cs" />
-    <Compile Include="Class\ActiveProcessUtils.cs" />
-    <Compile Include="Class\RetryHelper.cs" />
-    <Compile Include="Content\About.xaml.cs">
+    <Compile Include="Models\ActiveProcessMonitor.cs" />
+    <Compile Include="Models\ActiveProcessUtils.cs" />
+    <Compile Include="Models\RetryHelper.cs" />
+    <Compile Include="Views\Contents\About.xaml.cs">
       <DependentUpon>About.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Content\Behavior.xaml.cs">
+    <Compile Include="Views\Contents\Behavior.xaml.cs">
       <DependentUpon>Behavior.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Content\SettingsAppearance.xaml.cs">
+    <Compile Include="Views\Contents\SettingsAppearance.xaml.cs">
       <DependentUpon>SettingsAppearance.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\ProcessCache.cs" />
-    <Compile Include="ViewModel\FromOther\SettingsAppearanceViewModel.cs" />
-    <Compile Include="Class\DataBanker.cs" />
-    <Compile Include="Class\DatabaseOperation.cs" />
-    <Compile Include="Class\Hatena.cs" />
-    <Compile Include="Pages\ApplicationPage.xaml.cs">
+    <Compile Include="ViewModels\FromOther\SettingsAppearanceViewModel.cs" />
+    <Compile Include="Models\DataBanker.cs" />
+    <Compile Include="Models\DatabaseOperation.cs" />
+    <Compile Include="Models\Hatena.cs" />
+    <Compile Include="Views\Pages\ApplicationPage.xaml.cs">
       <DependentUpon>ApplicationPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\HomePage.xaml.cs">
+    <Compile Include="Views\Pages\HomePage.xaml.cs">
       <DependentUpon>HomePage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Settings.xaml.cs">
+    <Compile Include="Views\Pages\Settings.xaml.cs">
       <DependentUpon>Settings.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\StatisticalPage.xaml.cs">
+    <Compile Include="Views\Pages\StatisticalPage.xaml.cs">
       <DependentUpon>StatisticalPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\TimelinePage.xaml.cs">
+    <Compile Include="Views\Pages\TimelinePage.xaml.cs">
       <DependentUpon>TimelinePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\Resources.Designer.cs">
@@ -138,51 +138,51 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Class\Utility.cs" />
-    <Compile Include="ViewModel\FromDatabase\DefaultViewModel.cs" />
-    <Compile Include="ViewModel\FromDatabase\LastUsedDateViewModel.cs" />
-    <Compile Include="ViewModel\FromDatabase\RegistrationDateViewModel.cs" />
-    <Compile Include="ViewModel\FromDatabase\ProcessStatusViewModel.cs" />
-    <Compile Include="ViewModel\FromDatabase\UsageTimeViewModel.cs" />
-    <Compile Include="ViewModel\FromOther\HatenaKeywordViewModel.cs" />
-    <Compile Include="ViewModel\ViewModel.cs" />
-    <Compile Include="ViewModel\FromOther\SystemUptimeViewModel.cs" />
-    <Compile Include="ViewModel\ChartData.cs" />
-    <Compile Include="ViewModel\SeriesData.cs" />
-    <Compile Include="Window\DataGridRowEdit.xaml.cs">
+    <Compile Include="Models\Utils.cs" />
+    <Compile Include="ViewModels\FromDatabase\DefaultViewModel.cs" />
+    <Compile Include="ViewModels\FromDatabase\LastUsedDateViewModel.cs" />
+    <Compile Include="ViewModels\FromDatabase\RegistrationDateViewModel.cs" />
+    <Compile Include="ViewModels\FromDatabase\ProcessStatusViewModel.cs" />
+    <Compile Include="ViewModels\FromDatabase\UsageTimeViewModel.cs" />
+    <Compile Include="ViewModels\FromOther\HatenaKeywordViewModel.cs" />
+    <Compile Include="ViewModels\ViewModel.cs" />
+    <Compile Include="ViewModels\FromOther\SystemUptimeViewModel.cs" />
+    <Compile Include="ViewModels\ChartData.cs" />
+    <Compile Include="ViewModels\SeriesData.cs" />
+    <Compile Include="Views\DataGridRowEdit.xaml.cs">
       <DependentUpon>DataGridRowEdit.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Window\DoWarning.xaml.cs">
+    <Compile Include="Views\DoWarning.xaml.cs">
       <DependentUpon>DoWarning.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Window\GetTwitterPin.xaml.cs">
+    <Compile Include="Views\GetTwitterPin.xaml.cs">
       <DependentUpon>GetTwitterPin.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Window\OveruseWarning.xaml.cs">
+    <Compile Include="Views\OveruseWarning.xaml.cs">
       <DependentUpon>OveruseWarning.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Window\Splash.xaml.cs">
+    <Compile Include="Views\Splash.xaml.cs">
       <DependentUpon>Splash.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Window\TodayReport.xaml.cs">
+    <Compile Include="Views\TodayReport.xaml.cs">
       <DependentUpon>TodayReport.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Window\TweetConfirm.xaml.cs">
+    <Compile Include="Views\TweetConfirm.xaml.cs">
       <DependentUpon>TweetConfirm.xaml</DependentUpon>
     </Compile>
-    <Page Include="Content\About.xaml">
+    <Page Include="Views\Contents\About.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Content\Behavior.xaml">
+    <Page Include="Views\Contents\Behavior.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Content\SettingsAppearance.xaml">
+    <Page Include="Views\Contents\SettingsAppearance.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MainWindow.xaml">
+    <Page Include="Views\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -200,61 +200,61 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ApplicationDataClasses.dbml</DependentUpon>
     </Compile>
-    <Compile Include="MainWindow.xaml.cs">
+    <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Pages\ApplicationPage.xaml">
+    <Page Include="Views\Pages\ApplicationPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\HomePage.xaml">
+    <Page Include="Views\Pages\HomePage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\Settings.xaml">
+    <Page Include="Views\Pages\Settings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\StatisticalPage.xaml">
+    <Page Include="Views\Pages\StatisticalPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\TimelinePage.xaml">
+    <Page Include="Views\Pages\TimelinePage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Window\DataGridRowEdit.xaml">
+    <Page Include="Views\DataGridRowEdit.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Window\DoWarning.xaml">
+    <Page Include="Views\DoWarning.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Window\GetTwitterPin.xaml">
+    <Page Include="Views\GetTwitterPin.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Window\OveruseWarning.xaml">
+    <Page Include="Views\OveruseWarning.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Window\Splash.xaml">
+    <Page Include="Views\Splash.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Window\TodayReport.xaml">
+    <Page Include="Views\TodayReport.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Window\TweetConfirm.xaml">
+    <Page Include="Views\TweetConfirm.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class\ProcessInformation.cs" />
+    <Compile Include="Models\ProcessInformation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
