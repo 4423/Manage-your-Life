@@ -74,10 +74,6 @@ namespace Manage_your_Life.Views
         //削除ボタン押下
         private void button_Delete_Click(object sender, RoutedEventArgs e)
         {
-            //産技祭用
-            MessageBox.Show("産技祭Editionでは削除することが出来ません。");
-            return;
-
             MessageBoxResult result = MessageBox.Show("本当に削除しますか?", "確認",
                                     MessageBoxButton.YesNo, MessageBoxImage.Exclamation);
 

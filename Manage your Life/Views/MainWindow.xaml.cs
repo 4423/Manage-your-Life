@@ -3,7 +3,6 @@ using Manage_your_Life.Models;
 using Manage_your_Life.Properties;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows.Forms;
 using System.Windows.Threading;
@@ -56,27 +55,27 @@ namespace Manage_your_Life.Views
             dataBanker["WarningNotAgain"] = new List<int>();
             dataBanker["WarningCount"] = 0;
 
-            ////コンテキストメニュー追加            
-            //ToolStripMenuItem exitItem = new ToolStripMenuItem() { Text = "終了(&E)" };
-            //ToolStripMenuItem openItem = new ToolStripMenuItem() { Text = "開く(&O)" };
-            //exitItem.Click += new EventHandler(exitItem_Click);
-            //openItem.Click += new EventHandler(openItem_Click);
+            //コンテキストメニュー追加            
+            ToolStripMenuItem exitItem = new ToolStripMenuItem() { Text = "終了(&E)" };
+            ToolStripMenuItem openItem = new ToolStripMenuItem() { Text = "開く(&O)" };
+            exitItem.Click += new EventHandler(exitItem_Click);
+            openItem.Click += new EventHandler(openItem_Click);
 
-            //ContextMenuStrip menuStrip = new ContextMenuStrip();
-            //menuStrip.Items.Add(openItem);
-            //menuStrip.Items.Add(new ToolStripSeparator());
-            //menuStrip.Items.Add(exitItem);            
+            ContextMenuStrip menuStrip = new ContextMenuStrip();
+            menuStrip.Items.Add(openItem);
+            menuStrip.Items.Add(new ToolStripSeparator());
+            menuStrip.Items.Add(exitItem);            
 
-            ////バルーン通知の設定
-            //notifyIcon = new NotifyIcon()
-            //{
-            //    Text = "Manage your Life",
-            //    Icon = Properties.Resources.originalIconTray,
-            //    Visible = true,
-            //    BalloonTipIcon = ToolTipIcon.Info,
-            //    ContextMenuStrip = menuStrip
-            //};         
-            //notifyIcon.MouseDoubleClick += new MouseEventHandler(notifyIcon_MouseDoubleClick);
+            //バルーン通知の設定
+            notifyIcon = new NotifyIcon()
+            {
+                Text = "Manage your Life",
+                Icon = Properties.Resources.originalIconTray,
+                Visible = true,
+                BalloonTipIcon = ToolTipIcon.Info,
+                ContextMenuStrip = menuStrip
+            };         
+            notifyIcon.MouseDoubleClick += new MouseEventHandler(notifyIcon_MouseDoubleClick);
 
             this.procMonitor = new ActiveProcessMonitor();
             this.procMonitor.OnActiveProcessChanged += OnActiveProcessChanged;
@@ -197,20 +196,15 @@ namespace Manage_your_Life.Views
         {
             if (this.WindowState == System.Windows.WindowState.Minimized)
             {
-                //産技祭用
-                this.WindowState = System.Windows.WindowState.Normal;
-                return;
-
                 this.Visibility = System.Windows.Visibility.Collapsed;
                 notifyIcon.Visible = true;
             }
         }
 
         //閉じるボタン押下
-        protected override void OnClosing(CancelEventArgs e)
+        private void ModernWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            e.Cancel = true;
-            //WindowClosingProcess();
+            WindowClosingProcess();
         }
 
         
@@ -247,33 +241,33 @@ namespace Manage_your_Life.Views
             }
         }
 
-////-----------------------------------------------通知領域
+//-----------------------------------------------通知領域
 
-//        //アイコンダブルクリックで復元
-//        void notifyIcon_MouseDoubleClick(object sender, MouseEventArgs e)
-//        {
-//            if (e.Button == MouseButtons.Left)
-//            {
-//                WindowOpen();
-//            }
-//        }
-
-
-//        //メニューの終了を選択
-//        private void exitItem_Click(object sender, EventArgs e)
-//        {
-//            this.Visibility = System.Windows.Visibility.Visible;
-//            WindowClosingProcess();
-
-//            System.Windows.Application.Current.Shutdown();
-//        }
+        //アイコンダブルクリックで復元
+        void notifyIcon_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                WindowOpen();
+            }
+        }
 
 
-//        //メニューの開くを選択
-//        private void openItem_Click(object sender, EventArgs e)
-//        {
-//            WindowOpen();
-//        }
+        //メニューの終了を選択
+        private void exitItem_Click(object sender, EventArgs e)
+        {
+            this.Visibility = System.Windows.Visibility.Visible;
+            WindowClosingProcess();
+
+            System.Windows.Application.Current.Shutdown();
+        }
+
+
+        //メニューの開くを選択
+        private void openItem_Click(object sender, EventArgs e)
+        {
+            WindowOpen();
+        }
 
 
     }      
