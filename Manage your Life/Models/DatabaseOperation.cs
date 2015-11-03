@@ -81,7 +81,7 @@ namespace Manage_your_Life.Models
 
 
 
-//---------------------------------------------------------登録/更新
+        //---------------------------------------------------------登録/更新
 
         /// <summary>
         /// 新規にデータベースへプロセスを登録
@@ -98,7 +98,7 @@ namespace Manage_your_Life.Models
             {
                 database.SubmitChanges();
             },
-            ex => ExceptionDispatchInfo.Capture(ex).Throw(),
+            ex => { },//ExceptionDispatchInfo.Capture(ex).Throw(),
             ex => ex is SqlException);
 
             //SubmitChanges()すると挿入したIDが取得できるようになる
@@ -125,7 +125,7 @@ namespace Manage_your_Life.Models
             {
                 database.SubmitChanges();
             },
-            ex => ExceptionDispatchInfo.Capture(ex).Throw(),
+            ex => { },//ExceptionDispatchInfo.Capture(ex).Throw(),
             ex => ex is SqlException);
 
             //レコード新規登録のイベント発生
@@ -153,8 +153,8 @@ namespace Manage_your_Life.Models
             {
                 q.AlertTime = alertTime.ToString(timeSpanToStringFormat);
                 database.SubmitChanges();
-            }, 
-            ex => ExceptionDispatchInfo.Capture(ex).Throw(),
+            },
+            ex => { },//ExceptionDispatchInfo.Capture(ex).Throw(),
             ex => ex is SqlException);
         }
 
@@ -207,8 +207,8 @@ namespace Manage_your_Life.Models
                 {
                     Record_Deleted(this, EventArgs.Empty);
                 }
-            }, 
-            ex => ExceptionDispatchInfo.Capture(ex).Throw(),
+            },
+            ex => { },//ExceptionDispatchInfo.Capture(ex).Throw(),
             ex => ex is SqlException);
         }
 
@@ -248,7 +248,7 @@ namespace Manage_your_Life.Models
                     isUpdated = true;
                 }
             },
-            ex => { ExceptionDispatchInfo.Capture(ex).Throw(); },
+            ex => { },//ExceptionDispatchInfo.Capture(ex).Throw(),
             ex => ex is SqlException);
 
             //何らかのデータが変更された時のみ
@@ -288,7 +288,7 @@ namespace Manage_your_Life.Models
                 database.DatabaseTimeline.InsertOnSubmit(log);
                 database.SubmitChanges();
             },
-            ex => ExceptionDispatchInfo.Capture(ex).Throw(),
+            ex => { },//ExceptionDispatchInfo.Capture(ex).Throw(),
             ex => ex is SqlException);
 
             //Timeline更新のイベント発生
@@ -324,7 +324,7 @@ namespace Manage_your_Life.Models
                                 Memo = p.Memo 
                             };
                 },
-                ex => ExceptionDispatchInfo.Capture(ex).Throw(),
+                ex => { },//ExceptionDispatchInfo.Capture(ex).Throw(),
                 ex => ex is SqlException,
                 maxRetryCount: 5
             );
@@ -403,7 +403,7 @@ namespace Manage_your_Life.Models
             return RetryHelper.Retry(() => {
                     return database.DatabaseProcess.Any(p => p.Path.Contains(procPath));
                 },
-                ex => { ExceptionDispatchInfo.Capture(ex).Throw(); },
+                ex => { },//ExceptionDispatchInfo.Capture(ex).Throw(),
                 ex => ex is SqlException
             );
         }
