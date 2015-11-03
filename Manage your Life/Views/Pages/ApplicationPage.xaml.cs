@@ -120,15 +120,12 @@ namespace Manage_your_Life.Views.Pages
         /// <param name="e"></param>
         private void dataGrid1_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            //選択された行のデータを取得
-            var row = GetSelectedItems(dataGrid1.SelectedIndex);
-            //listBoxに現在選択中の行のデータを表示
-            listBoxApp.ItemsSource = null;
-            listBoxApp.Items.Clear();
-            listBoxApp.ItemsSource = BindingListBox(row);
-
             try
             {
+                #region 実行ファイルパスからアイコンを表示したい
+                //選択された行のデータを取得
+                var row = GetSelectedItems(dataGrid1.SelectedIndex);
+
                 //上のItemsより生成するObjectのプロパティの中からパスの値を取り出す
                 string procPath = row.GetType().GetProperty("ProcPath").GetValue(row).ToString();
 
@@ -138,10 +135,17 @@ namespace Manage_your_Life.Views.Pages
                 //Icon を ImageSource に変換する 
                 iconImage.Source = Imaging.CreateBitmapSourceFromHIcon(
                     icon.Handle, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
+                #endregion
+
+
+                //listBoxに現在選択中の行のデータを表示
+                listBoxApp.ItemsSource = null;
+                listBoxApp.Items.Clear();
+                listBoxApp.ItemsSource = BindingListBox(row);
+
             }
             catch (Exception ex)
             {
-                iconImage.Source = null;
                 Debug.WriteLine(ex.Message);
             }
         }
@@ -255,20 +259,7 @@ namespace Manage_your_Life.Views.Pages
 
 
 
-        //データ削除ショートカット
-        private void dataGrid1_AccessKeyPressed(object sender, AccessKeyPressedEventArgs e)
-        {
-            if (e.Key != "D")
-            {
-                return;
-            }
 
-            int si = this.dataGrid1.SelectedIndex;
-            dynamic item = this.GetSelectedItems(si);
-            dbOperator.Delete(item.Id);
-            this.SetDataGrid();
-            this.dataGrid1.SelectedIndex = si;
-        }
     }
 
 
