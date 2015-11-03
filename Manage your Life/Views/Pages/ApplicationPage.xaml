@@ -23,7 +23,8 @@
                           AutoGenerateColumns="False" IsReadOnly="True"
                           Background="Transparent"
                           IsSynchronizedWithCurrentItem="True"                           
-                          SelectionChanged="dataGrid1_SelectionChanged">
+                          SelectionChanged="dataGrid1_SelectionChanged"
+                          AccessKeyManager.AccessKeyPressed="dataGrid1_AccessKeyPressed">
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="Edit" CanUserSort="False">
                     <DataGridTemplateColumn.CellTemplate>
