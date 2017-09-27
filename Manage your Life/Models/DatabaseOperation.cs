@@ -50,7 +50,7 @@ namespace Manage_your_Life.Models
         {
             //接続文字列の生成
             basePath = Directory.GetCurrentDirectory() + @"\ApplicationDatabase.mdf";
-            connStr = @"Data Source=(LocalDB)\v11.0;Integrated Security=True;Connection Timeout=30;AttachDbFilename=""" + basePath + @""";";
+            connStr = @"Data Source=(LocalDB)\MSSQLLocalDB;Integrated Security=True;Connection Timeout=30;AttachDbFilename=""" + basePath + @""";";
 
             //データベース接続
             RetryHelper.Retry(() => {
