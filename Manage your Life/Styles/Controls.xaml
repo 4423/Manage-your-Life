@@ -2,7 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:Manage_your_Life.Styles">
 
-    <Style x:Key="MyContentRoot" TargetType="Grid">
+    <Style x:Key="MyContentRoot" TargetType="FrameworkElement">
         <Setter Property="Margin" Value="16 20 16 13"/>
     </Style>
 </ResourceDictionary>
