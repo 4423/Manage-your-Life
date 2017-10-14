@@ -10,7 +10,7 @@
              MinHeight="430"
              >
 
-    <Grid Style="{StaticResource ContentRoot}">
+    <Grid Style="{StaticResource MyContentRoot}">
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="270" MinWidth="270" />

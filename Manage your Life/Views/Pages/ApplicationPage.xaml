@@ -8,7 +8,7 @@
 
 
     
-    <Grid Background="Transparent" Style="{StaticResource ContentRoot}" >
+    <Grid Background="Transparent" Style="{StaticResource MyContentRoot}" >
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
             <ColumnDefinition Width="59"/>

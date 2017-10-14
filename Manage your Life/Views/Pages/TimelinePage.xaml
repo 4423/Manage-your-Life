@@ -10,9 +10,9 @@
              mc:Ignorable="d" 
              d:DesignHeight="440" d:DesignWidth="900">
 
-    
-    <Grid Style="{StaticResource ContentRoot}">
-        <ScrollViewer Margin="0,-8,0,-3" Height="auto">
+
+    <Grid Style="{StaticResource MyContentRoot}">
+        <ScrollViewer>
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="416*"/>
