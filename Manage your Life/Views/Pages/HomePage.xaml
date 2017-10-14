@@ -11,100 +11,96 @@
              >
 
     <Grid Style="{StaticResource MyContentRoot}">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="270"/>
-            <ColumnDefinition Width="*" MinWidth="500" />
-        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" MinHeight="356" />
             <RowDefinition Height="28" />
         </Grid.RowDefinitions>
 
-        <!--PC稼働時間-->
-        <chart:RadialGaugeChart
+        <ScrollViewer Grid.Row="0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="270"/>
+                    <ColumnDefinition Width="*" MinWidth="500" />
+                </Grid.ColumnDefinitions>
+
+                <!--PC稼働時間-->
+                <chart:RadialGaugeChart
                     Grid.Column="0"
-                    Grid.Row="0"
                     x:Name="chart_upTime"
                     ChartTitle="System Up Time" ChartSubTitle=""
                     ToolTipFormat="{}Uptime of your PC"
                     Margin="-10,-14,0,1"
                     Background="Transparent" VerticalAlignment="Top">
-            <chart:RadialGaugeChart.Series>
-                <chart:ChartSeries 
+                    <chart:RadialGaugeChart.Series>
+                        <chart:ChartSeries 
                     	SeriesTitle="SystemUpTime"
                     	DisplayMember="Category"
                     	ValueMember="Number"                            
                     	ItemsSource="{Binding SystemUpTime}" />
-            </chart:RadialGaugeChart.Series>
-        </chart:RadialGaugeChart>
+                    </chart:RadialGaugeChart.Series>
+                </chart:RadialGaugeChart>
 
-        <!--稼働時間タイマー-->
-        <Label  Grid.Column="0"
-                Grid.Row="0"
-                Content="00:00:00" Margin="0,20,0,0"
-                Background="Transparent"                       
-                VerticalAlignment="Top" FontSize="35"
-                x:Name="label_upTime" Height="48" Foreground="#FF636363"/>
+                <!--稼働時間タイマー-->
+                <Label  Grid.Column="0"
+                        x:Name="label_upTime"
+                    Content="00:00:00"
+                        Margin="0,20,0,0"
+                    Background="Transparent"                       
+                    VerticalAlignment="Top" FontSize="35"
+                     Height="48" Foreground="#FF636363"/>
 
+                <!--Chart表示-->
+                <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Visible">
+                    <Grid MinWidth="550">
+                        <Grid.RowDefinitions>
+                            <RowDefinition MinHeight="370"/>
+                            <RowDefinition MinHeight="385"/>
+                        </Grid.RowDefinitions>
+
+                        <!--使用時間トップ5-->
+                        <chart:ClusteredBarChart Grid.Row="0"
+                            x:Name="chart_Bar"
+                            ChartTitle="Today Application Usage Time"
+                            ChartSubTitle="It is the usage time top 5 of the application that you used today."
+                            ToolTipFormat="{}{0} has been used {1} hour ({3:P2})"
+                            SelectedItem="{Binding Path=Series, Mode=OneWay}"
+                            Background="Transparent"
+                            Margin="0,-14,0,0">
+                            <chart:ClusteredBarChart.Series>
+                                <chart:ChartSeries
+                                    SeriesTitle="UsageTime [hour]"
+                                    DisplayMember="Category"
+                                    ValueMember="Number"
+                                    ItemsSource="{Binding ChartData}"/>
+                            </chart:ClusteredBarChart.Series>
+                        </chart:ClusteredBarChart>
+
+                        <!--Hatenaキーワード-->
+                        <chart:PieChart Grid.Row="1"
+                            x:Name="chart_Hatena"
+                            Background="Transparent"
+                            ChartTitle="Today Categories"
+                            ChartSubTitle="Determined from the window title."
+                            ToolTipFormat="{}{0} category has {1} count ({3:P2})"                        
+                            SelectedItem="{Binding Path=CategorizedCountData, Mode=OneWay}">
+                            <chart:PieChart.Series>
+                                <chart:ChartSeries
+                                    SeriesTitle="HatenaKeyword"
+                                    DisplayMember="Category"
+                                    ValueMember="Number"
+                                    ItemsSource="{Binding HatenaKeyword}"/>
+                            </chart:PieChart.Series>
+                        </chart:PieChart>
+                    </Grid>
+                </ScrollViewer>
+            </Grid>            
+        </ScrollViewer>
+        
 
         <!--ウィンドウタイトル-->
-        <Label Name="label_ForegroundWindow" Grid.Row="1" Grid.ColumnSpan="2" 
+        <Label Grid.Row="1" Name="label_ForegroundWindow" 
                 FontSize="20" Foreground="#FF6C6C6C"
                 HorizontalContentAlignment="Center"/>
-
-
-        <!--Chart表示-->
-        <ScrollViewer Grid.Column="1" Grid.Row="0" VerticalScrollBarVisibility="Visible"
-                      HorizontalScrollBarVisibility="Auto">
-            <Grid MinWidth="550">
-                <Grid.RowDefinitions>
-                    <RowDefinition MinHeight="370"/>
-                    <RowDefinition MinHeight="385"/>
-                </Grid.RowDefinitions>
-                
-                <!--使用時間トップ5-->
-                <!--It is the usage time of the application that you used today. 
-                    Value of the bar represents the hour.-->
-                <chart:ClusteredBarChart
-                        Grid.Row="0"
-                        x:Name="chart_Bar"
-                        ChartTitle="Today Application Usage Time"
-                        ChartSubTitle="It is the usage time top 5 of the application that you used today."
-                        ToolTipFormat="{}{0} has been used {1} hour ({3:P2})"
-                        SelectedItem="{Binding Path=Series, Mode=OneWay}"
-                        Background="Transparent"
-                        Margin="0,-14,0,0">
-                    <chart:ClusteredBarChart.Series>
-                        <chart:ChartSeries
-                                SeriesTitle="UsageTime [hour]"
-                                DisplayMember="Category"
-                                ValueMember="Number"
-                                ItemsSource="{Binding ChartData}" />
-                    </chart:ClusteredBarChart.Series>
-                </chart:ClusteredBarChart>
-
-                <!--Hatenaキーワード-->
-                <chart:PieChart
-                        Grid.Row="1"
-                        x:Name="chart_Hatena"
-                        Background="Transparent"
-                        ChartTitle="Today Categories"
-                        ChartSubTitle="Determined from the window title."
-                        ToolTipFormat="{}{0} category has {1} count ({3:P2})"                        
-                        SelectedItem="{Binding Path=CategorizedCountData, Mode=OneWay}"
-                        >
-                    <chart:PieChart.Series>
-                        <chart:ChartSeries
-                                SeriesTitle="HatenaKeyword"
-                                DisplayMember="Category"
-                                ValueMember="Number"                            
-                                ItemsSource="{Binding HatenaKeyword}"
-                            />
-                    </chart:PieChart.Series>
-                </chart:PieChart>
-            </Grid>
-        </ScrollViewer>
     </Grid>
-
 
 </UserControl>
