@@ -66,6 +66,9 @@
     <Reference Include="FirstFloor.ModernUI">
       <HintPath>..\packages\ModernUI.WPF.1.0.5\lib\net45\FirstFloor.ModernUI.dll</HintPath>
     </Reference>
+    <Reference Include="Hardcodet.Wpf.TaskbarNotification, Version=1.0.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Hardcodet.NotifyIcon.Wpf.1.0.8\lib\net45\Hardcodet.Wpf.TaskbarNotification.dll</HintPath>
+    </Reference>
     <Reference Include="Livet">
       <HintPath>..\packages\LivetCask.1.1.0.0\lib\net45\Livet.dll</HintPath>
     </Reference>
@@ -111,8 +114,12 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Models\ActiveProcessMonitor.cs" />
+    <Compile Include="Models\ActiveProcessUsageTimeLogger.cs" />
     <Compile Include="Models\ActiveProcessUtils.cs" />
+    <Compile Include="Models\ActiveProcessUsageTimeMonitor.cs" />
     <Compile Include="Models\RetryHelper.cs" />
+    <Compile Include="ViewModels\BalloonTipMessage.cs" />
+    <Compile Include="ViewModels\BalloonTipMessageAction.cs" />
     <Compile Include="ViewModels\BindableBase.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="Views\Contents\About.xaml.cs">

@@ -8,7 +8,7 @@ using System.Windows.Threading;
 
 namespace Manage_your_Life.Models
 {
-    public delegate void ActiveProcessChanged(Process activeProcess);
+    public delegate void ActiveProcessChanged(Process activeProcess, Process previousProcess);
 
     public class ActiveProcessMonitor
     {
@@ -17,9 +17,11 @@ namespace Manage_your_Life.Models
 
         public event ActiveProcessChanged OnActiveProcessChanged;
 
+        private static readonly ActiveProcessMonitor instance = new ActiveProcessMonitor();
+        public static ActiveProcessMonitor Instance => instance;
 
 
-        public ActiveProcessMonitor()
+        private ActiveProcessMonitor()
         {
             this.timer = new DispatcherTimer();
             this.timer.Interval = TimeSpan.FromSeconds(1);
@@ -51,12 +53,8 @@ namespace Manage_your_Life.Models
 
             if (IsProcessChanged(activeProc))
             {
+                this.OnActiveProcessChanged?.Invoke(activeProc, this.previousProc);
                 this.previousProc = activeProc;
-
-                if (this.OnActiveProcessChanged != null)
-                {
-                    this.OnActiveProcessChanged(activeProc);
-                }
             }
 
             timer.Start();
