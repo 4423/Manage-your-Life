@@ -170,8 +170,8 @@
     <Compile Include="Views\DataGridRowEdit.xaml.cs">
       <DependentUpon>DataGridRowEdit.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\DoWarning.xaml.cs">
-      <DependentUpon>DoWarning.xaml</DependentUpon>
+    <Compile Include="Views\AlertDialog.xaml.cs">
+      <DependentUpon>AlertDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\GetTwitterPin.xaml.cs">
       <DependentUpon>GetTwitterPin.xaml</DependentUpon>
@@ -250,7 +250,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\DoWarning.xaml">
+    <Page Include="Views\AlertDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

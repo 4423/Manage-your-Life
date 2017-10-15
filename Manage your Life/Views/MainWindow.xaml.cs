@@ -83,8 +83,8 @@ namespace Manage_your_Life.Views
 
             //今日の使用時間が警告時間よりも大きい場合
             if (todayUsageTime > warningTime)
-            {   
-                DoWarning window = new DoWarning(processName, appId, warningTime);
+            {
+                AlertDialog window = new AlertDialog(processName, appId, warningTime);
                 window.ShowDialog();
                 dataBanker["WarningCount"] = (int)dataBanker["WarningCount"] + 1;
             }           
