@@ -12,37 +12,10 @@ namespace Manage_your_Life.Views
     /// </summary>
     public partial class AlertDialog : Window
     {
-        private int appId = -1;
-
-        public AlertDialog(string procName, int appId, TimeSpan warningTime)
+        public AlertDialog()
         {
             InitializeComponent();
-
-            this.appId = appId;
-
-            this.border.Background = new SolidColorBrush(AppearanceManager.Current.AccentColor);
-            this.textBlock_warning.Text = 
-                String.Format("'{0}'の使用時間が{1}分を超えています",procName, (int)warningTime.TotalMinutes);
-            this.checkBox_NotAgain.Content =
-                String.Format("これ以上'{0}'に対する警告を表示しない", procName);
+            this.closeButton.Click += (_,__) => this.Close();
         }
-
-
-        private void button_Close_Click(object sender, RoutedEventArgs e)
-        {
-            //これ以上表示しない
-            if (checkBox_NotAgain.IsChecked == true)
-            {
-                //IDをセット
-                DataBanker banker = DataBanker.Instance;
-                var noWarningId = (List<int>)banker["WarningNotAgain"] ?? new List<int>();
-                noWarningId.Add(appId);
-                banker["WarningNotAgain"] = noWarningId;
-            }
-
-            this.Close();
-        }
-
-        
     }
 }
