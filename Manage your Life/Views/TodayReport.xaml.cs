@@ -56,7 +56,7 @@ namespace Manage_your_Life.Views
 
 
             //警告ウィンドウ表示回数
-            string warningCount = ((int)dataBanker["WarningCount"]).ToString();
+            string warningCount = AlertManager.Instance.AlertCount.ToString();
             this.textBox_WarningCount.Text = warningCount;
 
 

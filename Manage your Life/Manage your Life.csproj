@@ -117,6 +117,7 @@
     <Compile Include="Models\ActiveProcessUsageTimeLogger.cs" />
     <Compile Include="Models\ActiveProcessUtils.cs" />
     <Compile Include="Models\ActiveProcessUsageTimeMonitor.cs" />
+    <Compile Include="Models\AlertManager.cs" />
     <Compile Include="Models\RetryHelper.cs" />
     <Compile Include="ViewModels\AlertDialogViewModel.cs" />
     <Compile Include="ViewModels\BalloonTipMessage.cs" />

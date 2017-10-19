@@ -32,7 +32,7 @@
             <ei:CallMethodAction TargetObject="{Binding}" MethodName="WindowStateChanged"/>
         </i:EventTrigger>
         <l:InteractionMessageTrigger MessageKey="AlertDialogMessageKey" Messenger="{Binding Messenger}">
-            <l:TransitionInteractionMessageAction WindowType="{x:Type v:AlertDialog}" Mode="Modal"/>
+            <l:TransitionInteractionMessageAction WindowType="{x:Type v:AlertDialog}" Mode="Modal" IsOwned="False"/>
         </l:InteractionMessageTrigger>
     </i:Interaction.Triggers>
 
