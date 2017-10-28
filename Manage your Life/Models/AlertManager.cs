@@ -30,7 +30,7 @@ namespace Manage_your_Life.Models
             this.procMonitor = ActiveProcessMonitor.Instance;
             this.procMonitor.OnActiveProcessChanged += (proc, _) =>
             {
-                int appId = this.db.GetMatchedId(proc.MainModule.FileName);
+                int appId = this.db.GetMatchedId(proc);
 
                 // 警告対象に現在のAppIDが含まれていない | 警告しない対象に含まれている
                 if (!overuseWarningItems.ContainsKey(appId) || unalertProcFileNameList.Contains(proc.MainModule.FileName))

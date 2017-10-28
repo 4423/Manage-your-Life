@@ -69,15 +69,11 @@ namespace Manage_your_Life.Models
         
 
         public static DatabaseOperation Instance
-        {
-            get { return instance; }
-        }
+            => instance;
 
 
         public ApplicationDataClassesDataContext GetConnectionedDataContext
-        {
-            get { return database; }
-        }
+            => database;
 
 
 
@@ -90,9 +86,11 @@ namespace Manage_your_Life.Models
         /// <returns>登録したID</returns>
         internal int Register(Process proc)
         {
-            DatabaseApplication app = new DatabaseApplication();
-            app.Title = proc.MainWindowTitle;
-            app.Favorite = false;
+            var app = new DatabaseApplication()
+            {
+                Title = proc.MainWindowTitle,
+                Favorite = false
+            };
             database.DatabaseApplication.InsertOnSubmit(app);
             RetryHelper.Retry(() =>
             {
@@ -100,24 +98,26 @@ namespace Manage_your_Life.Models
             },
             ex => ExceptionDispatchInfo.Capture(ex).Throw(),
             ex => ex is SqlException);
-
-            //SubmitChanges()すると挿入したIDが取得できるようになる
-            var id = app.Id;
-
+            
             #region 取得したIDを元にProcessDBに登録
-            DatabaseProcess pro = new DatabaseProcess();
-            pro.AppId = id;
-            pro.Name = proc.ProcessName;
-            pro.Path = proc.MainModule.FileName;
+            var pro = new DatabaseProcess()
+            {
+                AppId = app.Id,
+                Name = proc.ProcessName,
+                Path = proc.MainModule.FileName
+            };
             database.DatabaseProcess.InsertOnSubmit(pro);
             #endregion
 
             #region 取得したIDを元にDateDBに登録
-            DatabaseDate date = new DatabaseDate();
-            date.AppId = id;
-            date.AddDate = date.LastDate = DateTime.Now;
-            date.UsageTime = "0.00:00:00";
-            date.AlertTime = "0.00:00:00";
+            var date = new DatabaseDate()
+            {
+                AppId = app.Id,
+                AddDate = DateTime.Now,
+                LastDate = DateTime.Now,
+                UsageTime = "0.00:00:00",
+                AlertTime = "0.00:00:00"
+            };            
             database.DatabaseDate.InsertOnSubmit(date);
             #endregion
 
@@ -129,12 +129,9 @@ namespace Manage_your_Life.Models
             ex => ex is SqlException);
 
             //レコード新規登録のイベント発生
-            if (NewRecord_Registered != null)
-            {
-                NewRecord_Registered(this, EventArgs.Empty);
-            }
+            NewRecord_Registered?.Invoke(this, EventArgs.Empty);
 
-            return id;
+            return app.Id;
         }
 
 
@@ -144,11 +141,7 @@ namespace Manage_your_Life.Models
         /// <param name="appId">警告の対象となるID</param>
         internal void SetAlert(int appId, TimeSpan alertTime)
         {
-            var q = (
-                from p in database.DatabaseDate
-                where p.AppId == appId
-                select p).First();
-
+            var q = database.DatabaseDate.Single(p => p.AppId == appId);
             RetryHelper.Retry(() =>
             {
                 q.AlertTime = alertTime.ToString(timeSpanToStringFormat);
@@ -165,48 +158,22 @@ namespace Manage_your_Life.Models
         /// <param name="appId">削除するレコードのID</param>
         internal void Delete(int appId)
         {
-            var dateQuery = (
-                from p in database.DatabaseDate
-                where p.AppId == appId
-                select p).First();
-
-            database.DatabaseDate.DeleteOnSubmit(dateQuery);
-
+            var date = database.DatabaseDate.Single(x => x.AppId == appId);
+            database.DatabaseDate.DeleteOnSubmit(date);
             
-            var procQuery = (
-                from p in database.DatabaseProcess
-                where p.AppId == appId
-                select p).First();
+            var proc = database.DatabaseProcess.Single(p => p.AppId == appId);
+            database.DatabaseProcess.DeleteOnSubmit(proc);
+            
+            var timeline = database.DatabaseTimeline.Where(t => t.AppId == appId);
+            database.DatabaseTimeline.DeleteAllOnSubmit(timeline);
 
-            database.DatabaseProcess.DeleteOnSubmit(procQuery);
-
-
-            var timelineQuery = (
-                from p in database.DatabaseTimeline
-                where p.AppId == appId
-                select p);
-
-            foreach (var r in timelineQuery)
-            {
-                database.DatabaseTimeline.DeleteOnSubmit(r);
-            }
-
-
-            var appQuery = (
-                from p in database.DatabaseApplication
-                where p.Id == appId
-                select p).First();
-
-            database.DatabaseApplication.DeleteOnSubmit(appQuery);
+            var app = database.DatabaseApplication.Single(x => x.Id == appId);
+            database.DatabaseApplication.DeleteOnSubmit(app);
 
             RetryHelper.Retry(() =>
             {
                 database.SubmitChanges();
-
-                if (Record_Deleted != null)
-                {
-                    Record_Deleted(this, EventArgs.Empty);
-                }
+                Record_Deleted?.Invoke(this, EventArgs.Empty);
             }, 
             ex => ExceptionDispatchInfo.Capture(ex).Throw(),
             ex => ex is SqlException);
@@ -292,10 +259,7 @@ namespace Manage_your_Life.Models
             ex => ex is SqlException);
 
             //Timeline更新のイベント発生
-            if (TimelineLog_Updated != null)
-            {
-                TimelineLog_Updated(this, EventArgs.Empty);
-            }
+            TimelineLog_Updated?.Invoke(this, EventArgs.Empty);
         }
         
 
@@ -306,29 +270,20 @@ namespace Manage_your_Life.Models
         /// Databases内の全てのデータを取得
         /// </summary>
         /// <returns>全てのレコード</returns>
-        internal IQueryable GetAllData(){
-            return RetryHelper.Retry(() => 
-                {
-                    return  from p in database.DatabaseApplication
-                            select new 
-                            { 
-                                Id = p.Id, 
-                                Favorite = p.Favorite, 
-                                Title = p.Title, 
-                                ProcName = p.DatabaseProcess.Name,
-                                ProcPath = p.DatabaseProcess.Path,
-                                UsageTime = p.DatabaseDate.UsageTime, 
-                                AlertTime = p.DatabaseDate.AlertTime,
-                                AddDate = p.DatabaseDate.AddDate, 
-                                LastDate = p.DatabaseDate.LastDate,
-                                Memo = p.Memo 
-                            };
-                },
-                ex => ExceptionDispatchInfo.Capture(ex).Throw(),
-                ex => ex is SqlException,
-                maxRetryCount: 5
-            );
-        }
+        internal IQueryable GetAllData()
+            => database.DatabaseApplication.Select(p => new
+            {
+                Id = p.Id,
+                Favorite = p.Favorite,
+                Title = p.Title,
+                ProcName = p.DatabaseProcess.Name,
+                ProcPath = p.DatabaseProcess.Path,
+                UsageTime = p.DatabaseDate.UsageTime,
+                AlertTime = p.DatabaseDate.AlertTime,
+                AddDate = p.DatabaseDate.AddDate,
+                LastDate = p.DatabaseDate.LastDate,
+                Memo = p.Memo
+            });
 
 
         /// <summary>
@@ -336,27 +291,9 @@ namespace Manage_your_Life.Models
         /// </summary>
         /// <returns>IDと警告時間のDictionary</returns>
         internal Dictionary<int, TimeSpan> GetOveruseWarningCollection()
-        {            
-            var q = from p in database.DatabaseApplication
-                    where p.DatabaseDate.AlertTime != "0.00:00:00"
-                    select new
-                    {
-                        Id = p.Id,
-                        AlertTime = p.DatabaseDate.AlertTime
-                    };
-
-            var dict = new Dictionary<int, TimeSpan>();
-            try
-            {
-                foreach (var r in q)
-                {
-                    dict.Add(r.Id, TimeSpan.Parse(r.AlertTime));
-                }
-            }
-            catch (SqlException) { throw; }
-
-            return dict;
-        }
+            => database.DatabaseApplication
+                .Where(p => p.DatabaseDate.AlertTime != "0.00:00:00")
+                .ToDictionary(p => p.Id, p => TimeSpan.Parse(p.DatabaseDate.AlertTime));
 
 
         /// <summary>
@@ -366,30 +303,13 @@ namespace Manage_your_Life.Models
         /// <returns>IDに対応する今日の使用時間</returns>
         internal TimeSpan GetTodayPrpcessUsageTime(int appId)
         {
-            var q = (
-                    from p in database.DatabaseApplication
-                    where appId == p.Id
-                    where DateTime.Today == p.DatabaseTimeline.Today                    
-                    select new
-                    {
-                        Key = p.DatabaseProcess.Name,
-                        Value = TimeSpan.Parse(p.DatabaseTimeline.UsageTime)
-                    });
-                        
-            var dict = new KeyValuePair<string, TimeSpan>();
-
-            //断片的な使用時間をまとめる
-            try
-            {
-                dict = Utils.DictionaryOrganizingValue(q).Single();
-            }
-            //シーケンスに要素が含まれていない場合
-            catch (Exception)
-            {
-                return TimeSpan.FromSeconds(0);
-            }
-
-            return dict.Value;
+            var totalSecStr = database.DatabaseApplication
+                .Where(a => a.Id == appId)
+                .Where(a => a.DatabaseTimeline.Today == DateTime.Today)
+                .Select(a => a.DatabaseTimeline.UsageTime)
+                .ToList()
+                .Sum(s => TimeSpan.Parse(s).TotalSeconds);
+            return TimeSpan.FromSeconds(totalSecStr);
         }
 
 
@@ -399,15 +319,10 @@ namespace Manage_your_Life.Models
         /// <param name="proc">比較対象のProcess</param>
         /// <returns>存在する：true　存在しない:false</returns>
         internal bool IsExist(string procPath)
-        {
-            return RetryHelper.Retry(() => {
-                    return database.DatabaseProcess.Any(p => p.Path.Contains(procPath));
-                },
-                ex => { ExceptionDispatchInfo.Capture(ex).Throw(); },
-                ex => ex is SqlException
-            );
-        }
-        
+            => database.DatabaseProcess.Any(p => p.Path == procPath);
+
+        internal bool IsExist(Process process)
+            => IsExist(process.MainModule.FileName);
 
         /// <summary>
         /// DatabaseProcessの中から同じファイルパスを探索し
@@ -416,22 +331,9 @@ namespace Manage_your_Life.Models
         /// <param name="previousProcess">検索対象の(前回の)Process</param>
         /// <returns>プロセス名に対応するAppID</returns>
         internal int GetMatchedId(string procPath)
-        {
-            int appId = -1;
+            => database.DatabaseProcess.Single(p => p.Path == procPath).AppId;
 
-            //クエリ発行            
-            var q =
-                from p in database.DatabaseProcess
-                where p.Path == procPath
-                select p;
-
-            foreach (var r in q)
-            {
-                appId = r.AppId;
-            }
-
-            return appId;
-        }
-
+        internal int GetMatchedId(Process process)
+            => GetMatchedId(process.MainModule.FileName);
     }
 }
