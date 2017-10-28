@@ -13,7 +13,7 @@ namespace Manage_your_Life.Models
     /// <summary>
     /// データベースを操作するクラス
     /// </summary>
-    public sealed class DatabaseOperation
+    public sealed class DatabaseOperation : IDatabaseAccess
     {
         private static readonly DatabaseOperation instance = new DatabaseOperation();
 
