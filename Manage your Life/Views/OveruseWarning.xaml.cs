@@ -14,13 +14,13 @@ namespace Manage_your_Life.Views
     /// </summary>
     public partial class OveruseWarning : Window
     {
-        DatabaseOperation dbOperator;
+        SQLServerAccess dbOperator;
 
         public OveruseWarning()
         {
             InitializeComponent();
 
-            dbOperator = DatabaseOperation.Instance;
+            dbOperator = SQLServerAccess.Instance;
             
             var themeColor = new SolidColorBrush(AppearanceManager.Current.AccentColor);
             this.border.BorderBrush = themeColor;

@@ -10,7 +10,7 @@ namespace Manage_your_Life.Models
     public class AlertManager
     {
         private ActiveProcessMonitor procMonitor;
-        private DatabaseOperation db;
+        private SQLServerAccess db;
         private Dictionary<int, TimeSpan> overuseWarningItems;
         private List<string> unalertProcFileNameList = new List<string>();
 
@@ -24,7 +24,7 @@ namespace Manage_your_Life.Models
 
         private AlertManager()
         {
-            this.db = DatabaseOperation.Instance;
+            this.db = SQLServerAccess.Instance;
             this.overuseWarningItems = db.GetOveruseWarningCollection();
 
             this.procMonitor = ActiveProcessMonitor.Instance;

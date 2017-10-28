@@ -23,7 +23,7 @@ namespace Manage_your_Life.Views.Pages
     public partial class TimelinePage : UserControl
     {
 
-        DatabaseOperation dbOperator;
+        SQLServerAccess dbOperator;
 
         public TimelinePage()
         {
@@ -31,7 +31,7 @@ namespace Manage_your_Life.Views.Pages
                         
             this.chart_Line.DataContext = new ProcessStatusViewModel();
 
-            dbOperator = DatabaseOperation.Instance;
+            dbOperator = SQLServerAccess.Instance;
             dbOperator.NewRecord_Registered += new EventHandler(this.NewRecord_Registered);
             dbOperator.Record_Deleted += new EventHandler(this.Record_Deleted);
             this.listBox_ProcName.DataContext = dbOperator.GetAllData();

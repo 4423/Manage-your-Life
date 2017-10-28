@@ -58,7 +58,7 @@ namespace Manage_your_Life.Views
             UIAction(() => label_working.Content = "Connecting to database...");
             RetryHelper.Retry(
                 () => { 
-                    var db = DatabaseOperation.Instance;
+                    var db = SQLServerAccess.Instance;
                     new UsageTimeViewModel(DateTime.Today, 5);
                 },
                 ex => { ExceptionDispatchInfo.Capture(ex).Throw(); },

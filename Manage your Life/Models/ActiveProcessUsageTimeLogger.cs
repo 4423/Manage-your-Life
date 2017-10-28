@@ -11,14 +11,14 @@ namespace Manage_your_Life.Models
         public event UsageTimeOfProcess Logged;
 
         private ActiveProcessUsageTimeMonitor monitor;
-        private DatabaseOperation db;
+        private SQLServerAccess db;
 
         private static readonly ActiveProcessUsageTimeLogger instance = new ActiveProcessUsageTimeLogger();
         public static ActiveProcessUsageTimeLogger Instance => instance;
 
         private ActiveProcessUsageTimeLogger()
         {
-            this.db = DatabaseOperation.Instance;
+            this.db = SQLServerAccess.Instance;
 
             this.monitor = new ActiveProcessUsageTimeMonitor();
             this.monitor.OnActiveProcessChanged += (proc, timespan) =>

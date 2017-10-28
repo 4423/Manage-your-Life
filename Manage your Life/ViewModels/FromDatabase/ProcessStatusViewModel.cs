@@ -35,7 +35,7 @@ namespace Manage_your_Life
         /// <param name="day">取得したい日付</param>
         public ProcessStatusViewModel(int appId, DateTime day, bool isStacked)
         {
-            DatabaseOperation dbOperator = DatabaseOperation.Instance;
+            SQLServerAccess dbOperator = SQLServerAccess.Instance;
             var database = dbOperator.GetConnectionedDataContext;
 
             var q = (

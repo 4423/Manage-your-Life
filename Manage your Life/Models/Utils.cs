@@ -100,7 +100,7 @@ namespace Manage_your_Life.Models
         /// <returns>true: 初期状態　false: 何か入ってる</returns>
         public static bool IsDatabaseEmpty()
         {
-            var dbOperator = DatabaseOperation.Instance;
+            var dbOperator = SQLServerAccess.Instance;
             foreach (var nullTest in dbOperator.GetAllData())
             {
                 return false;

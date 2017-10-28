@@ -20,7 +20,7 @@ namespace Manage_your_Life
         public RegistrationDateViewModel()
         {
             //データベース接続
-            DatabaseOperation dbOperator = DatabaseOperation.Instance;
+            SQLServerAccess dbOperator = SQLServerAccess.Instance;
             database = dbOperator.GetConnectionedDataContext;
         }
 

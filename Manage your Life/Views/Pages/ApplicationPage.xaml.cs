@@ -35,7 +35,7 @@ namespace Manage_your_Life.Views.Pages
         /// <summary>
         /// データベースを操作
         /// </summary>
-        DatabaseOperation dbOperator;
+        SQLServerAccess dbOperator;
         Brush themeColor;
         
 
@@ -45,7 +45,7 @@ namespace Manage_your_Life.Views.Pages
 
             themeColor = new SolidColorBrush(AppearanceManager.Current.AccentColor);
 
-            dbOperator = DatabaseOperation.Instance;
+            dbOperator = SQLServerAccess.Instance;
 
             //EventHandlerの追加
             dbOperator.UsageTime_Updated += new EventHandler(this.UsageTime_Updated);

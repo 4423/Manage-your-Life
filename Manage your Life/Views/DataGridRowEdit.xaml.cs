@@ -80,7 +80,7 @@ namespace Manage_your_Life.Views
             if (result == MessageBoxResult.Yes)
             {
                 int appId = (int)context["Id"];
-                DatabaseOperation dbOperotr = DatabaseOperation.Instance;
+                SQLServerAccess dbOperotr = SQLServerAccess.Instance;
 
                 try
                 {
@@ -108,7 +108,7 @@ namespace Manage_your_Life.Views
         private void UpdataDatabase(int appId)
         {
             //データベース接続
-            DatabaseOperation dbOperator = DatabaseOperation.Instance;
+            SQLServerAccess dbOperator = SQLServerAccess.Instance;
             var database = dbOperator.GetConnectionedDataContext;
 
             var q =

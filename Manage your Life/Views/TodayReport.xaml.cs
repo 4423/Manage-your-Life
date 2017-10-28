@@ -113,7 +113,7 @@ namespace Manage_your_Life.Views
         /// <returns>降順のアプリケーションとその使用時間のDictionary</returns>
         private Dictionary<string, TimeSpan> GetTodayUsageTime(DateTime startDate)
         {
-            DatabaseOperation dbOp = DatabaseOperation.Instance;
+            SQLServerAccess dbOp = SQLServerAccess.Instance;
             var database = dbOp.GetConnectionedDataContext;
 
             var q = (

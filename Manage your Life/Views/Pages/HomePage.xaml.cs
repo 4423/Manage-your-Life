@@ -53,7 +53,7 @@ namespace Manage_your_Life.Views.Pages
         /// </summary>
         DataBanker dataBanker;
 
-        DatabaseOperation dbOperator;       
+        SQLServerAccess dbOperator;       
         ProcessInformation pInfo;
         
         string preWindowTitle = "";
@@ -69,7 +69,7 @@ namespace Manage_your_Life.Views.Pages
             preCategorizedCountData = new Dictionary<string, int>();
             dataBanker = DataBanker.Instance;
 
-            dbOperator = DatabaseOperation.Instance;
+            dbOperator = SQLServerAccess.Instance;
             dbOperator.TimelineLog_Updated += new EventHandler(this.TimelineLog_Updated);
 
             this.chart_upTime.DataContext = new SystemUptimeViewModel();

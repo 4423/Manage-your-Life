@@ -137,7 +137,7 @@
     <Compile Include="Models\ProcessCache.cs" />
     <Compile Include="ViewModels\FromOther\SettingsAppearanceViewModel.cs" />
     <Compile Include="Models\DataBanker.cs" />
-    <Compile Include="Models\DatabaseOperation.cs" />
+    <Compile Include="Models\SQLServerAccess.cs" />
     <Compile Include="Models\Hatena.cs" />
     <Compile Include="Views\Pages\ApplicationPage.xaml.cs">
       <DependentUpon>ApplicationPage.xaml</DependentUpon>
